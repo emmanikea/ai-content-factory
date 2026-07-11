@@ -18,7 +18,7 @@ import sys
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[3]
-DEFAULT_SITE = REPO / "catalog-site"
+DEFAULT_SITE = REPO / "Dynamous" / "Content-Ideation" / "2026-07-07" / "higgsfield-archon" / "catalog-site"
 SITE = Path(os.environ.get("SITE_DIR", str(DEFAULT_SITE)))
 
 
@@ -72,6 +72,11 @@ def main() -> int:
             pass
     merged.update(run_products)
     products = [merged[pid] for pid in sorted(merged, key=lambda x: order.get(x, 999))]
+
+    # Attach the UGC ad (the second video of the pair) per product when it exists on disk.
+    for p in products:
+        up = review / p["product_id"] / "ugc.mp4"
+        p["ugc"] = f"review/{p['product_id']}/ugc.mp4" if up.exists() else None
 
     queue = {"products": products,
              "counts": {"products": len(products),

@@ -38,6 +38,16 @@ RUBRIC = (
     "Intended concept: {concept}. Respond ONLY as JSON: "
     '{{"score": <int 0-100>, "reason": "<one sentence>"}}.')
 
+UGC_RUBRIC = (
+    "You are the QA gate for an automated UGC video-ad factory. These frames are sampled across ONE "
+    "short vertical talking-head UGC ad where a PERSON holds a product and talks to camera. A visible "
+    "person IS expected and good - do NOT penalize the face. Judge 0-100. HARD FAILURES (score < 50): "
+    "the person or product melting / morphing / warping between frames; extra or deformed limbs, hands, "
+    "or fingers; a duplicated person; grotesque distortion; garbled on-screen text; or a phone / camera-app "
+    "UI visible in frame. GOOD (score 75+): a consistent natural person holding a recognizable product, "
+    "clean handheld motion, no warping, no text artifacts. Intended: {concept}. Respond ONLY as JSON: "
+    '{{"score": <int 0-100>, "reason": "<one sentence>"}}.')
+
 
 def ffprobe_duration(path: Path) -> float:
     try:
@@ -142,7 +152,8 @@ def main() -> int:
         if not frames:
             print(json.dumps({"ok": True, "score": 70, "duration": round(dur, 2),
                               "reason": "no frames; duration-only", "judge": "heuristic"})); return 0
-        r = judge(frames, RUBRIC.format(concept=concept or "a clean product ad"))
+        base = UGC_RUBRIC if "ugc" in (concept or "").lower() else RUBRIC
+        r = judge(frames, base.format(concept=concept or "a clean product ad"))
         if r is None:
             print(json.dumps({"ok": True, "score": 70, "duration": round(dur, 2),
                               "reason": "no vision provider available; duration-only", "judge": "heuristic"}))

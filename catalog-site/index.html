@@ -145,6 +145,7 @@
   const banner=$('banner'), overlay=$('overlay');
   let data, queue={products:[]}, approved=new Set(), active='All', onlyAds=false;
   const byProduct={};   // product_id -> [concepts]
+  const ugcByProduct={}; // product_id -> UGC ad video url
 
   async function getJSON(url){ try{const r=await fetch(url,{cache:'no-store'}); if(!r.ok)return null; return await r.json();}catch(e){return null;} }
 
@@ -154,7 +155,7 @@
   const products=data.products||[];
 
   queue=await getJSON('review/queue.json')||{products:[]};
-  (queue.products||[]).forEach(p=>byProduct[p.product_id]=p.concepts||[]);
+  (queue.products||[]).forEach(p=>{byProduct[p.product_id]=p.concepts||[]; if(p.ugc) ugcByProduct[p.product_id]=p.ugc;});
   const appr=await getJSON('approvals.json'); if(appr&&appr.approved) approved=new Set(appr.approved);
 
   const totalConcepts=(queue.products||[]).reduce((n,p)=>n+(p.concepts||[]).length,0);
@@ -216,11 +217,19 @@
         <button class="approve" data-cid="${c.concept_id}">${isAppr?'✓ Approved':'Approve'}</button>
       </div></div>`;
   }
+  function ugcCard(url){
+    return `<div class="concept"><div class="media">
+        <video src="${url}" controls muted playsinline></video><span class="vid-badge">▶ UGC ad</span></div>
+      <div class="cbody"><div class="angle">UGC ad · Higgsfield Veo</div>
+        <div class="cap">Talking-head review, generated alongside the approved concept.</div></div></div>`;
+  }
   function openAds(id){
-    const p=products.find(x=>x.id===id); const ads=byProduct[id]||[];
+    const p=products.find(x=>x.id===id); const ads=byProduct[id]||[]; const ugc=ugcByProduct[id];
     $('m-title').textContent=p.name;
-    $('m-sub').textContent=ads.length+' concept'+(ads.length>1?'s':'')+' · '+p.category;
-    $('m-concepts').innerHTML=ads.length?ads.map(c=>conceptCard(p,c)).join(''):'<div class="empty">No concepts yet.</div>';
+    $('m-sub').textContent=ads.length+' concept'+(ads.length>1?'s':'')+(ugc?' + UGC ad':'')+' · '+p.category;
+    let html=ads.length?ads.map(c=>conceptCard(p,c)).join(''):'<div class="empty">No concepts yet.</div>';
+    if(ugc) html+=ugcCard(ugc);
+    $('m-concepts').innerHTML=html;
     overlay.classList.add('open');
   }
   $('m-close').addEventListener('click',()=>overlay.classList.remove('open'));

@@ -22,6 +22,17 @@ That single price gap dictates the entire shape of the system:
 
 ---
 
+## One approval, two ads
+
+A single approval doesn't just make one video. The render workflow turns each approved concept into **two** finished ads:
+
+1. **Product pan** - the approved still animated into a clean, cinematic push-in/pan (Higgsfield Kling).
+2. **UGC talking-head** - a ~24-second spot of a generated person in a kitchen holding the *actual* product and reviewing it in their own generated voice (Higgsfield Veo 3.1). It's built from three 8-second segments chained on their last frame for continuity, so there are no jarring cuts, and it's checked by a UGC-aware vision rubric (penalizing warping, extra limbs, or any phone/camera UI in frame).
+
+Same product, two formats, from one click. Approved products in the storefront's `done` state play **both** ads in their review modal. Sample UGC ads live at `catalog-site/review/{p01,p03,p06,p07,p09,p10}/ugc.mp4` (vision-validated 85-100).
+
+---
+
 ## Why a coding harness runs it
 
 The interesting part is what's driving it. Archon is not a marketing product. It is the same kind of agent harness you use to ship software: a plan, a pool of agents, and a loop that runs until the work is done. Here it is pointed at a store instead of a codebase.

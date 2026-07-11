@@ -57,6 +57,7 @@ def build():
     # READY = same concepts, but every video hidden and nothing approved yet.
     q_ready = json.loads(json.dumps(q))
     for p in q_ready.get("products", []):
+        p["ugc"] = None  # UGC ad is a render output; hidden until "done"
         for c in p.get("concepts", []):
             c["video"] = None
             c["approved"] = False

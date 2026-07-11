@@ -1,10 +1,11 @@
 name: content-factory-render
 description: |
   Phase 2 of the content factory: a WORKER POOL of parallel Ralph loops, gated to human-approved
-  concepts. A few workers run at once; each loops - claim the next approved concept that has no
-  video (atomic), animate it via the Higgsfield CLI (kling, 10s/1080p), VALIDATE the rendered clip,
-  repeat - until none are left. Static workflow (3 workers whether you approved 2 or 200). Nothing
-  not approved is ever animated. Fewer workers than explore because video is the slow, expensive step.
+  concepts. ONE approval -> TWO videos: each claimed approved concept gets a product PAN (Higgsfield
+  kling) AND a ~24s UGC talking-head ad (Higgsfield Veo 3.1, a person reviewing the product), each
+  validated. A few workers run at once; each loops - claim the next approved concept, make the pair,
+  repeat - until none are left. Nothing not approved is ever animated. Fewer workers than explore
+  because video is the slow, expensive step.
 
   Self-checking: after each render, animate_concept.py runs validate_video.py (duration check + a
   vision QA pass over frames sampled across the clip) and regenerates a bad take (garbled text,
@@ -38,11 +39,15 @@ nodes:
 
         STEP 2:
         - If it printed NONE, nothing approved is left to render. Output <promise>COMPLETE</promise> and stop.
-        - Otherwise animate + VALIDATE the claimed concept (image-to-video via the Higgsfield CLI,
-          then a duration + vision QA pass that regenerates a bad take and keeps the best):
-            python .archon/scripts/factory/animate_concept.py <product_id> <concept_id>
-          It prints the winning validation score. If it fails after its retries, note it and
-          continue. Then STOP (do NOT emit COMPLETE - the loop re-runs you for the next approved concept).
+        - Otherwise produce the PAIR of ads for the claimed concept - ONE approval, TWO videos:
+          1. The product PAN (image-to-video via the Higgsfield CLI + duration/vision QA, best of retries):
+               python .archon/scripts/factory/animate_concept.py <product_id> <concept_id>
+          2. The UGC talking-head ad (a real person holding the product, Higgsfield Veo 3.1, ~24s of
+             native-voice review across 3 last-frame-chained segments + a UGC-aware validation pass):
+               python .archon/scripts/factory/animate_ugc.py <product_id> <concept_id>
+          Both print their validation score and are idempotent (skip if their output already exists).
+          If either fails after its retries, note it and continue. Then STOP (do NOT emit COMPLETE -
+          the loop re-runs you for the next approved concept).
       until: COMPLETE
       max_iterations: 60
       fresh_context: true

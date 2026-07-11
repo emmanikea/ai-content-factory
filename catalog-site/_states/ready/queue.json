@@ -28,7 +28,8 @@
           "approved": false,
           "video": null
         }
-      ]
+      ],
+      "ugc": null
     },
     {
       "product_id": "p02",
@@ -58,7 +59,8 @@
           "approved": false,
           "video": null
         }
-      ]
+      ],
+      "ugc": null
     },
     {
       "product_id": "p03",
@@ -88,7 +90,8 @@
           "approved": false,
           "video": null
         }
-      ]
+      ],
+      "ugc": null
     },
     {
       "product_id": "p04",
@@ -118,7 +121,8 @@
           "approved": false,
           "video": null
         }
-      ]
+      ],
+      "ugc": null
     },
     {
       "product_id": "p05",
@@ -148,7 +152,8 @@
           "approved": false,
           "video": null
         }
-      ]
+      ],
+      "ugc": null
     },
     {
       "product_id": "p06",
@@ -178,7 +183,8 @@
           "approved": false,
           "video": null
         }
-      ]
+      ],
+      "ugc": null
     },
     {
       "product_id": "p07",
@@ -208,7 +214,8 @@
           "approved": false,
           "video": null
         }
-      ]
+      ],
+      "ugc": null
     },
     {
       "product_id": "p08",
@@ -238,7 +245,8 @@
           "approved": false,
           "video": null
         }
-      ]
+      ],
+      "ugc": null
     },
     {
       "product_id": "p08b",
@@ -268,7 +276,8 @@
           "approved": false,
           "video": null
         }
-      ]
+      ],
+      "ugc": null
     },
     {
       "product_id": "p09",
@@ -298,7 +307,8 @@
           "approved": false,
           "video": null
         }
-      ]
+      ],
+      "ugc": null
     },
     {
       "product_id": "p10",
@@ -328,7 +338,8 @@
           "approved": false,
           "video": null
         }
-      ]
+      ],
+      "ugc": null
     },
     {
       "product_id": "p11",
@@ -358,7 +369,8 @@
           "approved": false,
           "video": null
         }
-      ]
+      ],
+      "ugc": null
     },
     {
       "product_id": "p12",
@@ -388,7 +400,8 @@
           "approved": false,
           "video": null
         }
-      ]
+      ],
+      "ugc": null
     },
     {
       "product_id": "p13",
@@ -418,7 +431,8 @@
           "approved": false,
           "video": null
         }
-      ]
+      ],
+      "ugc": null
     },
     {
       "product_id": "p14",
@@ -448,7 +462,8 @@
           "approved": false,
           "video": null
         }
-      ]
+      ],
+      "ugc": null
     },
     {
       "product_id": "p15",
@@ -478,7 +493,8 @@
           "approved": false,
           "video": null
         }
-      ]
+      ],
+      "ugc": null
     },
     {
       "product_id": "p16",
@@ -508,7 +524,8 @@
           "approved": false,
           "video": null
         }
-      ]
+      ],
+      "ugc": null
     },
     {
       "product_id": "p17",
@@ -538,7 +555,8 @@
           "approved": false,
           "video": null
         }
-      ]
+      ],
+      "ugc": null
     },
     {
       "product_id": "p18",
@@ -568,7 +586,8 @@
           "approved": false,
           "video": null
         }
-      ]
+      ],
+      "ugc": null
     },
     {
       "product_id": "p19",
@@ -598,7 +617,8 @@
           "approved": false,
           "video": null
         }
-      ]
+      ],
+      "ugc": null
     }
   ],
   "counts": {

@@ -23,7 +23,7 @@ import urllib.request
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[3]
-DEFAULT_SITE = REPO / "catalog-site"
+DEFAULT_SITE = REPO / "Dynamous" / "Content-Ideation" / "2026-07-07" / "higgsfield-archon" / "catalog-site"
 SITE = Path(os.environ.get("SITE_DIR", str(DEFAULT_SITE)))
 VIDEO_MODEL = os.environ.get("HF_VIDEO_MODEL", "kling3_0_turbo")
 DURATION = os.environ.get("HF_VIDEO_DURATION", "10")
