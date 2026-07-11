@@ -1,0 +1,131 @@
+# AI Content Factory
+
+**One product catalog in, a batch of human-approved AI video ads out.** This is what you get when you stop treating an AI coding harness as a "coding" tool and point it at marketing instead: a small, autonomous factory that explores ad concepts for an entire catalog on its own, parks them at a human approval gate, and spends real video money only on the winners you pick.
+
+The engine is [Archon](https://github.com/coleam00/Archon), an open-source AI coding workflow engine. The media worker is the [Higgsfield CLI](https://higgsfield.ai/cli) (swappable). The whole thing runs from the terminal and can sit on a schedule.
+
+![Architecture](docs/architecture.png)
+
+---
+
+## The one idea behind the whole system
+
+Your **image** model is cheap and your **video** model is not. On the models used here, a still concept costs about `0.15` credits and animating it to video costs about `7.5` credits: roughly **50x**.
+
+That single price gap dictates the entire shape of the system:
+
+1. **Explore cheap.** Generate and score a couple of ad concepts for *every* product using the cheap image model. Dozens of scored concepts for the price of a coffee.
+2. **Approve human.** A person reviews the concepts in a real storefront and approves the ones worth spending on. This is the only step that costs real money, so a human makes it.
+3. **Render winners only.** Animate *only* the approved concepts into video. Nothing you did not approve ever costs a video credit.
+
+`Explore cheap -> approve human -> render only winners.` Everything in this repo just runs that one idea safely and at scale.
+
+---
+
+## Why a coding harness runs it
+
+The interesting part is what's driving it. Archon is not a marketing product. It is the same kind of agent harness you use to ship software: a plan, a pool of agents, and a loop that runs until the work is done. Here it is pointed at a store instead of a codebase.
+
+- **Worker pool + Ralph loop.** Each worker claims the next unit of work (a product to explore, or an approved concept to render), does it, and loops back for the next, until the queue is empty.
+- **Fresh context per item.** Every product is handled in its own clean context, so product #20 is as sharp as product #1. A single chat window rots after a few products; this does not.
+- **Atomic claiming.** Work is claimed with a filesystem-atomic `mkdir` lock, so parallel workers never collide. Everything is idempotent: re-running charges nothing for work already done, which is what makes it safe to leave on a schedule.
+
+The takeaway is bigger than ads: these harnesses were built for code, but there is nothing about them that says "code." Marketing is just the example.
+
+---
+
+## The two workflows
+
+| Workflow | Phase | What it does |
+|----------|-------|--------------|
+| [`content-factory-explore`](.archon/workflows/content-factory-explore.yaml) | Explore (cheap) | A pool of workers drains the catalog. Each claims a product, invents two text-free ad concepts, generates + vision-scores them on the cheap image model, and writes them to the review queue. |
+| [`content-factory-render`](.archon/workflows/content-factory-render.yaml) | Render (gated) | A smaller pool animates **only human-approved** concepts into video. Fewer workers, because video is the slow, expensive step. |
+
+The human approval gate lives in between, in a small storefront (`catalog-site/`) where every product shows its scored concepts and you click Approve on the winners.
+
+A no-API-key, fully reproducible variant is included too: [`ad-factory-local`](.archon/workflows/ad-factory-local.yaml) uses free image generation + ffmpeg motion so anyone can run the pattern end-to-end before wiring in a real media worker.
+
+---
+
+## The media worker is swappable
+
+The Higgsfield CLI is the media worker here because it drives the frontier video/image models (Veo, Kling, Seedance, plus its own Soul) straight from the terminal and is built to be automated. But the DAG does not care what generates the pixels. `.archon/scripts/media_worker.py` is the single swap point (`--backend`), and `animate_concept.py` reads `HF_VIDEO_MODEL`. Point it at whatever generator you like.
+
+---
+
+## Repository layout
+
+```
+.archon/
+  workflows/
+    content-factory-explore.yaml   # phase 1: explore the catalog (cheap)
+    content-factory-render.yaml     # phase 2: render approved winners (gated)
+    ad-factory-local.yaml           # no-API-key reproducible variant
+  scripts/
+    media_worker.py                 # the swappable media worker (the one swap point)
+    score_frame.py                  # vision-based ad-quality score for a key frame
+    factory/
+      claim.py                      # atomic work queue (mkdir-lock) for the worker pool
+      animate_concept.py            # animate ONE approved concept to video
+      merge_queue.py                # stitch per-product results into the storefront queue
+      factory_status.py             # read-only status + cost preview (no spend)
+catalog-site/                       # the demo storefront (a 20-product "Camber" catalog)
+  catalog.json  index.html  review_server.py  gen_catalog.py  images/
+sample-videos/                      # example output from a real run
+docs/architecture.png
+```
+
+---
+
+## Run it
+
+**Prerequisites**
+- [Archon](https://github.com/coleam00/Archon) installed and on your PATH.
+- The [Higgsfield CLI](https://higgsfield.ai/cli) authenticated: `npm i -g @higgsfield/cli && higgsfield auth login`.
+- Python 3.10+ (the scripts use only the standard library plus `uv` for the vision scorer).
+
+**1. Explore the catalog (cheap).** A worker pool generates + scores two concepts per product:
+```bash
+archon workflow run content-factory-explore --no-worktree "explore the Camber catalog"
+```
+
+**2. Approve the winners (human).** Serve the storefront and click Approve on the concepts worth animating:
+```bash
+cd catalog-site && python review_server.py    # then open http://localhost:8100
+```
+
+**3. Render only the winners (gated, expensive).**
+```bash
+archon workflow run content-factory-render --no-worktree "render the approved concepts"
+```
+
+Check status and a cost preview at any time, with no spend:
+```bash
+python .archon/scripts/factory/factory_status.py
+```
+
+Dry-run the render fan-out for free (no credits) with `RENDER_DRY_RUN=1`.
+
+---
+
+## Sample output
+
+`sample-videos/` contains real output from a run:
+
+| File | What it is |
+|------|-----------|
+| `espresso-pull-25s.mp4` | A 25s product-hero ad (chained segments, continuous camera move) |
+| `pour-over.mp4` | A 10s product-hero ad |
+| `espresso-bag-ugc.mp4` | A ~24s UGC-style talking-head ad (native voice + lip-sync) |
+
+---
+
+## Honest notes
+
+- **The media worker is a choice.** Higgsfield earned this build, but the pattern is portable. Swap in any generator.
+- **Clean assets.** The product-hero concepts are generated with no identifiable people and no borrowed IP.
+- **The cost math is the argument.** ~40 concepts explored and scored for ~6 credits; a video is ~7.5 credits and only ever runs on a human-approved winner. That is a pipeline you can afford to run every week, not a one-off demo.
+
+---
+
+Built with [Archon](https://github.com/coleam00/Archon) · media by the [Higgsfield CLI](https://higgsfield.ai/cli).

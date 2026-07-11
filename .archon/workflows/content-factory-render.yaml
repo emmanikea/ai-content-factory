@@ -1,0 +1,60 @@
+name: content-factory-render
+description: |
+  Phase 2 of the content factory: a WORKER POOL of parallel Ralph loops, gated to human-approved
+  concepts. A few workers run at once; each loops - claim the next approved concept that has no
+  video (atomic), animate it via the Higgsfield CLI (kling, ~7.5 cr), repeat - until none are
+  left. Static workflow (3 workers whether you approved 2 or 200). Nothing not approved is ever
+  animated. Fewer workers than explore because video is the slow, expensive step.
+
+  finalize stitches the rendered videos back into the review queue so the storefront plays them.
+
+provider: claude
+model: sonnet
+
+nodes:
+  - id: prep
+    timeout: 30000
+    bash: |
+      set -uo pipefail
+      python .archon/scripts/factory/claim.py reset-render
+
+  - id: worker-1
+    depends_on: [prep]
+    idle_timeout: 1800000
+    loop: &render_worker
+      prompt: |
+        You are one worker on the render line. Each run you animate ONE approved ad, then stop -
+        the loop re-runs you for the next.
+
+        STEP 1 - claim your next approved concept (atomic). Run:
+          python .archon/scripts/factory/claim.py render
+        It prints ONE line: either `NONE`, or JSON:
+          {"product_id","concept_id","angle","frame","aspect_ratio"}
+
+        STEP 2:
+        - If it printed NONE, nothing approved is left to render. Output <promise>COMPLETE</promise> and stop.
+        - Otherwise animate the claimed concept with the Higgsfield CLI (image-to-video, kling):
+            python .archon/scripts/factory/animate_concept.py <product_id> <concept_id>
+          If it fails, note it and continue. Then STOP (do NOT emit COMPLETE - the loop re-runs
+          you for the next approved concept).
+      until: COMPLETE
+      max_iterations: 60
+      fresh_context: true
+
+  - id: worker-2
+    depends_on: [prep]
+    idle_timeout: 1800000
+    loop: *render_worker
+  - id: worker-3
+    depends_on: [prep]
+    idle_timeout: 1800000
+    loop: *render_worker
+
+  - id: finalize
+    depends_on: [worker-1, worker-2, worker-3]
+    trigger_rule: all_done
+    timeout: 120000
+    bash: |
+      set -uo pipefail
+      python .archon/scripts/factory/merge_queue.py
+      echo "=== RENDER COMPLETE: worker pool animated all approved ads ==="

@@ -1,0 +1,184 @@
+name: ad-factory-local
+description: |
+  The runnable-TODAY proof of the "AI Ad Factory" - an Archon pipeline that turns ONE
+  product into THREE finished, scored short-video ad variants IN PARALLEL. No API keys:
+  the media worker uses free, no-auth image gen (pollinations) + ffmpeg camera motion so
+  anyone can run it. This is the reproducible pattern; Higgsfield is the premium worker
+  you swap in (see the sibling `higgsfield-ad-factory` workflow - identical DAG, the
+  generate node is the ONLY thing that changes).
+
+  Why this is a workflow and not a chat: you type one command, walk away, and come back to
+  three finished, QA'd ad variants generated concurrently. Per-phase model routing (the
+  expensive model directs, cheap code executes), parallel fan-out, and a rendered-output
+  QA gate are things a single Claude Code chat structurally cannot give you.
+
+  Dispatch arg ($ARGUMENTS): a product URL or one-line description, e.g.
+    "a matte-black insulated travel coffee tumbler for commuters".
+
+  Swap the worker with the env var MEDIA_BACKEND (default: pollinations):
+    MEDIA_BACKEND=higgsfield archon workflow run ad-factory-local ...
+
+provider: claude
+model: sonnet
+
+nodes:
+  # --- Creative direction: the high-leverage node -> best model ---------------
+  - id: brief
+    command: adfactory-brief
+    model: opus
+    context: fresh
+
+  # --- Expand concepts into generator-ready prompts: cheaper model ------------
+  - id: shotlist
+    command: adfactory-shotlist
+    model: sonnet
+    depends_on: [brief]
+    context: fresh
+
+  # --- Parallel fan-out: 3 variants generated concurrently (bash, no AI hang) --
+  #     Same topological layer => Archon runs these three at once.
+  - id: gen-1
+    depends_on: [shotlist]
+    timeout: 300000
+    retry:
+      max_attempts: 3
+      delay_ms: 8000
+      on_error: all
+    bash: |
+      set -euo pipefail
+      mkdir -p "$ARTIFACTS_DIR/variant-1"
+      python .archon/scripts/media_worker.py \
+        --shotlist "$ARTIFACTS_DIR/shotlist.json" --index 0 \
+        --outdir "$ARTIFACTS_DIR/variant-1" \
+        --backend "${MEDIA_BACKEND:-pollinations}"
+
+  - id: gen-2
+    depends_on: [shotlist]
+    timeout: 300000
+    retry:
+      max_attempts: 3
+      delay_ms: 8000
+      on_error: all
+    bash: |
+      set -euo pipefail
+      mkdir -p "$ARTIFACTS_DIR/variant-2"
+      python .archon/scripts/media_worker.py \
+        --shotlist "$ARTIFACTS_DIR/shotlist.json" --index 1 \
+        --outdir "$ARTIFACTS_DIR/variant-2" \
+        --backend "${MEDIA_BACKEND:-pollinations}"
+
+  - id: gen-3
+    depends_on: [shotlist]
+    timeout: 300000
+    retry:
+      max_attempts: 3
+      delay_ms: 8000
+      on_error: all
+    bash: |
+      set -euo pipefail
+      mkdir -p "$ARTIFACTS_DIR/variant-3"
+      python .archon/scripts/media_worker.py \
+        --shotlist "$ARTIFACTS_DIR/shotlist.json" --index 2 \
+        --outdir "$ARTIFACTS_DIR/variant-3" \
+        --backend "${MEDIA_BACKEND:-pollinations}"
+
+  # --- Rendered-output QA: judge the ACTUAL frames, rank, pick a winner --------
+  #     one_success => a single rate-limited variant never sinks the whole run.
+  - id: curate
+    command: adfactory-curate
+    model: sonnet
+    depends_on: [gen-1, gen-2, gen-3]
+    trigger_rule: one_success
+    context: fresh
+
+  # --- Self-correcting re-roll: regenerate the variants curate flagged ---------
+  #     This is the thing a plain parallel for-loop cannot do cleanly: a gate that
+  #     reads the RENDERED pixels, then feeds a concrete fix back into generation.
+  - id: reroll
+    depends_on: [curate]
+    idle_timeout: 900000
+    loop:
+      prompt: |
+        You are the self-correcting re-roll step. Fix the variants the QA gate flagged.
+
+        1. Read `$ARTIFACTS_DIR/curate.json`. Read the integer field `pass` (default 0 if
+           absent); this pass is `pass + 1`.
+        2. For EACH variant whose `verdict` is "RE-ROLL", regenerate it WITH THE FIX by running:
+           `python .archon/scripts/media_worker.py --shotlist "$ARTIFACTS_DIR/shotlist.json" --index <index> --outdir "$ARTIFACTS_DIR/variant-<index+1>" --backend "${MEDIA_BACKEND:-pollinations}" --hint "<that variant's fix_hint>" --seed-bump <this pass number>`
+           (index is 0-based; the folder is variant-1/2/3.)
+        3. Read the NEW `variant-<index+1>/frame.jpg` (actually look at it) and its
+           `meta.json` `score`. If it now looks clean AND scores >= 75, set that variant's
+           `verdict` to "SHIP"; otherwise keep "RE-ROLL" and refine its `fix_hint`.
+        4. Rewrite `$ARTIFACTS_DIR/curate.json` with updated verdicts, set `pass` to this
+           pass number, and update `winner_index` if a re-rolled variant now beats it.
+        5. Append a one-line note to `$ARTIFACTS_DIR/curate.md` under a "## Re-roll pass <N>"
+           heading: which variants you regenerated and their new scores.
+
+        When NO variant is "RE-ROLL", OR this pass number is >= 2, print <promise>COMPLETE</promise>.
+      until: COMPLETE
+      max_iterations: 3
+      fresh_context: true
+
+  # --- Assemble: contact sheet + manifest -------------------------------------
+  - id: assemble
+    depends_on: [reroll]
+    timeout: 120000
+    bash: |
+      set -uo pipefail
+      cd "$ARTIFACTS_DIR"
+      frames=""
+      for i in 1 2 3; do
+        if [ -f "variant-$i/frame.jpg" ]; then frames="$frames variant-$i/frame.jpg"; fi
+      done
+      if [ -n "$frames" ]; then
+        # Normalize each frame to the same height, then stitch side-by-side.
+        idx=0
+        norm=""
+        for f in $frames; do
+          ffmpeg -y -loglevel error -i "$f" -vf "scale=-2:640" "norm-$idx.jpg" && norm="$norm norm-$idx.jpg"
+          idx=$((idx+1))
+        done
+        # shellcheck disable=SC2086
+        ffmpeg -y -loglevel error $(for n in $norm; do echo -n "-i $n "; done) \
+          -filter_complex "hstack=inputs=$(echo $norm | wc -w)" contact-sheet.jpg || echo "contact sheet skipped"
+        rm -f norm-*.jpg
+      fi
+      {
+        echo "# Ad Factory - Campaign Manifest"
+        echo
+        echo "Generated $(ls -d variant-* 2>/dev/null | wc -l) variants."
+        echo
+        for i in 1 2 3; do
+          if [ -f "variant-$i/meta.json" ]; then
+            echo "## Variant $i"
+            python -c "import json,sys; m=json.load(open('variant-$i/meta.json')); print('- title:', m['title']); print('- backend:', m['backend']); print('- dims:', m['dimensions'], '('+m['aspect_ratio']+')'); print('- caption:', m['caption']); print('- asset:', m['asset']); print('- image_prompt:', m['image_prompt'])"
+            echo
+          fi
+        done
+      } > manifest.md
+      echo "--- assembled ---"
+      ls -1 contact-sheet.jpg manifest.md 2>/dev/null || true
+
+  # --- Finalize: artifact roll-call -------------------------------------------
+  - id: finalize
+    depends_on: [assemble]
+    timeout: 30000
+    bash: |
+      set -uo pipefail
+      cd "$ARTIFACTS_DIR"
+      echo "=== AD FACTORY RUN COMPLETE ==="
+      echo "Artifacts in: $ARTIFACTS_DIR"
+      echo
+      missing=0
+      check() { if [ -f "$1" ]; then echo "  OK       $1"; else echo "  MISSING  $1"; missing=$((missing+1)); fi; }
+      check brief.md
+      check shotlist.json
+      check shotlist.md
+      for i in 1 2 3; do check "variant-$i/frame.jpg"; check "variant-$i/asset.mp4"; done
+      check curate.md
+      check manifest.md
+      echo
+      if [ "$missing" -gt 0 ]; then echo "WARNING: $missing artifact(s) missing"; else echo "All expected artifacts present."; fi
+      echo
+      echo "--- video assets produced ---"
+      find . -name asset.mp4 -exec ls -la {} \; 2>/dev/null || true

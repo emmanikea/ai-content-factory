@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Camber — Everyday vessels, engineered.</title>
+<style>
+  :root{
+    --bg:#f6f3ee; --card:#ffffff; --ink:#1c1b19; --muted:#6f6a63;
+    --line:#e7e1d8; --accent:#2f5d50; --accent-soft:#e7efeb; --gold:#b98a2e;
+    --radius:14px; --shadow:0 1px 2px rgba(28,27,25,.05),0 10px 30px rgba(28,27,25,.10);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.5;-webkit-font-smoothing:antialiased}
+  a{color:inherit;text-decoration:none}
+
+  header.site{position:sticky;top:0;z-index:20;background:rgba(246,243,238,.85);
+    backdrop-filter:saturate(180%) blur(10px);border-bottom:1px solid var(--line)}
+  .bar{max-width:1180px;margin:0 auto;padding:16px 24px;display:flex;align-items:center;gap:24px}
+  .brand{font-family:Georgia,serif;font-size:24px;font-weight:600;letter-spacing:.3px}
+  .brand span{color:var(--accent)}
+  nav.cats{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+  nav.cats button{font:inherit;font-size:14px;color:var(--muted);background:transparent;border:1px solid transparent;
+    padding:7px 14px;border-radius:999px;cursor:pointer;transition:.15s}
+  nav.cats button:hover{color:var(--ink)}
+  nav.cats button.active{background:var(--accent);color:#fff}
+  .cart{font-size:14px;color:var(--muted);border:1px solid var(--line);padding:7px 12px;border-radius:999px}
+
+  .review-banner{background:#20463c;color:#eaf1ee}
+  .review-banner .bar{padding:12px 24px;font-size:14px;gap:16px;flex-wrap:wrap}
+  .review-banner b{color:#fff}
+  .review-banner .pill{background:rgba(255,255,255,.14);padding:4px 10px;border-radius:999px;font-size:13px}
+  .review-banner label{display:flex;align-items:center;gap:7px;margin-left:auto;cursor:pointer;font-size:13px}
+
+  .hero{max-width:1180px;margin:0 auto;padding:52px 24px 12px}
+  .hero h1{font-family:Georgia,serif;font-size:clamp(30px,5vw,52px);line-height:1.08;margin:0 0 12px;max-width:14ch}
+  .hero p{color:var(--muted);font-size:18px;margin:0;max-width:52ch}
+  .count{max-width:1180px;margin:0 auto;padding:24px 24px 0;color:var(--muted);font-size:14px}
+
+  .grid{max-width:1180px;margin:0 auto;padding:16px 24px 72px;
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:22px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;
+    display:flex;flex-direction:column;transition:transform .18s,box-shadow .18s;position:relative}
+  .card.has-ads{cursor:pointer}
+  .card.has-ads:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+  .thumb{aspect-ratio:1/1;background:#efeae2;position:relative;overflow:hidden}
+  .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+  .thumb .ph{position:absolute;inset:0;display:grid;place-items:center;color:#b7b0a4;font-size:13px}
+  .chip{position:absolute;top:12px;left:12px;background:rgba(255,255,255,.92);color:var(--muted);
+    font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:5px 9px;border-radius:999px}
+  .ads-ribbon{position:absolute;top:12px;right:12px;background:var(--accent);color:#fff;font-size:12px;font-weight:600;
+    padding:5px 10px;border-radius:999px;display:flex;align-items:center;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+  .ads-ribbon .dot{width:6px;height:6px;border-radius:50%;background:#8fd3bf}
+  .approved-ribbon{position:absolute;bottom:calc(100% - 0px);}
+  .body{padding:16px 16px 18px;display:flex;flex-direction:column;gap:6px;flex:1}
+  .row{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+  .name{font-weight:600;font-size:16px}
+  .price{font-weight:600;white-space:nowrap}
+  .tag{color:var(--muted);font-size:14px}
+  .cta{margin-top:12px;font:inherit;font-size:14px;font-weight:600;border:0;border-radius:10px;padding:10px 12px;cursor:pointer;transition:.15s}
+  .cta.buy{color:var(--accent);background:var(--accent-soft)}
+  .cta.buy:hover{background:var(--accent);color:#fff}
+  .cta.review{color:#fff;background:var(--accent)}
+  .cta.review:hover{filter:brightness(1.08)}
+
+  footer.site .bar{padding:26px 24px;justify-content:space-between;color:var(--muted);font-size:13px}
+  .err{max-width:1180px;margin:24px auto;padding:16px 24px;color:#8a3b3b}
+
+  /* Ads review modal */
+  .overlay{position:fixed;inset:0;background:rgba(28,27,25,.5);z-index:50;display:none;
+    align-items:flex-start;justify-content:center;padding:40px 20px;overflow:auto}
+  .overlay.open{display:flex}
+  .modal{background:var(--bg);width:min(1040px,100%);border-radius:18px;box-shadow:var(--shadow);overflow:hidden}
+  .modal-head{display:flex;align-items:center;gap:14px;padding:20px 24px;border-bottom:1px solid var(--line);
+    position:sticky;top:0;background:var(--bg)}
+  .modal-head h3{margin:0;font-size:20px}
+  .modal-head .sub{color:var(--muted);font-size:14px}
+  .modal-head .x{margin-left:auto;font-size:22px;line-height:1;background:transparent;border:0;cursor:pointer;color:var(--muted)}
+  .modal-note{padding:12px 24px;color:var(--muted);font-size:13px;background:#efe7db}
+  .concepts{padding:22px 24px 28px;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px}
+  .concept{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+  .concept.approved{outline:2px solid var(--accent);border-color:var(--accent)}
+  .concept .media{position:relative;background:#1c1b19;aspect-ratio:9/16;overflow:hidden}
+  .concept .media img,.concept .media video{width:100%;height:100%;object-fit:cover;display:block}
+  .concept .score{position:absolute;top:10px;right:10px;background:rgba(255,255,255,.92);color:var(--ink);
+    font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px}
+  .concept .vid-badge{position:absolute;bottom:10px;left:10px;background:var(--accent);color:#fff;font-size:11px;
+    font-weight:600;padding:3px 8px;border-radius:999px}
+  .concept .cbody{padding:12px 13px 14px;display:flex;flex-direction:column;gap:5px;flex:1}
+  .concept .angle{font-weight:600;font-size:14px}
+  .concept .cap{color:var(--muted);font-size:13px;flex:1}
+  .concept .approve{font:inherit;font-size:13px;font-weight:600;border:1px solid var(--accent);color:var(--accent);
+    background:#fff;border-radius:9px;padding:8px 10px;cursor:pointer;transition:.15s;margin-top:6px}
+  .concept .approve:hover{background:var(--accent-soft)}
+  .concept.approved .approve{background:var(--accent);color:#fff}
+  .empty{padding:40px 24px;color:var(--muted);text-align:center}
+</style>
+</head>
+<body>
+  <header class="site">
+    <div class="bar">
+      <div class="brand">Camber<span>.</span></div>
+      <nav class="cats" id="cats"></nav>
+      <div class="cart">Cart · 0</div>
+    </div>
+    <div class="review-banner" id="banner" hidden><div class="bar">
+      <span>🏭 <b>Factory review</b></span>
+      <span class="pill" id="b-concepts">0 ad concepts</span>
+      <span class="pill" id="b-approved">0 approved</span>
+      <span style="opacity:.8">Approve winners → they render to video next.</span>
+      <label><input type="checkbox" id="onlyAds"> Only products with ads</label>
+    </div></div>
+  </header>
+
+  <section class="hero">
+    <h1 id="tagline">Everyday vessels, engineered.</h1>
+    <p>Insulated drinkware and precision brew gear, built to disappear into your routine and outlast it.</p>
+  </section>
+
+  <div class="count" id="count"></div>
+  <main class="grid" id="grid"></main>
+  <div class="err" id="err" hidden></div>
+
+  <footer class="site"><div class="bar">
+    <span>Camber Goods · demo storefront</span>
+    <span>Free shipping over $75 · 10-year guarantee</span>
+  </div></footer>
+
+  <div class="overlay" id="overlay"><div class="modal">
+    <div class="modal-head">
+      <h3 id="m-title">Ads</h3><span class="sub" id="m-sub"></span>
+      <button class="x" id="m-close">×</button>
+    </div>
+    <div class="modal-note">Generated ad concepts (still images, cheap). Approve the ones worth animating — approved concepts get rendered to Higgsfield video in the render step.</div>
+    <div class="concepts" id="m-concepts"></div>
+  </div></div>
+
+<script>
+(async function(){
+  const $=id=>document.getElementById(id);
+  const grid=$('grid'), catsEl=$('cats'), countEl=$('count'), errEl=$('err');
+  const banner=$('banner'), overlay=$('overlay');
+  let data, queue={products:[]}, approved=new Set(), active='All', onlyAds=false;
+  const byProduct={};   // product_id -> [concepts]
+
+  async function getJSON(url){ try{const r=await fetch(url,{cache:'no-store'}); if(!r.ok)return null; return await r.json();}catch(e){return null;} }
+
+  data=await getJSON('catalog.json');
+  if(!data){ errEl.hidden=false; errEl.textContent='Could not load catalog.json. Serve this folder (python review_server.py).'; return; }
+  $('tagline').textContent=data.tagline||'Everyday vessels, engineered.';
+  const products=data.products||[];
+
+  queue=await getJSON('review/queue.json')||{products:[]};
+  (queue.products||[]).forEach(p=>byProduct[p.product_id]=p.concepts||[]);
+  const appr=await getJSON('approvals.json'); if(appr&&appr.approved) approved=new Set(appr.approved);
+
+  const totalConcepts=(queue.products||[]).reduce((n,p)=>n+(p.concepts||[]).length,0);
+  if(totalConcepts>0){
+    banner.hidden=false;
+    $('b-concepts').textContent=totalConcepts+' ad concepts · '+(queue.products||[]).length+' products';
+    refreshApprovedCount();
+    $('onlyAds').addEventListener('change',e=>{onlyAds=e.target.checked;render();});
+  }
+  function refreshApprovedCount(){ $('b-approved').textContent=approved.size+' approved'; }
+
+  const cats=['All',...Array.from(new Set(products.map(p=>p.category)))];
+  const fmt=n=>'$'+Number(n).toFixed(0);
+
+  function card(p){
+    const ads=byProduct[p.id]||[];
+    const has=ads.length>0;
+    const apprCount=ads.filter(c=>approved.has(c.concept_id)).length;
+    return `<article class="card ${has?'has-ads':''}" data-id="${p.id}">
+      <div class="thumb">
+        <span class="chip">${p.category}</span>
+        ${has?`<span class="ads-ribbon"><span class="dot"></span>${ads.length} ad${ads.length>1?'s':''}${apprCount?` · ${apprCount}★`:''}</span>`:''}
+        <img loading="lazy" src="images/${p.id}.jpg" alt="${p.name}"
+          onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span class=ph>image pending</span>')">
+      </div>
+      <div class="body">
+        <div class="row"><span class="name">${p.name}</span><span class="price">${fmt(p.price)}</span></div>
+        <div class="tag">${p.tagline||''}</div>
+        ${has?`<button class="cta review" data-id="${p.id}">Review ${ads.length} ad concept${ads.length>1?'s':''}</button>`
+             :`<button class="cta buy">Add to cart</button>`}
+      </div></article>`;
+  }
+  function render(){
+    let list=active==='All'?products:products.filter(p=>p.category===active);
+    if(onlyAds) list=list.filter(p=>(byProduct[p.id]||[]).length>0);
+    countEl.textContent=list.length+' products'+(active==='All'?'':' · '+active)+(onlyAds?' · with ads':'');
+    grid.innerHTML=list.map(card).join('');
+  }
+  catsEl.innerHTML=cats.map(c=>`<button class="${c===active?'active':''}" data-c="${c}">${c}</button>`).join('');
+  catsEl.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;active=b.dataset.c;
+    [...catsEl.children].forEach(x=>x.classList.toggle('active',x.dataset.c===active));render();});
+
+  grid.addEventListener('click',e=>{
+    const btn=e.target.closest('.cta.review'); const cardEl=e.target.closest('.card.has-ads');
+    const id=(btn&&btn.dataset.id)||(cardEl&&cardEl.dataset.id);
+    if(id && byProduct[id]) openAds(id);
+  });
+
+  function conceptCard(p,c){
+    const isAppr=approved.has(c.concept_id);
+    const media=c.video
+      ? `<video src="${c.video}" controls muted playsinline poster="${c.image}"></video><span class="vid-badge">▶ video</span>`
+      : `<img src="${c.image}" alt="${c.angle}">`;
+    return `<div class="concept ${isAppr?'approved':''}" data-cid="${c.concept_id}">
+      <div class="media">${media}${c.score!=null?`<span class="score">${c.score}</span>`:''}</div>
+      <div class="cbody">
+        <div class="angle">${c.angle||'Concept'}</div>
+        <div class="cap">${c.caption||''}</div>
+        <button class="approve" data-cid="${c.concept_id}">${isAppr?'✓ Approved':'Approve'}</button>
+      </div></div>`;
+  }
+  function openAds(id){
+    const p=products.find(x=>x.id===id); const ads=byProduct[id]||[];
+    $('m-title').textContent=p.name;
+    $('m-sub').textContent=ads.length+' concept'+(ads.length>1?'s':'')+' · '+p.category;
+    $('m-concepts').innerHTML=ads.length?ads.map(c=>conceptCard(p,c)).join(''):'<div class="empty">No concepts yet.</div>';
+    overlay.classList.add('open');
+  }
+  $('m-close').addEventListener('click',()=>overlay.classList.remove('open'));
+  overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.classList.remove('open');});
+
+  $('m-concepts').addEventListener('click',async e=>{
+    const b=e.target.closest('.approve'); if(!b)return;
+    const cid=b.dataset.cid; const willApprove=!approved.has(cid);
+    b.disabled=true;
+    try{
+      const r=await fetch('/api/approve',{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({concept_id:cid,approved:willApprove})});
+      const j=await r.json(); if(j&&j.approved) approved=new Set(j.approved);
+    }catch(err){ if(willApprove)approved.add(cid); else approved.delete(cid); }
+    b.disabled=false;
+    const cell=b.closest('.concept'); cell.classList.toggle('approved',approved.has(cid));
+    b.textContent=approved.has(cid)?'✓ Approved':'Approve';
+    refreshApprovedCount(); render();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+name: content-factory-explore
+description: |
+  Phase 1 of the content factory: a WORKER POOL of parallel Ralph loops. A fixed handful of
+  worker nodes run at once; each worker loops - claim the next product off a shared queue
+  (atomic, no two workers get the same one), build its ad concepts, repeat - until the queue is
+  empty. Fresh context every iteration (no context rot), real parallelism, and it is a STATIC
+  workflow: 5 workers whether your catalog has 10 products or 10,000. No node-per-product, no
+  generated YAML.
+
+  Each unit of work: an agent invents two text-free ad concepts and drives the Higgsfield CLI
+  (z_image, ~0.15 cr) to generate + vision-score them. finalize stitches everything into the
+  storefront's review queue. NO video here - that is the gated render step.
+
+  Scale the pool by adding/removing worker nodes. Point at a different store with SITE_DIR.
+
+provider: claude
+model: sonnet
+
+nodes:
+  # Clear stale claim locks from any crashed prior run.
+  - id: prep
+    timeout: 30000
+    bash: |
+      set -uo pipefail
+      python .archon/scripts/factory/claim.py reset-product
+
+  # --- The worker pool: 5 identical loops, all in parallel, draining one shared queue. ---
+  - id: worker-1
+    depends_on: [prep]
+    idle_timeout: 900000
+    loop: &explore_worker
+      prompt: |
+        You are one worker on an automated ad-content factory line. Each time you run you do
+        ONE product, then stop - the loop re-runs you for the next one.
+
+        STEP 1 - claim your next product (atomic; two workers never get the same one). Run:
+          python .archon/scripts/factory/claim.py product
+        It prints ONE line: either `NONE`, or JSON:
+          {"product_id","name","category","description","outdir_a","outdir_b","concepts_json"}
+
+        STEP 2:
+        - If it printed NONE, the queue is empty. Output <promise>COMPLETE</promise> and stop.
+        - Otherwise, build TWO ad concepts for the claimed product:
+          a. Invent two distinct, scroll-stopping, TEXT-FREE ad concepts. For each: an `angle`
+             (3-6 words); a vivid `image_prompt` (product recognizable from the description, real
+             setting, strong light, emotion, NO on-image text/logos/price - AI text renders
+             garbled); a `caption` (composited in post); aspect_ratio 9:16.
+          b. Generate each with the Higgsfield CLI, one at a time, using the EXACT paths from the
+             claim output:
+               HF_IMAGE_MODEL=z_image python .archon/scripts/media_worker.py --prompt "<image_prompt A>" --caption "<caption A>" --aspect 9:16 --outdir "<outdir_a>" --backend higgsfield
+             then the same for concept B with "<outdir_b>".
+          c. Write the file at <concepts_json>:
+             {"product_id":"<product_id>","product_name":"<name>","concepts":[{"concept_id":"<product_id>-a","angle":"...","caption":"...","aspect_ratio":"9:16"},{"concept_id":"<product_id>-b","angle":"...","caption":"...","aspect_ratio":"9:16"}]}
+          If a Higgsfield call fails, note it and continue. Then STOP (do NOT emit COMPLETE - the
+          loop re-runs you for the next product).
+      until: COMPLETE
+      max_iterations: 80
+      fresh_context: true
+
+  - id: worker-2
+    depends_on: [prep]
+    idle_timeout: 900000
+    loop: *explore_worker
+  - id: worker-3
+    depends_on: [prep]
+    idle_timeout: 900000
+    loop: *explore_worker
+  - id: worker-4
+    depends_on: [prep]
+    idle_timeout: 900000
+    loop: *explore_worker
+  - id: worker-5
+    depends_on: [prep]
+    idle_timeout: 900000
+    loop: *explore_worker
+
+  - id: finalize
+    depends_on: [worker-1, worker-2, worker-3, worker-4, worker-5]
+    trigger_rule: all_done
+    timeout: 120000
+    bash: |
+      set -uo pipefail
+      python .archon/scripts/factory/merge_queue.py
+      echo "=== EXPLORE COMPLETE: worker pool drained the catalog ==="
