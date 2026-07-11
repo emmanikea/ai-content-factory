@@ -1,0 +1,20 @@
+{
+  "index": 0,
+  "title": "Variant 1",
+  "backend": "higgsfield",
+  "aspect_ratio": "9:16",
+  "dimensions": "720x1280",
+  "seed": 1000,
+  "reroll_pass": 0,
+  "hint": "",
+  "image_prompt": "a small stack of four round coasters made of natural cork with a thin brushed-steel rim, beside a slim matching magnetic holder caddy, on a clean modern kitchen surface in soft natural daylight, premium lifestyle, tasteful negative space, cinematic warm directional lighting, shallow depth of field, premium lifestyle product ad.",
+  "motion_prompt": "",
+  "caption": "Set of four cork-and-steel coasters with a magnetic caddy.",
+  "frame": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p16\\p16-b\\frame.jpg",
+  "asset": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p16\\p16-b\\asset.mp4",
+  "seconds": 4,
+  "elapsed_s": 41.1,
+  "score": 92,
+  "score_reason": "The image features excellent subject clarity, a polished composition, and evokes a feeling of organized home comfort, perfectly aligning with a coffee and hydration brand without any reputation-safety issues.",
+  "score_judge": "gemini-vision"
+}

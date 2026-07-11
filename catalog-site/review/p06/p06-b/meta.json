@@ -1,0 +1,20 @@
+{
+  "index": 0,
+  "title": "Variant 1",
+  "backend": "higgsfield",
+  "aspect_ratio": "9:16",
+  "dimensions": "720x1280",
+  "seed": 1000,
+  "reroll_pass": 0,
+  "hint": "",
+  "image_prompt": "a cylindrical anodized dark-grey aluminum manual hand coffee grinder with a folding crank handle on top and a knurled grip band, on a warm wooden cafe counter with soft window light and subtle blurred coffee elements behind, premium lifestyle, cinematic warm directional lighting, shallow depth of field, premium lifestyle product ad.",
+  "motion_prompt": "",
+  "caption": "Conical steel burr grinder with 36 click settings and an ano",
+  "frame": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p06\\p06-b\\frame.jpg",
+  "asset": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p06\\p06-b\\asset.mp4",
+  "seconds": 4,
+  "elapsed_s": 40.4,
+  "score": 95,
+  "score_reason": "This image features excellent subject clarity with the coffee grinder prominently displayed, boasts a thumb-stopping composition due to its warm lighting and the evocative steam, and creates a strong emotional pull towards a cozy, high-quality coffee experience, all with impeccable production polish and full adherence to brand safety rules.",
+  "score_judge": "gemini-vision"
+}

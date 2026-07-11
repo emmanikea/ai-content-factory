@@ -1,0 +1,20 @@
+{
+  "index": 0,
+  "title": "Variant 1",
+  "backend": "higgsfield",
+  "aspect_ratio": "9:16",
+  "dimensions": "720x1280",
+  "seed": 1000,
+  "reroll_pass": 0,
+  "hint": "",
+  "image_prompt": "Minimalist premium product photography, centered single product on a soft neutral warm-grey seamless studio background, gentle diffused daylight, subtle soft shadow, shallow depth of field. a matte-black gooseneck electric pour-over kettle with a long slender curved spout, a minimalist handle, and a small round base. A single centered premium studio product hero shot, crisp, clean and evenly lit.",
+  "motion_prompt": "",
+  "caption": "A steady pour, every time.",
+  "frame": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p07\\p07-a\\frame.jpg",
+  "asset": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p07\\p07-a\\asset.mp4",
+  "seconds": 4,
+  "elapsed_s": 42.7,
+  "score": 90,
+  "score_reason": "The image perfectly showcases the product with exceptional clarity and production polish, offering a clean, minimalist composition that evokes a sense of modern elegance and quality, effectively stopping the scroll for its target audience.",
+  "score_judge": "gemini-vision"
+}

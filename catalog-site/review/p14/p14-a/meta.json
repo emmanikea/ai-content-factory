@@ -1,0 +1,20 @@
+{
+  "index": 0,
+  "title": "Variant 1",
+  "backend": "higgsfield",
+  "aspect_ratio": "9:16",
+  "dimensions": "720x1280",
+  "seed": 1000,
+  "reroll_pass": 0,
+  "hint": "",
+  "image_prompt": "Minimalist premium product photography, centered single product on a soft neutral warm-grey seamless studio background, gentle diffused daylight, subtle soft shadow, shallow depth of field. a clear glass tea infuser water bottle with a slim cylindrical body, a light bamboo screw lid, and a removable stainless steel infuser basket visible inside. A single centered premium studio product hero shot, crisp, clean and evenly lit.",
+  "motion_prompt": "",
+  "caption": "Loose leaf, anywhere.",
+  "frame": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p14\\p14-a\\frame.jpg",
+  "asset": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p14\\p14-a\\asset.mp4",
+  "seconds": 4,
+  "elapsed_s": 236.0,
+  "score": 77,
+  "score_reason": "heuristic (judge error: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your cu)",
+  "score_judge": "heuristic"
+}

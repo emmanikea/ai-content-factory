@@ -1,0 +1,18 @@
+{
+  "product_id": "p14",
+  "product_name": "Verdant Infuser",
+  "concepts": [
+    {
+      "concept_id": "p14-a",
+      "angle": "Studio hero",
+      "caption": "Loose leaf, anywhere.",
+      "aspect_ratio": "9:16"
+    },
+    {
+      "concept_id": "p14-b",
+      "angle": "In its element",
+      "caption": "Glass tea bottle with a removable stainless infuser core and",
+      "aspect_ratio": "9:16"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "product_id": "p19",
+  "product_name": "Aera Brewer",
+  "concepts": [
+    {
+      "concept_id": "p19-a",
+      "angle": "Studio hero",
+      "caption": "Pressure, on demand.",
+      "aspect_ratio": "9:16"
+    },
+    {
+      "concept_id": "p19-b",
+      "angle": "In its element",
+      "caption": "Compact press-style immersion brewer for a fast, clean, full",
+      "aspect_ratio": "9:16"
+    }
+  ]
+}

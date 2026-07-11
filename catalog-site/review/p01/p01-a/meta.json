@@ -1,0 +1,20 @@
+{
+  "index": 0,
+  "title": "Variant 1",
+  "backend": "higgsfield",
+  "aspect_ratio": "9:16",
+  "dimensions": "720x1280",
+  "seed": 1000,
+  "reroll_pass": 0,
+  "hint": "",
+  "image_prompt": "Minimalist premium product photography, centered single product on a soft neutral warm-grey seamless studio background, gentle diffused daylight, subtle soft shadow, shallow depth of field. a matte-black double-wall insulated stainless steel travel tumbler with a subtle brushed-steel rim and a press-fit black lid, tall tapered cylinder. A single centered premium studio product hero shot, crisp, clean and evenly lit.",
+  "motion_prompt": "",
+  "caption": "Hot at 9am, hot at 2pm.",
+  "frame": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p01\\p01-a\\frame.jpg",
+  "asset": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p01\\p01-a\\asset.mp4",
+  "seconds": 4,
+  "elapsed_s": 41.3,
+  "score": 68,
+  "score_reason": "While showcasing excellent production polish and subject clarity, the static and minimalist composition lacks the dynamic visual elements or strong emotional engagement typically required for scroll-stopping virality in short-form video.",
+  "score_judge": "gemini-vision"
+}

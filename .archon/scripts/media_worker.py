@@ -278,6 +278,7 @@ def main() -> int:
 
     t0 = time.time()
     log(f"[variant {args.index + 1}] backend={args.backend} aspect={aspect} :: {title}")
+    score, score_reason, score_judge = None, "", "skipped"
     if args.backend == "pollinations":
         # De-sync the parallel fan-out so the free endpoint doesn't 429 all at once.
         stagger = args.index * 6
@@ -286,14 +287,35 @@ def main() -> int:
             time.sleep(stagger)
         gen_image_pollinations(prompt, w, h, seed, frame)
         kenburns_mp4(frame, asset, w, h, args.seconds, args.index)
-    else:  # higgsfield (REAL, via CLI): image-first. Cheap Soul image + score; video only on request.
-        gen_image_higgsfield(prompt, aspect, frame)
+        if not args.no_score:
+            score, score_reason, score_judge = score_frame(frame, title)
+    else:  # higgsfield (REAL, via CLI): image-first, with a validate + regenerate gate.
+        # The factory "checks its own work": generate the concept image, vision-score it, and if
+        # it is weak (garbled, off-brand, product unclear) regenerate with a cleanup hint, keeping
+        # the best take. This is the cheap-image half of the two-stage validation harness.
+        min_score = int(os.environ.get("IMAGE_MIN_SCORE", "62"))
+        max_tries = int(os.environ.get("IMAGE_MAX_TRIES", "2"))
+        img_hints = ["", " Cleaner composition, the product perfectly clear and centered, absolutely no text.",
+                     " Simpler background, product sharp and unmistakable, no text, no clutter."]
+        best = None  # (score, reason, judge)
+        for attempt in range(max_tries):
+            p = prompt + (img_hints[min(attempt, len(img_hints) - 1)] if attempt else "")
+            tmp = frame.with_name(f"_img_try{attempt}.jpg")
+            gen_image_higgsfield(p, aspect, tmp)
+            sc, rs, jd = (None, "", "skipped") if args.no_score else score_frame(tmp, title)
+            log(f"  [image-gate] attempt {attempt + 1}/{max_tries} score={sc}")
+            if best is None or (sc or 0) > (best[0] or 0):
+                if frame.exists():
+                    frame.unlink()
+                tmp.replace(frame)
+                best = (sc, rs, jd)
+            elif tmp.exists():
+                tmp.unlink()
+            if sc is None or sc >= min_score:
+                break
+        score, score_reason, score_judge = best
         if args.animate_model:
             gen_video_higgsfield(frame, motion, aspect, asset, args.animate_model)
-    # Quality/virality score on the rendered frame (Higgsfield virality-tool equivalent).
-    score, score_reason, score_judge = None, "", "skipped"
-    if not args.no_score:
-        score, score_reason, score_judge = score_frame(frame, title)
 
     elapsed = round(time.time() - t0, 1)
 

@@ -1,0 +1,18 @@
+{
+  "product_id": "p13",
+  "product_name": "Demi Espresso Set",
+  "concepts": [
+    {
+      "concept_id": "p13-a",
+      "angle": "Studio hero",
+      "caption": "Small cup, big morning.",
+      "aspect_ratio": "9:16"
+    },
+    {
+      "concept_id": "p13-b",
+      "angle": "In its element",
+      "caption": "Set of two double-wall glass espresso cups that keep shots h",
+      "aspect_ratio": "9:16"
+    }
+  ]
+}

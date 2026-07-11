@@ -1,0 +1,20 @@
+{
+  "index": 0,
+  "title": "Variant 1",
+  "backend": "higgsfield",
+  "aspect_ratio": "9:16",
+  "dimensions": "720x1280",
+  "seed": 1000,
+  "reroll_pass": 0,
+  "hint": "",
+  "image_prompt": "a matte-black gooseneck electric pour-over kettle with a long slender curved spout, a minimalist handle, and a small round base, on a warm wooden cafe counter with soft window light and subtle blurred coffee elements behind, premium lifestyle, cinematic warm directional lighting, shallow depth of field, premium lifestyle product ad.",
+  "motion_prompt": "",
+  "caption": "Matte-black gooseneck electric kettle with variable temperat",
+  "frame": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p07\\p07-b\\frame.jpg",
+  "asset": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p07\\p07-b\\asset.mp4",
+  "seconds": 4,
+  "elapsed_s": 52.0,
+  "score": 96,
+  "score_reason": "The image features excellent subject clarity, a thumb-stopping composition, strong emotional pull through warm natural lighting, and high production polish, perfectly aligning with a coffee and hydration brand concept.",
+  "score_judge": "gemini-vision"
+}

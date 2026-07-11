@@ -1,0 +1,20 @@
+{
+  "index": 0,
+  "title": "Variant 1",
+  "backend": "higgsfield",
+  "aspect_ratio": "9:16",
+  "dimensions": "720x1280",
+  "seed": 1000,
+  "reroll_pass": 0,
+  "hint": "",
+  "image_prompt": "a slim handheld electric milk frother wand in matte black with a small coiled stainless whisk head, resting in a minimalist magnetic stand, on a clean modern kitchen surface in soft natural daylight, premium lifestyle, tasteful negative space, cinematic warm directional lighting, shallow depth of field, premium lifestyle product ad.",
+  "motion_prompt": "",
+  "caption": "Rechargeable handheld milk frother with a dual whisk head an",
+  "frame": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p10\\p10-b\\frame.jpg",
+  "asset": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p10\\p10-b\\asset.mp4",
+  "seconds": 4,
+  "elapsed_s": 40.0,
+  "score": 97,
+  "score_reason": "This keyframe is exceptionally strong, featuring a clear, elegantly composed product shot with beautiful natural lighting that creates an aspirational and inviting mood, making it highly scroll-stopping and adhering to all brand safety rules.",
+  "score_judge": "gemini-vision"
+}

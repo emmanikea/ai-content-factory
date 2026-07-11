@@ -1,0 +1,20 @@
+{
+  "index": 0,
+  "title": "Variant 1",
+  "backend": "higgsfield",
+  "aspect_ratio": "9:16",
+  "dimensions": "720x1280",
+  "seed": 1000,
+  "reroll_pass": 0,
+  "hint": "",
+  "image_prompt": "a heat-resistant clear borosilicate glass coffee carafe server with a smooth curved body, a walnut wood collar band, and a drip-free spout, on a warm wooden cafe counter with soft window light and subtle blurred coffee elements behind, premium lifestyle, cinematic warm directional lighting, shallow depth of field, premium lifestyle product ad.",
+  "motion_prompt": "",
+  "caption": "Heat-resistant borosilicate glass server with a walnut colla",
+  "frame": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p05\\p05-b\\frame.jpg",
+  "asset": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p05\\p05-b\\asset.mp4",
+  "seconds": 4,
+  "elapsed_s": 43.1,
+  "score": 96,
+  "score_reason": "The image features excellent subject clarity, a thumb-stopping composition with appealing lighting and dynamic steam, and strong emotional pull evoking the warmth and freshness of coffee; it boasts high production polish, and adheres perfectly to all reputation-safety rules with no human faces or alcoholic elements.",
+  "score_judge": "gemini-vision"
+}

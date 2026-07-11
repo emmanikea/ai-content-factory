@@ -1,0 +1,12 @@
+{
+  "product_id": "p12",
+  "product_name": "Commuter 12oz",
+  "concepts": [
+    {
+      "concept_id": "p12-b",
+      "angle": "In its element",
+      "caption": "Compact travel mug with a one-handed flip lid and a slim gri",
+      "aspect_ratio": "9:16"
+    }
+  ]
+}

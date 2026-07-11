@@ -1,0 +1,20 @@
+{
+  "index": 0,
+  "title": "Variant 1",
+  "backend": "higgsfield",
+  "aspect_ratio": "9:16",
+  "dimensions": "720x1280",
+  "seed": 1000,
+  "reroll_pass": 0,
+  "hint": "",
+  "image_prompt": "a polished stainless steel cone pour-over coffee dripper with fine laser-etched spiral perforations, sitting on a matching drip stand, on a warm wooden cafe counter with soft window light and subtle blurred coffee elements behind, premium lifestyle, cinematic warm directional lighting, shallow depth of field, premium lifestyle product ad.",
+  "motion_prompt": "",
+  "caption": "Stainless steel cone dripper with a laser-etched flow spiral",
+  "frame": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p04\\p04-b\\frame.jpg",
+  "asset": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p04\\p04-b\\asset.mp4",
+  "seconds": 4,
+  "elapsed_s": 39.3,
+  "score": 95,
+  "score_reason": "The image is exceptionally well-composed with stunning lighting that highlights the product and creates an inviting, warm atmosphere, effectively stopping scrolls with its aesthetic appeal and visible steam suggesting freshness and warmth, while adhering to all brand safety guidelines.",
+  "score_judge": "gemini-vision"
+}

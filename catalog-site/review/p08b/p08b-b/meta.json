@@ -1,0 +1,20 @@
+{
+  "index": 0,
+  "title": "Variant 1",
+  "backend": "higgsfield",
+  "aspect_ratio": "9:16",
+  "dimensions": "720x1280",
+  "seed": 1000,
+  "reroll_pass": 0,
+  "hint": "",
+  "image_prompt": "a classic French press coffee maker with a clear borosilicate glass carafe, a matte brushed-steel frame cage and lid, and a plunger knob on top, on a warm wooden cafe counter with soft window light and subtle blurred coffee elements behind, premium lifestyle, cinematic warm directional lighting, shallow depth of field, premium lifestyle product ad.",
+  "motion_prompt": "",
+  "caption": "Borosilicate glass French press with a matte-steel cage and ",
+  "frame": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p08b\\p08b-b\\frame.jpg",
+  "asset": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p08b\\p08b-b\\asset.mp4",
+  "seconds": 4,
+  "elapsed_s": 35.3,
+  "score": 95,
+  "score_reason": "The image features excellent subject clarity with a prominent French press, an inviting composition with warm lighting and coffee-related elements, and high production polish, creating a strong emotional pull without any brand-safety violations.",
+  "score_judge": "gemini-vision"
+}

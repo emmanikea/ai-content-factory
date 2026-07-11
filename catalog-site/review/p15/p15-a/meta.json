@@ -1,0 +1,20 @@
+{
+  "index": 0,
+  "title": "Variant 1",
+  "backend": "higgsfield",
+  "aspect_ratio": "9:16",
+  "dimensions": "720x1280",
+  "seed": 1000,
+  "reroll_pass": 0,
+  "hint": "",
+  "image_prompt": "Minimalist premium product photography, centered single product on a soft neutral warm-grey seamless studio background, gentle diffused daylight, subtle soft shadow, shallow depth of field. a two-part anodized dark-grey aluminum ice ball press machine, a heavy cylindrical block with a rounded top, on a neutral surface. A single centered premium studio product hero shot, crisp, clean and evenly lit.",
+  "motion_prompt": "",
+  "caption": "One perfect sphere.",
+  "frame": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p15\\p15-a\\frame.jpg",
+  "asset": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p15\\p15-a\\asset.mp4",
+  "seconds": 4,
+  "elapsed_s": 41.8,
+  "score": 65,
+  "score_reason": "The image features excellent production polish and subject clarity with a minimalist, brand-safe composition, but its static nature and limited emotional pull may not achieve strong scroll-stopping virality for a video ad key frame.",
+  "score_judge": "gemini-vision"
+}

@@ -1,0 +1,18 @@
+{
+  "product_id": "p15",
+  "product_name": "Sphere Ice Press",
+  "concepts": [
+    {
+      "concept_id": "p15-a",
+      "angle": "Studio hero",
+      "caption": "One perfect sphere.",
+      "aspect_ratio": "9:16"
+    },
+    {
+      "concept_id": "p15-b",
+      "angle": "In its element",
+      "caption": "Anodized aluminum press that shapes a single clear ice spher",
+      "aspect_ratio": "9:16"
+    }
+  ]
+}

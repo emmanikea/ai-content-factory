@@ -62,16 +62,22 @@ The Higgsfield CLI is the media worker here because it drives the frontier video
     content-factory-render.yaml     # phase 2: render approved winners (gated)
     ad-factory-local.yaml           # no-API-key reproducible variant
   scripts/
-    media_worker.py                 # the swappable media worker (the one swap point)
-    score_frame.py                  # vision-based ad-quality score for a key frame
+    media_worker.py                 # the swappable media worker + image validate/regenerate gate
+    score_frame.py                  # vision score for a concept image (Gemini)
+    validate_video.py               # vision QA for a rendered video (duration + garble/warp check)
     factory/
       claim.py                      # atomic work queue (mkdir-lock) for the worker pool
-      animate_concept.py            # animate ONE approved concept to video
+      factory_seed.py               # drive EXPLORE over the whole catalog directly
+      animate_concept.py            # render ONE approved concept to video + validate + regenerate
+      factory_render.py             # drive RENDER over the approved winners
+      curate_approvals.py           # pick winners (stand-in for the human approval step)
       merge_queue.py                # stitch per-product results into the storefront queue
       factory_status.py             # read-only status + cost preview (no spend)
 catalog-site/                       # the demo storefront (a 20-product "Camber" catalog)
-  catalog.json  index.html  review_server.py  gen_catalog.py  images/
-sample-videos/                      # example output from a real run
+  catalog.json  index.html  review_server.py  stage.py  gen_catalog.py  images/
+  review/<pid>/<cid>/{frame.jpg,asset.mp4}   # generated concept stills + rendered videos
+  _states/{empty,ready,done}/                # pre-built states for the instant switch
+sample-videos/                      # curated example output from a real run
 docs/architecture.png
 ```
 
@@ -105,6 +111,34 @@ python .archon/scripts/factory/factory_status.py
 ```
 
 Dry-run the render fan-out for free (no credits) with `RENDER_DRY_RUN=1`.
+
+---
+
+## It checks its own work (two validation gates)
+
+The factory doesn't just spray out media and hope. It self-checks at both stages:
+
+- **Image gate (explore):** `media_worker.py` vision-scores every concept image and, if one is weak, off-brand, or has garbled AI text, it **regenerates it** with a cleanup hint and keeps the best. Only clean concepts reach the review board.
+- **Video gate (render):** after each render, `validate_video.py` checks the duration and runs a vision QA over frames sampled across the clip (garbled text? a product that morphs or warps? a stray face?). A bad take is **re-rendered** up to `RENDER_MAX_TRIES`, keeping the best-scoring video. A broken ad never ships.
+
+Both gates fall back to a permissive heuristic if there's no vision key, so a run never hard-blocks.
+
+---
+
+## Pre-built demo: the instant state switch
+
+This repo ships with a fully generated demo (20 products explored, 12 winners rendered) so you can show the whole flow without waiting on any generation. `catalog-site/stage.py` flips the store between three states instantly (the visible state is just `queue.json` + `approvals.json`; the media stays on disk):
+
+```bash
+cd catalog-site
+python review_server.py            # serve on :8100
+python stage.py empty              # plain store, no ad concepts
+python stage.py ready              # every product has scored concepts, 0 approved
+python stage.py done               # winners approved + their videos playing
+python stage.py build              # re-derive the three states from the current queue
+```
+
+Great for a demo or a recording: show `empty`, "run" explore, flip to `ready`, approve a couple, "run" render, flip to `done`.
 
 ---
 

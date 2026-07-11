@@ -1,0 +1,20 @@
+{
+  "index": 0,
+  "title": "Variant 1",
+  "backend": "higgsfield",
+  "aspect_ratio": "9:16",
+  "dimensions": "720x1280",
+  "seed": 1000,
+  "reroll_pass": 0,
+  "hint": "",
+  "image_prompt": "a clear glass tea infuser water bottle with a slim cylindrical body, a light bamboo screw lid, and a removable stainless steel infuser basket visible inside, held in soft morning light on a minimalist kitchen counter with gentle condensation or steam, cozy premium lifestyle, cinematic warm directional lighting, shallow depth of field, premium lifestyle product ad.",
+  "motion_prompt": "",
+  "caption": "Glass tea bottle with a removable stainless infuser core and",
+  "frame": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p14\\p14-b\\frame.jpg",
+  "asset": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p14\\p14-b\\asset.mp4",
+  "seconds": 4,
+  "elapsed_s": 35.7,
+  "score": 62,
+  "score_reason": "heuristic (judge error: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your cu)",
+  "score_judge": "heuristic"
+}

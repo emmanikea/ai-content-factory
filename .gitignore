@@ -2,7 +2,8 @@ __pycache__/
 *.pyc
 .venv/
 *.env
-# generated ad videos from a run (keep sample-videos/, ignore run output)
-catalog-site/review/**/*.mp4
+# temp run artifacts
+catalog-site/_*.log
+catalog-site/_*.png
 catalog-site/review/.claims-product/
 catalog-site/review/.claims-render/

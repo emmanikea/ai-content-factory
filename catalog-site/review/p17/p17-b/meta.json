@@ -1,0 +1,20 @@
+{
+  "index": 0,
+  "title": "Variant 1",
+  "backend": "higgsfield",
+  "aspect_ratio": "9:16",
+  "dimensions": "720x1280",
+  "seed": 1000,
+  "reroll_pass": 0,
+  "hint": "",
+  "image_prompt": "a large matte forest-green vacuum-insulated stainless steel growler bottle with a wide body, a metal swing carry handle, and a chunky screw cap, held in soft morning light on a minimalist kitchen counter with gentle condensation or steam, cozy premium lifestyle, cinematic warm directional lighting, shallow depth of field, premium lifestyle product ad.",
+  "motion_prompt": "",
+  "caption": "Large vacuum-insulated growler with a swing handle and a lea",
+  "frame": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p17\\p17-b\\frame.jpg",
+  "asset": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p17\\p17-b\\asset.mp4",
+  "seconds": 4,
+  "elapsed_s": 67.7,
+  "score": 92,
+  "score_reason": "The image features excellent subject clarity with a thumb-stopping composition, largely due to the visible steam suggesting warmth and freshness, which creates strong emotional pull and conveys quality for a hydration brand, all within a clean, polished production without any reputation-safety issues.",
+  "score_judge": "gemini-vision"
+}

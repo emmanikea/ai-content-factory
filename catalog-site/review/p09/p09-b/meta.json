@@ -1,0 +1,20 @@
+{
+  "index": 0,
+  "title": "Variant 1",
+  "backend": "higgsfield",
+  "aspect_ratio": "9:16",
+  "dimensions": "720x1280",
+  "seed": 1000,
+  "reroll_pass": 0,
+  "hint": "",
+  "image_prompt": "a tall clear glass cold brew coffee carafe pitcher with a fitted stainless steel mesh filter basket inside and a black silicone-sealed lid, on a warm wooden cafe counter with soft window light and subtle blurred coffee elements behind, premium lifestyle, cinematic warm directional lighting, shallow depth of field, premium lifestyle product ad.",
+  "motion_prompt": "",
+  "caption": "Glass cold brew carafe with a fine stainless mesh basket and",
+  "frame": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p09\\p09-b\\frame.jpg",
+  "asset": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p09\\p09-b\\asset.mp4",
+  "seconds": 4,
+  "elapsed_s": 48.1,
+  "score": 95,
+  "score_reason": "The image features excellent subject clarity, a thumb-stopping composition with beautiful natural light and warm tones, strong positive emotional pull, and high production polish, with no identifiable faces, alcohol, or garbled AI text to penalize.",
+  "score_judge": "gemini-vision"
+}

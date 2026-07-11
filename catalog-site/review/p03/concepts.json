@@ -1,0 +1,18 @@
+{
+  "product_id": "p03",
+  "product_name": "Daybreak Mug",
+  "concepts": [
+    {
+      "concept_id": "p03-a",
+      "angle": "Studio hero",
+      "caption": "A morning ritual you can hold.",
+      "aspect_ratio": "9:16"
+    },
+    {
+      "concept_id": "p03-b",
+      "angle": "In its element",
+      "caption": "Hand-glazed stoneware mug with a comfortable rounded handle ",
+      "aspect_ratio": "9:16"
+    }
+  ]
+}

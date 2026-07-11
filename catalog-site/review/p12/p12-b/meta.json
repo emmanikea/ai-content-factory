@@ -1,0 +1,20 @@
+{
+  "index": 0,
+  "title": "Variant 1",
+  "backend": "higgsfield",
+  "aspect_ratio": "9:16",
+  "dimensions": "720x1280",
+  "seed": 1000,
+  "reroll_pass": 0,
+  "hint": "",
+  "image_prompt": "a compact matte-white insulated travel coffee mug with a rounded body and a black one-handed flip-top lid, cupholder-friendly slim shape, held in soft morning light on a minimalist kitchen counter with gentle condensation or steam, cozy premium lifestyle, cinematic warm directional lighting, shallow depth of field, premium lifestyle product ad.",
+  "motion_prompt": "",
+  "caption": "Compact travel mug with a one-handed flip lid and a slim gri",
+  "frame": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p12\\p12-b\\frame.jpg",
+  "asset": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p12\\p12-b\\asset.mp4",
+  "seconds": 4,
+  "elapsed_s": 49.7,
+  "score": 94,
+  "score_reason": "heuristic (judge error: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently exp)",
+  "score_judge": "heuristic"
+}

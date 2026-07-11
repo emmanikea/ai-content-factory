@@ -1,0 +1,20 @@
+{
+  "index": 0,
+  "title": "Variant 1",
+  "backend": "higgsfield",
+  "aspect_ratio": "9:16",
+  "dimensions": "720x1280",
+  "seed": 1000,
+  "reroll_pass": 0,
+  "hint": "",
+  "image_prompt": "Minimalist premium product photography, centered single product on a soft neutral warm-grey seamless studio background, gentle diffused daylight, subtle soft shadow, shallow depth of field. a cylindrical anodized dark-grey aluminum manual hand coffee grinder with a folding crank handle on top and a knurled grip band. A single centered premium studio product hero shot, crisp, clean and evenly lit.",
+  "motion_prompt": "",
+  "caption": "Grind like you mean it.",
+  "frame": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p06\\p06-a\\frame.jpg",
+  "asset": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p06\\p06-a\\asset.mp4",
+  "seconds": 4,
+  "elapsed_s": 39.1,
+  "score": 70,
+  "score_reason": "The image features excellent subject clarity and production polish for this coffee grinder, but as a key frame for scroll-stopping virality, its static, minimalist composition lacks the dynamic visual hook or strong emotional pull typically needed to immediately grab attention in a fast-scrolling feed.",
+  "score_judge": "gemini-vision"
+}
