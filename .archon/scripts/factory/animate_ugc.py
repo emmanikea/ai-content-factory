@@ -59,6 +59,10 @@ SCRIPTS = {
         ("Best cheap upgrade to your coffee, hands down.", "confident")]),
 }
 
+# Which reviewer to show per product. Default reviewer reads female; set a pid to "man" to force a
+# male reviewer + voice. Keeps the UGC cast varied instead of all-female.
+GENDER = {"p06": "man", "p07": "man"}
+
 
 def hf_bin() -> str:
     for c in (shutil.which("higgsfield"), shutil.which("higgsfield.cmd"),
@@ -140,6 +144,7 @@ def main() -> int:
         print(f"{pid}: not in catalog", file=sys.stderr)
         return 1
     hold, lines = script_for(prod)
+    who = GENDER.get(pid, "person")
 
     if os.environ.get("RENDER_DRY_RUN"):
         print(f"[DRY RUN] would make UGC ad for {pid} ({prod['name']}): 3 Veo segments -> ugc.mp4")
@@ -148,7 +153,7 @@ def main() -> int:
     work = SITE / "review" / pid
     # 1) person keyframe holding the real product (reference the clean product image if present)
     ref = SITE / "images" / f"{pid}.jpg"
-    kf_prompt = (f"A friendly person in a bright modern kitchen holding up {hold} toward the camera, "
+    kf_prompt = (f"A friendly {who} in a bright modern kitchen holding up {hold} toward the camera, "
                  f"candid vlog-style vertical selfie portrait, waist-up, warm natural light." + CLEAN)
     kargs = ["generate", "create", "nano_banana_pro", "--prompt", kf_prompt,
              "--aspect_ratio", "9:16", "--wait", "--wait-timeout", "5m"]
@@ -170,7 +175,7 @@ def main() -> int:
     start = person
     parts = []
     for i, (line, emo) in enumerate(lines):
-        motion = (f"A person in a kitchen holding {hold}, filming a casual selfie video review. "
+        motion = (f"A {who} in a kitchen holding {hold}, filming a casual selfie video review. "
                   f"They look right at the camera and say: \"{line}\" [{emo}]. "
                   f"Natural subtle head movement, authentic hand-held UGC style.")
         seg = work / f"_ugc_seg{i}.mp4"
