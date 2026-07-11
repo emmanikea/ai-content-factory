@@ -2,8 +2,9 @@ name: content-factory-render
 description: |
   Phase 2 of the content factory: a WORKER POOL of parallel Ralph loops, gated to human-approved
   concepts. ONE approval -> TWO videos: each claimed approved concept gets a product PAN (Higgsfield
-  kling) AND a ~24s UGC talking-head ad (Higgsfield Veo 3.1, a person reviewing the product), each
-  validated. A few workers run at once; each loops - claim the next approved concept, make the pair,
+  kling) AND a ~10s UGC talking-head ad (Higgsfield gemini_omni, ONE continuous take with native
+  voice - a person reviewing the product), each validated. A few workers run at once; each loops -
+  claim the next approved concept, make the pair,
   repeat - until none are left. Nothing not approved is ever animated. Fewer workers than explore
   because video is the slow, expensive step.
 
@@ -42,8 +43,8 @@ nodes:
         - Otherwise produce the PAIR of ads for the claimed concept - ONE approval, TWO videos:
           1. The product PAN (image-to-video via the Higgsfield CLI + duration/vision QA, best of retries):
                python .archon/scripts/factory/animate_concept.py <product_id> <concept_id>
-          2. The UGC talking-head ad (a real person holding the product, Higgsfield Veo 3.1, ~24s of
-             native-voice review across 3 last-frame-chained segments + a UGC-aware validation pass):
+          2. The UGC talking-head ad (a real person holding the product, Higgsfield gemini_omni, ONE
+             continuous ~10s take with native voice - no seams, one voice + a UGC-aware validation pass):
                python .archon/scripts/factory/animate_ugc.py <product_id> <concept_id>
           Both print their validation score and are idempotent (skip if their output already exists).
           If either fails after its retries, note it and continue. Then STOP (do NOT emit COMPLETE -

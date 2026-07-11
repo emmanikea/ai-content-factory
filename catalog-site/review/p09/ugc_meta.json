@@ -1,11 +1,8 @@
 {
   "product_id": "p09",
-  "kind": "ugc",
-  "segments": 3,
-  "validation_score": 90,
-  "lines": [
-    "I make cold brew at home now and it is honestly unreal.",
-    "You add coffee and water, wait overnight, and it comes out so smooth, never bitter.",
-    "Grab one of these. Your afternoons will thank you."
-  ]
+  "kind": "ugc_singletake",
+  "model": "gemini_omni",
+  "gender": "person",
+  "validation_score": 85,
+  "line": "I make cold brew at home now and it is unreal. Add coffee and water, wait overnight, and it comes out so smooth, never bitter. Grab one."
 }

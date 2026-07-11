@@ -27,7 +27,7 @@ That single price gap dictates the entire shape of the system:
 A single approval doesn't just make one video. The render workflow turns each approved concept into **two** finished ads:
 
 1. **Product pan** - the approved still animated into a clean, cinematic push-in/pan (Higgsfield Kling).
-2. **UGC talking-head** - a ~24-second spot of a generated person in a kitchen holding the *actual* product and reviewing it in their own generated voice (Higgsfield Veo 3.1). It's built from three 8-second segments chained on their last frame for continuity, so there are no jarring cuts, and it's checked by a UGC-aware vision rubric (penalizing warping, extra limbs, or any phone/camera UI in frame).
+2. **UGC talking-head** - a ~10-second spot of a generated person in a kitchen holding the *actual* product and reviewing it in their own generated voice (Higgsfield `gemini_omni`). It's **one continuous take**: a single generation, so there are no seams and no voice/accent changes mid-ad (stitching short clips gave both), and it's checked by a UGC-aware vision rubric (penalizing warping, extra limbs, or any phone/camera UI in frame). The cast is mixed (a per-product gender map, e.g. the grinder and kettle are male reviewers).
 
 Same product, two formats, from one click. Approved products in the storefront's `done` state play **both** ads in their review modal. Sample UGC ads live at `catalog-site/review/{p01,p03,p06,p07,p09,p10}/ugc.mp4` (vision-validated 85-100).
 

@@ -1,11 +1,8 @@
 {
   "product_id": "p07",
-  "kind": "ugc",
-  "segments": 3,
+  "kind": "ugc_singletake",
+  "model": "gemini_omni",
+  "gender": "man",
   "validation_score": 85,
-  "lines": [
-    "This kettle made my pour-over so much better.",
-    "The gooseneck gives you this perfect slow, controlled pour, and the temperature is dialed in.",
-    "If you're serious about coffee, you need this kettle."
-  ]
+  "line": "This kettle made my pour-over so much better. The gooseneck gives you a perfect slow, controlled pour. If you're serious about coffee, get it."
 }
