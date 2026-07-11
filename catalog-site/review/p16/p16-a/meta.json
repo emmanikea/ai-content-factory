@@ -7,14 +7,14 @@
   "seed": 1000,
   "reroll_pass": 0,
   "hint": "",
-  "image_prompt": "a small stack of four round coasters made of natural cork with a thin brushed-steel rim, beside a slim matching magnetic holder caddy, arranged neatly on a soft neutral warm-grey seamless studio background, soft diffused overhead lighting casting gentle shadows, macro detail on cork texture and steel rim, premium product photography, shallow depth of field, no text no logos",
+  "image_prompt": "A small stack of four round coasters made of natural cork with a thin brushed-steel rim, arranged neatly beside a slim matching magnetic holder caddy, resting on a soft neutral warm-grey seamless studio background, soft directional key light casting a gentle shadow, macro detail on the cork texture and brushed steel rim, clean premium product photography, shallow depth of field, no text, no logos",
   "motion_prompt": "",
-  "caption": "Cork. Steel. Zero clutter.",
+  "caption": "Cork meets steel. Coasters that hold themselves together.",
   "frame": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p16\\p16-a\\frame.jpg",
   "asset": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p16\\p16-a\\asset.mp4",
   "seconds": 4,
-  "elapsed_s": 35.7,
+  "elapsed_s": 38.7,
   "score": 85,
-  "score_reason": "The image features a clear product with a clean composition and good production quality, but lacks emotional pull and any on-image text.",
+  "score_reason": "The product is clearly presented with a clean composition and good production quality, but lacks emotional pull and any on-image text.",
   "score_judge": "openai-gpt4o"
 }

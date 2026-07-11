@@ -7,14 +7,14 @@
   "seed": 1000,
   "reroll_pass": 0,
   "hint": "",
-  "image_prompt": "The same two-part anodized dark-grey aluminum ice ball press machine sitting on a dark wood home bar counter at night, a glass of whiskey beside it, warm amber bar lighting glowing softly from bottles in the background, shallow depth of field blurring the backdrop, cinematic warm tones, faint chill mist rising off the ice sphere, cozy intimate late-night mood, no text, no logos.",
+  "image_prompt": "A two-part anodized dark-grey aluminum ice ball press sitting on a dark wood home bar counter at night, warm amber light spilling from a nearby glass of whiskey and a pendant lamp overhead, a hand mid-motion lowering the press down onto a block of ice, shallow depth of field blurring bourbon bottles and a lit candle in the background, faint cold mist rising off the ice, cinematic moody photography, rich warm highlights glinting off the brushed aluminum, no text, no logos",
   "motion_prompt": "",
-  "caption": "Round out your nightcap.",
+  "caption": "Make your pour worth savoring.",
   "frame": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p15\\p15-b\\frame.jpg",
   "asset": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p15\\p15-b\\asset.mp4",
   "seconds": 4,
-  "elapsed_s": 76.3,
+  "elapsed_s": 91.0,
   "score": 30,
-  "score_reason": "The presence of alcohol and the identifiable setting significantly detracts from brand safety, resulting in a low score.",
+  "score_reason": "The presence of alcohol and identifiable human hands handling the product significantly detracts from brand safety and overall appeal.",
   "score_judge": "openai-gpt4o"
 }

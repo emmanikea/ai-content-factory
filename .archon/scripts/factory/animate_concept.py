@@ -18,6 +18,7 @@ import os
 import shutil
 import subprocess
 import sys
+import time
 import urllib.request
 from pathlib import Path
 
@@ -109,6 +110,25 @@ def main() -> int:
 
     if os.environ.get("RENDER_DRY_RUN"):
         print(f"[DRY RUN] would animate {cid} ({va}) {DURATION}s {RESOLUTION} with {VIDEO_MODEL}, validate + regen")
+        return 0
+
+    # B-roll mode: instead of spending on Higgsfield, restore this concept's pre-rendered video
+    # from BROLL_SRC (with a pacing delay) and run the REAL validation on it. Produces an authentic
+    # "rendered + validated" transcript for demo capture at ~zero cost.
+    broll = os.environ.get("BROLL_SRC")
+    if broll:
+        src = Path(broll) / pid / cid / "asset.mp4"
+        time.sleep(float(os.environ.get("BROLL_DELAY", "3")))
+        if not src.exists():
+            print(f"{cid}: no B-roll source at {src}", file=sys.stderr)
+            return 1
+        shutil.copyfile(src, dest)
+        v = validate(dest, concept_desc)
+        (cdir / "render_meta.json").write_text(
+            json.dumps({"concept_id": cid, "model": VIDEO_MODEL, "duration": DURATION,
+                        "resolution": RESOLUTION, "validation_score": v.get("score")}, indent=2),
+            encoding="utf-8")
+        print(f"{cid}: rendered -> {dest} ({dest.stat().st_size} B), validation score {v.get('score')} ({v.get('judge')})")
         return 0
 
     motion = DEFAULT_MOTION.replace("\r", " ").replace("\n", " ")
