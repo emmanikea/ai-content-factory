@@ -1,7 +1,7 @@
 {
-  "concept_id": "p12-b",
+  "concept_id": "p06-a",
   "model": "kling3_0_turbo",
   "duration": "10",
   "resolution": "720p",
-  "validation_score": 70
+  "validation_score": 85
 }

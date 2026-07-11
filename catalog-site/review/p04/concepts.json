@@ -1,18 +1,1 @@
-{
-  "product_id": "p04",
-  "product_name": "Helix Pour-Over",
-  "concepts": [
-    {
-      "concept_id": "p04-a",
-      "angle": "Studio hero",
-      "caption": "Precision, one cup at a time.",
-      "aspect_ratio": "9:16"
-    },
-    {
-      "concept_id": "p04-b",
-      "angle": "In its element",
-      "caption": "Stainless steel cone dripper with a laser-etched flow spiral",
-      "aspect_ratio": "9:16"
-    }
-  ]
-}
+{"product_id":"p04","product_name":"Helix Pour-Over","concepts":[{"concept_id":"p04-a","angle":"Precision engineering, coffee ritual","caption":"Precision in every pour.","aspect_ratio":"9:16"},{"concept_id":"p04-b","angle":"Morning kitchen coffee ritual","caption":"Your morning ritual, elevated.","aspect_ratio":"9:16"}]}

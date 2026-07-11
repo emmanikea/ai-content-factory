@@ -1,0 +1,20 @@
+{
+  "index": 0,
+  "title": "Variant 1",
+  "backend": "higgsfield",
+  "aspect_ratio": "9:16",
+  "dimensions": "720x1280",
+  "seed": 1000,
+  "reroll_pass": 0,
+  "hint": "",
+  "image_prompt": "A slim minimalist rectangular digital coffee brewing scale with a smooth matte-white top surface and a subtle recessed display, flat and low-profile, floating just above a soft neutral warm-grey seamless studio background, dramatic raking side light casting a long soft shadow, tiny water droplet beads on the surface catching light, ultra-clean premium product photography, shallow reflection below, high detail, 9:16 vertical composition",
+  "motion_prompt": "",
+  "caption": "Precision to the tenth of a gram.",
+  "frame": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p08\\p08-a\\frame.jpg",
+  "asset": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p08\\p08-a\\asset.mp4",
+  "seconds": 4,
+  "elapsed_s": 38.9,
+  "score": 85,
+  "score_reason": "The image features a clear product with a clean composition and good emotional appeal, but lacks on-image text and has no identifiable human faces, making it brand-safe.",
+  "score_judge": "openai-gpt4o"
+}

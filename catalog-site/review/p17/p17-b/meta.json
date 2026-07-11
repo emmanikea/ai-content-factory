@@ -7,14 +7,14 @@
   "seed": 1000,
   "reroll_pass": 0,
   "hint": "",
-  "image_prompt": "a large matte forest-green vacuum-insulated stainless steel growler bottle with a wide body, a metal swing carry handle, and a chunky screw cap, held in soft morning light on a minimalist kitchen counter with gentle condensation or steam, cozy premium lifestyle, cinematic warm directional lighting, shallow depth of field, premium lifestyle product ad.",
+  "image_prompt": "The same matte forest-green vacuum-insulated stainless steel growler with its metal swing carry handle and chunky screw cap, resting on a weathered wooden picnic table at a campsite at golden hour. Warm cinematic backlight rakes across the trees and glows through a faint mist, shallow depth of field blurs pine trees and a soft campfire glow in the background, condensation glistens on the bottle in the low sun. A hand rests loosely on the handle mid-reach. Cozy, adventurous, end-of-day mood, rich warm tones.",
   "motion_prompt": "",
-  "caption": "Large vacuum-insulated growler with a swing handle and a lea",
+  "caption": "End of the trail, still cold.",
   "frame": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p17\\p17-b\\frame.jpg",
   "asset": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p17\\p17-b\\asset.mp4",
   "seconds": 4,
-  "elapsed_s": 67.7,
-  "score": 92,
-  "score_reason": "The image features excellent subject clarity with a thumb-stopping composition, largely due to the visible steam suggesting warmth and freshness, which creates strong emotional pull and conveys quality for a hydration brand, all within a clean, polished production without any reputation-safety issues.",
-  "score_judge": "gemini-vision"
+  "elapsed_s": 39.9,
+  "score": 85,
+  "score_reason": "The image has strong subject clarity and a warm, inviting composition, but the presence of a human hand slightly detracts from the overall brand safety.",
+  "score_judge": "openai-gpt4o"
 }

@@ -1,18 +1,1 @@
-{
-  "product_id": "p01",
-  "product_name": "Summit Tumbler 20oz",
-  "concepts": [
-    {
-      "concept_id": "p01-a",
-      "angle": "Studio hero",
-      "caption": "Hot at 9am, hot at 2pm.",
-      "aspect_ratio": "9:16"
-    },
-    {
-      "concept_id": "p01-b",
-      "angle": "In its element",
-      "caption": "Double-wall vacuum-insulated stainless tumbler with a press-",
-      "aspect_ratio": "9:16"
-    }
-  ]
-}
+{"product_id":"p01","product_name":"Summit Tumbler 20oz","concepts":[{"concept_id":"p01-a","angle":"Sleek studio hero, dramatic light","caption":"Built to outlast your day.","aspect_ratio":"9:16"},{"concept_id":"p01-b","angle":"Golden-hour kitchen counter moment","caption":"Your morning, held longer.","aspect_ratio":"9:16"}]}

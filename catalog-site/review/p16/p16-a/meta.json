@@ -7,14 +7,14 @@
   "seed": 1000,
   "reroll_pass": 0,
   "hint": "",
-  "image_prompt": "Minimalist premium product photography, centered single product on a soft neutral warm-grey seamless studio background, gentle diffused daylight, subtle soft shadow, shallow depth of field. a small stack of four round coasters made of natural cork with a thin brushed-steel rim, beside a slim matching magnetic holder caddy. A single centered premium studio product hero shot, crisp, clean and evenly lit.",
+  "image_prompt": "a small stack of four round coasters made of natural cork with a thin brushed-steel rim, beside a slim matching magnetic holder caddy, arranged neatly on a soft neutral warm-grey seamless studio background, soft diffused overhead lighting casting gentle shadows, macro detail on cork texture and steel rim, premium product photography, shallow depth of field, no text no logos",
   "motion_prompt": "",
-  "caption": "Rings, retired.",
+  "caption": "Cork. Steel. Zero clutter.",
   "frame": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p16\\p16-a\\frame.jpg",
   "asset": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p16\\p16-a\\asset.mp4",
   "seconds": 4,
-  "elapsed_s": 47.2,
-  "score": 90,
-  "score_reason": "heuristic (judge error: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your cu)",
-  "score_judge": "heuristic"
+  "elapsed_s": 35.7,
+  "score": 85,
+  "score_reason": "The image features a clear product with a clean composition and good production quality, but lacks emotional pull and any on-image text.",
+  "score_judge": "openai-gpt4o"
 }

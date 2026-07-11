@@ -7,14 +7,14 @@
   "seed": 1000,
   "reroll_pass": 0,
   "hint": "",
-  "image_prompt": "Minimalist premium product photography, centered single product on a soft neutral warm-grey seamless studio background, gentle diffused daylight, subtle soft shadow, shallow depth of field. a pair of small double-wall clear glass espresso cups with a floating-liquid look, sitting side by side, minimalist. A single centered premium studio product hero shot, crisp, clean and evenly lit.",
+  "image_prompt": "A pair of small double-wall clear glass espresso cups with a floating-liquid look, sitting side by side on a soft neutral warm-grey seamless studio background, one cup filled with rich dark espresso and a thin crema layer, the other empty and catching soft reflections, gentle studio key light from upper left casting a subtle soft shadow, minimalist premium product photography, glass clarity and warmth, no text, no logos",
   "motion_prompt": "",
-  "caption": "Small cup, big morning.",
+  "caption": "Two cups. Zero burnt fingers.",
   "frame": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p13\\p13-a\\frame.jpg",
   "asset": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p13\\p13-a\\asset.mp4",
   "seconds": 4,
-  "elapsed_s": 53.9,
+  "elapsed_s": 38.7,
   "score": 85,
-  "score_reason": "This image features excellent subject clarity and production polish, showcasing the product beautifully in a clean, brand-safe, and aesthetically pleasing composition that evokes calm, making it a strong and appealing ad key frame for a coffee and hydration brand.",
-  "score_judge": "gemini-vision"
+  "score_reason": "The image has clear subject focus and a clean composition, but lacks emotional pull and any on-image text.",
+  "score_judge": "openai-gpt4o"
 }

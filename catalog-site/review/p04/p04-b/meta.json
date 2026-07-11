@@ -7,14 +7,14 @@
   "seed": 1000,
   "reroll_pass": 0,
   "hint": "",
-  "image_prompt": "a polished stainless steel cone pour-over coffee dripper with fine laser-etched spiral perforations, sitting on a matching drip stand, on a warm wooden cafe counter with soft window light and subtle blurred coffee elements behind, premium lifestyle, cinematic warm directional lighting, shallow depth of field, premium lifestyle product ad.",
+  "image_prompt": "A polished stainless steel cone pour-over coffee dripper with fine laser-etched spiral perforations, sitting on its matching drip stand on a rustic wooden kitchen counter, warm golden morning sunlight streaming through a nearby window, steam rising gently as coffee drips into a ceramic mug below, shallow depth of field with a blurred cozy kitchen background of plants and a French press, cinematic warm tones, inviting slow-morning atmosphere, shot on a 50mm lens look, soft bokeh",
   "motion_prompt": "",
-  "caption": "Stainless steel cone dripper with a laser-etched flow spiral",
+  "caption": "Your morning ritual, elevated.",
   "frame": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p04\\p04-b\\frame.jpg",
   "asset": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p04\\p04-b\\asset.mp4",
   "seconds": 4,
-  "elapsed_s": 39.3,
-  "score": 95,
-  "score_reason": "The image is exceptionally well-composed with stunning lighting that highlights the product and creates an inviting, warm atmosphere, effectively stopping scrolls with its aesthetic appeal and visible steam suggesting freshness and warmth, while adhering to all brand safety guidelines.",
-  "score_judge": "gemini-vision"
+  "elapsed_s": 43.2,
+  "score": 85,
+  "score_reason": "The image has strong subject clarity, appealing composition, and emotional warmth, but lacks on-image text and has no identifiable human faces.",
+  "score_judge": "openai-gpt4o"
 }

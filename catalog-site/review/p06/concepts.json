@@ -1,18 +1,1 @@
-{
-  "product_id": "p06",
-  "product_name": "Torque Hand Grinder",
-  "concepts": [
-    {
-      "concept_id": "p06-a",
-      "angle": "Studio hero",
-      "caption": "Grind like you mean it.",
-      "aspect_ratio": "9:16"
-    },
-    {
-      "concept_id": "p06-b",
-      "angle": "In its element",
-      "caption": "Conical steel burr grinder with 36 click settings and an ano",
-      "aspect_ratio": "9:16"
-    }
-  ]
-}
+{"product_id":"p06","product_name":"Torque Hand Grinder","concepts":[{"concept_id":"p06-a","angle":"Precision engineering, studio spotlight","caption":"Built for the ritual, not the rush.","aspect_ratio":"9:16"},{"concept_id":"p06-b","angle":"Sunlit kitchen counter ritual","caption":"Grind slow. Wake up right.","aspect_ratio":"9:16"}]}

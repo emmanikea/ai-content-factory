@@ -42,14 +42,18 @@ nodes:
 
         STEP 2:
         - If it printed NONE, the queue is empty. Output <promise>COMPLETE</promise> and stop.
-        - Otherwise, build TWO ad concepts for the claimed product:
-          a. Invent two distinct, scroll-stopping, TEXT-FREE ad concepts. For each: an `angle`
-             (3-6 words); a vivid `image_prompt` (product recognizable from the description, real
-             setting, strong light, emotion, NO on-image text/logos/price - AI text renders
-             garbled); a `caption` (composited in post); aspect_ratio 9:16.
+        - Otherwise, build TWO ad concepts for the claimed product. Use the claim's `image_prompt`
+          field as the accurate description of what the product looks like - keep the product true to it.
+          a. Invent two DISTINCT, scroll-stopping, TEXT-FREE ad concepts around that product:
+             concept A = a clean premium STUDIO hero shot on a soft neutral warm-grey seamless
+             background; concept B = the SAME product in a real lifestyle setting fitting its category
+             (kitchen counter, cafe, etc.) with warm cinematic light and shallow depth of field.
+             For each: an `angle` (3-6 words); a vivid `image_prompt` that keeps the product recognizable
+             from the claim's image_prompt, strong light, emotion, NO on-image text/logos/price (AI text
+             renders garbled); a `caption` (composited in post); aspect_ratio 9:16.
           b. Generate each with the Higgsfield CLI, one at a time, using the EXACT paths from the
-             claim output:
-               HF_IMAGE_MODEL=z_image python .archon/scripts/media_worker.py --prompt "<image_prompt A>" --caption "<caption A>" --aspect 9:16 --outdir "<outdir_a>" --backend higgsfield
+             claim output (media_worker.py vision-scores each image and regenerates a weak one):
+               HF_IMAGE_MODEL=nano_banana_pro python .archon/scripts/media_worker.py --prompt "<image_prompt A>" --caption "<caption A>" --aspect 9:16 --outdir "<outdir_a>" --backend higgsfield
              then the same for concept B with "<outdir_b>".
           c. Write the file at <concepts_json>:
              {"product_id":"<product_id>","product_name":"<name>","concepts":[{"concept_id":"<product_id>-a","angle":"...","caption":"...","aspect_ratio":"9:16"},{"concept_id":"<product_id>-b","angle":"...","caption":"...","aspect_ratio":"9:16"}]}

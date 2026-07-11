@@ -7,14 +7,14 @@
   "seed": 1000,
   "reroll_pass": 0,
   "hint": "",
-  "image_prompt": "Minimalist premium product photography, centered single product on a soft neutral warm-grey seamless studio background, gentle diffused daylight, subtle soft shadow, shallow depth of field. a tall clear glass cold brew coffee carafe pitcher with a fitted stainless steel mesh filter basket inside and a black silicone-sealed lid. A single centered premium studio product hero shot, crisp, clean and evenly lit.",
+  "image_prompt": "a tall clear glass cold brew coffee carafe pitcher with a fitted stainless steel mesh filter basket inside and a black silicone-sealed lid, standing on a soft neutral warm-grey seamless studio background, dramatic side lighting catching the glass and dark coffee liquid inside, condensation droplets on the glass, deep soft shadows, premium product photography, ultra-detailed, shallow depth of field",
   "motion_prompt": "",
-  "caption": "Patience, bottled.",
-  "frame": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p09\\p09-a\\frame.jpg",
-  "asset": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p09\\p09-a\\asset.mp4",
+  "caption": "Cold brew, done right.",
+  "frame": "Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p09\\p09-a\\frame.jpg",
+  "asset": "Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p09\\p09-a\\asset.mp4",
   "seconds": 4,
-  "elapsed_s": 39.3,
-  "score": 70,
-  "score_reason": "The image clearly presents the product with high production polish and adheres to all safety rules, but its static and minimalist composition lacks a strong emotional pull or a unique hook for scroll-stopping virality.",
-  "score_judge": "gemini-vision"
+  "elapsed_s": 40.0,
+  "score": 85,
+  "score_reason": "The image has strong subject clarity and a polished look, but lacks emotional pull and any on-image text.",
+  "score_judge": "openai-gpt4o"
 }

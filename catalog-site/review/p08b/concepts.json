@@ -1,12 +1,1 @@
-{
-  "product_id": "p08b",
-  "product_name": "Press No.4",
-  "concepts": [
-    {
-      "concept_id": "p08b-b",
-      "angle": "In its element",
-      "caption": "Borosilicate glass French press with a matte-steel cage and ",
-      "aspect_ratio": "9:16"
-    }
-  ]
-}
+{"product_id":"p08b","product_name":"Press No.4","concepts":[{"concept_id":"p08b-a","angle":"Studio hero, warm light","caption":"Press No.4 - brewed right.","aspect_ratio":"9:16"},{"concept_id":"p08b-b","angle":"Sunlit kitchen counter pour","caption":"Morning ritual, done right.","aspect_ratio":"9:16"}]}

@@ -1,0 +1,20 @@
+{
+  "index": 0,
+  "title": "Variant 1",
+  "backend": "higgsfield",
+  "aspect_ratio": "9:16",
+  "dimensions": "720x1280",
+  "seed": 1000,
+  "reroll_pass": 0,
+  "hint": "",
+  "image_prompt": "Product photography of a compact matte-white insulated travel coffee mug with a rounded body and black one-handed flip-top lid, cupholder-friendly slim shape, centered on a soft neutral warm-grey seamless studio background, gentle diffused key light with a subtle rim light, soft shadow beneath the mug, crisp clean reflections on the glossy black lid, minimalist premium commercial product photography, sharp focus, high detail",
+  "motion_prompt": "",
+  "caption": "Your commute's new favorite passenger.",
+  "frame": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p12\\p12-a\\frame.jpg",
+  "asset": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p12\\p12-a\\asset.mp4",
+  "seconds": 4,
+  "elapsed_s": 35.4,
+  "score": 75,
+  "score_reason": "The product is clearly presented with a clean composition, but lacks emotional pull and dynamic elements to enhance virality.",
+  "score_judge": "openai-gpt4o"
+}

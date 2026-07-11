@@ -7,14 +7,14 @@
   "seed": 1000,
   "reroll_pass": 0,
   "hint": "",
-  "image_prompt": "Minimalist premium product photography, centered single product on a soft neutral warm-grey seamless studio background, gentle diffused daylight, subtle soft shadow, shallow depth of field. a polished stainless steel cone pour-over coffee dripper with fine laser-etched spiral perforations, sitting on a matching drip stand. A single centered premium studio product hero shot, crisp, clean and evenly lit.",
+  "image_prompt": "Extreme close-up studio hero shot of a polished stainless steel cone pour-over coffee dripper with fine laser-etched spiral perforations, resting on its matching steel drip stand, centered on a soft neutral warm-grey seamless backdrop, dramatic raking side light catching the etched spiral pattern and throwing crisp reflections across the brushed metal, subtle rim light separating the cone from the background, a single wisp of steam curling up from an unseen cup below, ultra-sharp macro detail, premium product photography, shallow falloff into soft shadow, cinematic and minimal",
   "motion_prompt": "",
-  "caption": "Precision, one cup at a time.",
+  "caption": "Precision in every pour.",
   "frame": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p04\\p04-a\\frame.jpg",
   "asset": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p04\\p04-a\\asset.mp4",
   "seconds": 4,
-  "elapsed_s": 237.1,
-  "score": 63,
-  "score_reason": "The image showcases the product with excellent clarity and production polish, adhering to all safety guidelines, but its static and neutral composition provides limited emotional pull or unique visual interest to achieve strong scroll-stopping virality as a keyframe.",
-  "score_judge": "gemini-vision"
+  "elapsed_s": 79.8,
+  "score": 85,
+  "score_reason": "The image features a clear and polished product with an appealing composition and emotional pull, but lacks any on-image text.",
+  "score_judge": "openai-gpt4o"
 }

@@ -1,12 +1,1 @@
-{
-  "product_id": "p17",
-  "product_name": "Nomad Growler 64oz",
-  "concepts": [
-    {
-      "concept_id": "p17-b",
-      "angle": "In its element",
-      "caption": "Large vacuum-insulated growler with a swing handle and a lea",
-      "aspect_ratio": "9:16"
-    }
-  ]
-}
+{"product_id":"p17","product_name":"Nomad Growler 64oz","concepts":[{"concept_id":"p17-a","angle":"Studio hero, cold confidence","caption":"Cold for the long haul.","aspect_ratio":"9:16"},{"concept_id":"p17-b","angle":"Campfire golden-hour lifestyle","caption":"End of the trail, still cold.","aspect_ratio":"9:16"}]}

@@ -7,14 +7,14 @@
   "seed": 1000,
   "reroll_pass": 0,
   "hint": "",
-  "image_prompt": "a cylindrical anodized dark-grey aluminum manual hand coffee grinder with a folding crank handle on top and a knurled grip band, on a warm wooden cafe counter with soft window light and subtle blurred coffee elements behind, premium lifestyle, cinematic warm directional lighting, shallow depth of field, premium lifestyle product ad.",
+  "image_prompt": "The same cylindrical anodized dark-grey aluminum manual hand coffee grinder with folding crank handle and knurled grip band, standing on a rustic wood kitchen counter beside a steaming ceramic mug and scattered whole coffee beans, warm golden morning sunlight streaming through a nearby window, soft cinematic bokeh in the background, shallow depth of field, cozy lived-in atmosphere, lifestyle product photography",
   "motion_prompt": "",
-  "caption": "Conical steel burr grinder with 36 click settings and an ano",
+  "caption": "Grind slow. Wake up right.",
   "frame": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p06\\p06-b\\frame.jpg",
   "asset": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p06\\p06-b\\asset.mp4",
   "seconds": 4,
-  "elapsed_s": 40.4,
-  "score": 95,
-  "score_reason": "This image features excellent subject clarity with the coffee grinder prominently displayed, boasts a thumb-stopping composition due to its warm lighting and the evocative steam, and creates a strong emotional pull towards a cozy, high-quality coffee experience, all with impeccable production polish and full adherence to brand safety rules.",
-  "score_judge": "gemini-vision"
+  "elapsed_s": 43.1,
+  "score": 85,
+  "score_reason": "The image features a clear product with a warm, inviting composition and emotional appeal, but lacks on-image text and has no identifiable human faces.",
+  "score_judge": "openai-gpt4o"
 }

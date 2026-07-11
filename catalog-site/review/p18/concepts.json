@@ -1,18 +1,1 @@
-{
-  "product_id": "p18",
-  "product_name": "Pebble Cup 8oz",
-  "concepts": [
-    {
-      "concept_id": "p18-a",
-      "angle": "Studio hero",
-      "caption": "The reusable you'll actually reuse.",
-      "aspect_ratio": "9:16"
-    },
-    {
-      "concept_id": "p18-b",
-      "angle": "In its element",
-      "caption": "Lightweight reusable cup with a soft-touch band and a splash",
-      "aspect_ratio": "9:16"
-    }
-  ]
-}
+{"product_id":"p18","product_name":"Pebble Cup 8oz","concepts":[{"concept_id":"p18-a","angle":"Clean studio hero, soft glow","caption":"Your morning, held right.","aspect_ratio":"9:16"},{"concept_id":"p18-b","angle":"Morning kitchen counter light","caption":"Coffee o'clock, sorted.","aspect_ratio":"9:16"}]}

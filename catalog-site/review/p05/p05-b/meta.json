@@ -7,14 +7,14 @@
   "seed": 1000,
   "reroll_pass": 0,
   "hint": "",
-  "image_prompt": "a heat-resistant clear borosilicate glass coffee carafe server with a smooth curved body, a walnut wood collar band, and a drip-free spout, on a warm wooden cafe counter with soft window light and subtle blurred coffee elements behind, premium lifestyle, cinematic warm directional lighting, shallow depth of field, premium lifestyle product ad.",
+  "image_prompt": "A heat-resistant clear borosilicate glass coffee carafe with a smooth curved teardrop body, a walnut wood collar band, and a drip-free spout, resting on a rustic wooden kitchen counter beside a steaming ceramic mug, filled with rich amber coffee, warm golden morning sunlight streaming through a nearby window, gentle steam curling upward, shallow depth of field blurring cozy kitchen background, cinematic warm tones, inviting homey atmosphere, no text, no logos",
   "motion_prompt": "",
-  "caption": "Heat-resistant borosilicate glass server with a walnut colla",
+  "caption": "Your morning, made clear.",
   "frame": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p05\\p05-b\\frame.jpg",
   "asset": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p05\\p05-b\\asset.mp4",
   "seconds": 4,
-  "elapsed_s": 43.1,
-  "score": 96,
-  "score_reason": "The image features excellent subject clarity, a thumb-stopping composition with appealing lighting and dynamic steam, and strong emotional pull evoking the warmth and freshness of coffee; it boasts high production polish, and adheres perfectly to all reputation-safety rules with no human faces or alcoholic elements.",
-  "score_judge": "gemini-vision"
+  "elapsed_s": 42.6,
+  "score": 85,
+  "score_reason": "The image has strong subject clarity, an inviting composition, and emotional appeal, but lacks on-image text and has no identifiable human faces.",
+  "score_judge": "openai-gpt4o"
 }

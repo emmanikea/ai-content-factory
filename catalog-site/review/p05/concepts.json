@@ -1,18 +1,1 @@
-{
-  "product_id": "p05",
-  "product_name": "Clarity Carafe",
-  "concepts": [
-    {
-      "concept_id": "p05-a",
-      "angle": "Studio hero",
-      "caption": "See every drop.",
-      "aspect_ratio": "9:16"
-    },
-    {
-      "concept_id": "p05-b",
-      "angle": "In its element",
-      "caption": "Heat-resistant borosilicate glass server with a walnut colla",
-      "aspect_ratio": "9:16"
-    }
-  ]
-}
+{"product_id":"p05","product_name":"Clarity Carafe","concepts":[{"concept_id":"p05-a","angle":"Studio glass hero shot","caption":"Pour with clarity.","aspect_ratio":"9:16"},{"concept_id":"p05-b","angle":"Cozy morning kitchen pour","caption":"Your morning, made clear.","aspect_ratio":"9:16"}]}

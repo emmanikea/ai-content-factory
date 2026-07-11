@@ -7,14 +7,14 @@
   "seed": 1000,
   "reroll_pass": 0,
   "hint": "",
-  "image_prompt": "a matte-black gooseneck electric pour-over kettle with a long slender curved spout, a minimalist handle, and a small round base, on a warm wooden cafe counter with soft window light and subtle blurred coffee elements behind, premium lifestyle, cinematic warm directional lighting, shallow depth of field, premium lifestyle product ad.",
+  "image_prompt": "A matte-black gooseneck electric pour-over kettle with a long slender curved spout, minimalist handle, and small round base, sitting on a rustic wood kitchen counter beside a ceramic mug and a paper coffee filter dripper, warm golden morning light streaming through a nearby window, gentle steam rising faintly from the spout, shallow depth of field with a softly blurred cozy kitchen background, cinematic warm tones, lifestyle product photography",
   "motion_prompt": "",
-  "caption": "Matte-black gooseneck electric kettle with variable temperat",
+  "caption": "Your morning ritual, elevated.",
   "frame": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p07\\p07-b\\frame.jpg",
   "asset": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p07\\p07-b\\asset.mp4",
   "seconds": 4,
-  "elapsed_s": 52.0,
-  "score": 96,
-  "score_reason": "The image features excellent subject clarity, a thumb-stopping composition, strong emotional pull through warm natural lighting, and high production polish, perfectly aligning with a coffee and hydration brand concept.",
-  "score_judge": "gemini-vision"
+  "elapsed_s": 43.1,
+  "score": 85,
+  "score_reason": "The image has strong subject clarity, appealing composition, and emotional warmth, but lacks on-image text.",
+  "score_judge": "openai-gpt4o"
 }

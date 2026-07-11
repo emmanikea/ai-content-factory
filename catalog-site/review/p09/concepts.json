@@ -1,18 +1,1 @@
-{
-  "product_id": "p09",
-  "product_name": "Slow Cold Brew",
-  "concepts": [
-    {
-      "concept_id": "p09-a",
-      "angle": "Studio hero",
-      "caption": "Patience, bottled.",
-      "aspect_ratio": "9:16"
-    },
-    {
-      "concept_id": "p09-b",
-      "angle": "In its element",
-      "caption": "Glass cold brew carafe with a fine stainless mesh basket and",
-      "aspect_ratio": "9:16"
-    }
-  ]
-}
+{"product_id":"p09","product_name":"Slow Cold Brew","concepts":[{"concept_id":"p09-a","angle":"Premium studio hero shot","caption":"Cold brew, done right.","aspect_ratio":"9:16"},{"concept_id":"p09-b","angle":"Sunlit kitchen morning ritual","caption":"Your morning, slowed down.","aspect_ratio":"9:16"}]}

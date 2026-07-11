@@ -7,14 +7,14 @@
   "seed": 1000,
   "reroll_pass": 0,
   "hint": "",
-  "image_prompt": "Minimalist premium product photography, centered single product on a soft neutral warm-grey seamless studio background, gentle diffused daylight, subtle soft shadow, shallow depth of field. a cylindrical brushed stainless steel airtight coffee bean storage canister with a matte-black lid featuring a small round date dial. A single centered premium studio product hero shot, crisp, clean and evenly lit.",
+  "image_prompt": "A cylindrical brushed stainless steel airtight coffee bean storage canister with a matte-black lid and a small round date dial, standing centered on a soft neutral warm-grey seamless backdrop, dramatic raking studio light sweeping across the brushed metal ridges creating soft highlights and gentle reflections, subtle soft shadow pooling beneath the canister, ultra-detailed premium product photography, no text, no logos, no price",
   "motion_prompt": "",
-  "caption": "Freshness, locked in.",
+  "caption": "Freshness, sealed in steel.",
   "frame": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p11\\p11-a\\frame.jpg",
   "asset": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p11\\p11-a\\asset.mp4",
   "seconds": 4,
-  "elapsed_s": 45.8,
-  "score": 62,
-  "score_reason": "The image offers excellent production polish and subject clarity, making it a high-quality product shot, but its static composition and lack of emotional pull limit its potential for scroll-stopping virality as a standalone key frame within a short-form video ad.",
-  "score_judge": "gemini-vision"
+  "elapsed_s": 38.6,
+  "score": 85,
+  "score_reason": "The product is clearly presented with a clean composition and good lighting, but lacks emotional pull and any on-image text.",
+  "score_judge": "openai-gpt4o"
 }

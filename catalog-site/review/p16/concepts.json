@@ -1,18 +1,1 @@
-{
-  "product_id": "p16",
-  "product_name": "Terra Coasters",
-  "concepts": [
-    {
-      "concept_id": "p16-a",
-      "angle": "Studio hero",
-      "caption": "Rings, retired.",
-      "aspect_ratio": "9:16"
-    },
-    {
-      "concept_id": "p16-b",
-      "angle": "In its element",
-      "caption": "Set of four cork-and-steel coasters with a magnetic caddy.",
-      "aspect_ratio": "9:16"
-    }
-  ]
-}
+{"product_id":"p16","product_name":"Terra Coasters","concepts":[{"concept_id":"p16-a","angle":"Minimalist studio elegance","caption":"Cork. Steel. Zero clutter.","aspect_ratio":"9:16"},{"concept_id":"p16-b","angle":"Cozy morning coffee ritual","caption":"Your coffee ritual, upgraded.","aspect_ratio":"9:16"}]}

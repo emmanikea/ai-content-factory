@@ -7,14 +7,14 @@
   "seed": 1000,
   "reroll_pass": 0,
   "hint": "",
-  "image_prompt": "a two-part anodized dark-grey aluminum ice ball press machine, a heavy cylindrical block with a rounded top, on a neutral surface, on a clean modern kitchen surface in soft natural daylight, premium lifestyle, tasteful negative space, cinematic warm directional lighting, shallow depth of field, premium lifestyle product ad.",
+  "image_prompt": "The same two-part anodized dark-grey aluminum ice ball press machine sitting on a dark wood home bar counter at night, a glass of whiskey beside it, warm amber bar lighting glowing softly from bottles in the background, shallow depth of field blurring the backdrop, cinematic warm tones, faint chill mist rising off the ice sphere, cozy intimate late-night mood, no text, no logos.",
   "motion_prompt": "",
-  "caption": "Anodized aluminum press that shapes a single clear ice spher",
+  "caption": "Round out your nightcap.",
   "frame": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p15\\p15-b\\frame.jpg",
   "asset": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p15\\p15-b\\asset.mp4",
   "seconds": 4,
-  "elapsed_s": 31.9,
-  "score": 89,
-  "score_reason": "heuristic (judge error: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your cu)",
-  "score_judge": "heuristic"
+  "elapsed_s": 76.3,
+  "score": 30,
+  "score_reason": "The presence of alcohol and the identifiable setting significantly detracts from brand safety, resulting in a low score.",
+  "score_judge": "openai-gpt4o"
 }

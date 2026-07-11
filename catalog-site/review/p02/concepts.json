@@ -1,18 +1,1 @@
-{
-  "product_id": "p02",
-  "product_name": "Trail Flask 24oz",
-  "concepts": [
-    {
-      "concept_id": "p02-a",
-      "angle": "Studio hero",
-      "caption": "The bottle that outlasts the hike.",
-      "aspect_ratio": "9:16"
-    },
-    {
-      "concept_id": "p02-b",
-      "angle": "In its element",
-      "caption": "Brushed stainless single-wall flask with a leakproof screw c",
-      "aspect_ratio": "9:16"
-    }
-  ]
-}
+{"product_id":"p02","product_name":"Trail Flask 24oz","concepts":[{"concept_id":"p02-a","angle":"Clean studio hero, brushed steel","caption":"Built for the trail. Leakproof, always.","aspect_ratio":"9:16"},{"concept_id":"p02-b","angle":"Trailhead morning light, backpack pocket","caption":"Wherever the trail takes you.","aspect_ratio":"9:16"}]}

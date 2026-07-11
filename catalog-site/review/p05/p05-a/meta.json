@@ -7,14 +7,14 @@
   "seed": 1000,
   "reroll_pass": 0,
   "hint": "",
-  "image_prompt": "Minimalist premium product photography, centered single product on a soft neutral warm-grey seamless studio background, gentle diffused daylight, subtle soft shadow, shallow depth of field. a heat-resistant clear borosilicate glass coffee carafe server with a smooth curved body, a walnut wood collar band, and a drip-free spout. A single centered premium studio product hero shot, crisp, clean and evenly lit.",
+  "image_prompt": "A premium studio product photograph of a heat-resistant clear borosilicate glass coffee carafe with a smooth curved teardrop body, a rich walnut wood collar band, and a precise drip-free spout, standing alone on a soft neutral warm-grey seamless backdrop, dramatic raking studio light sculpting the glass and revealing warm amber coffee inside, crisp reflections and refractions in the glass, elegant minimalist calm, ultra sharp product detail, shallow shadow beneath the base, no text, no logos",
   "motion_prompt": "",
-  "caption": "See every drop.",
+  "caption": "Pour with clarity.",
   "frame": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p05\\p05-a\\frame.jpg",
   "asset": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p05\\p05-a\\asset.mp4",
   "seconds": 4,
-  "elapsed_s": 118.0,
-  "score": 80,
-  "score_reason": "The image showcases the product with exceptional clarity and production polish against a clean background, making it highly professional and brand-safe, though its static and minimalist composition may not be uniquely 'scroll-stopping' for virality as a standalone keyframe.",
-  "score_judge": "gemini-vision"
+  "elapsed_s": 99.8,
+  "score": 85,
+  "score_reason": "The image features a clear subject with good composition and lighting, but lacks emotional pull and any on-image text.",
+  "score_judge": "openai-gpt4o"
 }

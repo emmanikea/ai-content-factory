@@ -7,14 +7,14 @@
   "seed": 1000,
   "reroll_pass": 0,
   "hint": "",
-  "image_prompt": "a pair of small double-wall clear glass espresso cups with a floating-liquid look, sitting side by side, minimalist, held in soft morning light on a minimalist kitchen counter with gentle condensation or steam, cozy premium lifestyle, cinematic warm directional lighting, shallow depth of field, premium lifestyle product ad.",
+  "image_prompt": "A pair of small double-wall clear glass espresso cups with a floating-liquid look, filled with rich dark espresso and thin crema, resting on a warm wooden cafe counter beside a blurred espresso machine, soft steam curling upward, warm cinematic morning light streaming in from a side window, shallow depth of field with a cozy cafe background bokeh, cinematic lifestyle product photography, no text, no logos",
   "motion_prompt": "",
-  "caption": "Set of two double-wall glass espresso cups that keep shots h",
+  "caption": "Coffee shop feel, kitchen counter reality.",
   "frame": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p13\\p13-b\\frame.jpg",
   "asset": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p13\\p13-b\\asset.mp4",
   "seconds": 4,
-  "elapsed_s": 74.2,
-  "score": 56,
-  "score_reason": "heuristic (judge error: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your cu)",
-  "score_judge": "heuristic"
+  "elapsed_s": 42.4,
+  "score": 85,
+  "score_reason": "The image has strong subject clarity, appealing composition, and emotional warmth, but the presence of identifiable human faces in the background slightly detracts from its effectiveness.",
+  "score_judge": "openai-gpt4o"
 }

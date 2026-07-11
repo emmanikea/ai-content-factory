@@ -7,14 +7,14 @@
   "seed": 1000,
   "reroll_pass": 0,
   "hint": "",
-  "image_prompt": "a classic French press coffee maker with a clear borosilicate glass carafe, a matte brushed-steel frame cage and lid, and a plunger knob on top, on a warm wooden cafe counter with soft window light and subtle blurred coffee elements behind, premium lifestyle, cinematic warm directional lighting, shallow depth of field, premium lifestyle product ad.",
+  "image_prompt": "The same classic French press coffee maker with clear borosilicate glass carafe, matte brushed-steel frame cage and lid, and plunger knob, sitting on a rustic wooden kitchen counter near a sunlit window, warm golden morning light streaming in, steam curling up from freshly brewed coffee inside the glass carafe, a ceramic mug nearby, shallow depth of field with soft bokeh background, cozy cinematic atmosphere, lifestyle photography",
   "motion_prompt": "",
-  "caption": "Borosilicate glass French press with a matte-steel cage and ",
+  "caption": "Morning ritual, done right.",
   "frame": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p08b\\p08b-b\\frame.jpg",
   "asset": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p08b\\p08b-b\\asset.mp4",
   "seconds": 4,
-  "elapsed_s": 35.3,
-  "score": 95,
-  "score_reason": "The image features excellent subject clarity with a prominent French press, an inviting composition with warm lighting and coffee-related elements, and high production polish, creating a strong emotional pull without any brand-safety violations.",
-  "score_judge": "gemini-vision"
+  "elapsed_s": 36.5,
+  "score": 85,
+  "score_reason": "The image has strong subject clarity, appealing composition, and emotional warmth, but lacks on-image text and has no identifiable human faces.",
+  "score_judge": "openai-gpt4o"
 }

@@ -7,14 +7,14 @@
   "seed": 1000,
   "reroll_pass": 0,
   "hint": "",
-  "image_prompt": "a small stack of four round coasters made of natural cork with a thin brushed-steel rim, beside a slim matching magnetic holder caddy, on a clean modern kitchen surface in soft natural daylight, premium lifestyle, tasteful negative space, cinematic warm directional lighting, shallow depth of field, premium lifestyle product ad.",
+  "image_prompt": "a small stack of four round coasters made of natural cork with a thin brushed-steel rim and their slim matching magnetic holder caddy resting on a sunlit wooden kitchen counter, a steaming ceramic mug placed on one coaster, warm golden morning light streaming through a nearby window, soft cinematic shallow depth of field with blurred kitchen background, cozy inviting atmosphere, no text no logos",
   "motion_prompt": "",
-  "caption": "Set of four cork-and-steel coasters with a magnetic caddy.",
+  "caption": "Your coffee ritual, upgraded.",
   "frame": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p16\\p16-b\\frame.jpg",
   "asset": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p16\\p16-b\\asset.mp4",
   "seconds": 4,
-  "elapsed_s": 41.1,
-  "score": 92,
-  "score_reason": "The image features excellent subject clarity, a polished composition, and evokes a feeling of organized home comfort, perfectly aligning with a coffee and hydration brand without any reputation-safety issues.",
-  "score_judge": "gemini-vision"
+  "elapsed_s": 42.6,
+  "score": 85,
+  "score_reason": "The image features a clear subject with a warm, inviting composition and emotional appeal, but lacks on-image text and has no identifiable human faces, making it brand-safe.",
+  "score_judge": "openai-gpt4o"
 }

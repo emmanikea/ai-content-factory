@@ -7,14 +7,14 @@
   "seed": 1000,
   "reroll_pass": 0,
   "hint": "",
-  "image_prompt": "Minimalist premium product photography, centered single product on a soft neutral warm-grey seamless studio background, gentle diffused daylight, subtle soft shadow, shallow depth of field. a cylindrical anodized dark-grey aluminum manual hand coffee grinder with a folding crank handle on top and a knurled grip band. A single centered premium studio product hero shot, crisp, clean and evenly lit.",
+  "image_prompt": "A cylindrical anodized dark-grey aluminum manual hand coffee grinder with a folding crank handle on top and a knurled grip band, standing upright on a soft neutral warm-grey seamless studio background, dramatic raking sidelight sculpting the knurled grip texture and brushed metal body, soft graduated shadow pooling beneath, crisp detail on the crank hinge, premium minimalist product photography, shallow depth of field, high-end catalog hero shot",
   "motion_prompt": "",
-  "caption": "Grind like you mean it.",
+  "caption": "Built for the ritual, not the rush.",
   "frame": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p06\\p06-a\\frame.jpg",
   "asset": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p06\\p06-a\\asset.mp4",
   "seconds": 4,
-  "elapsed_s": 39.1,
-  "score": 70,
-  "score_reason": "The image features excellent subject clarity and production polish for this coffee grinder, but as a key frame for scroll-stopping virality, its static, minimalist composition lacks the dynamic visual hook or strong emotional pull typically needed to immediately grab attention in a fast-scrolling feed.",
-  "score_judge": "gemini-vision"
+  "elapsed_s": 39.6,
+  "score": 85,
+  "score_reason": "The image features a clear product with a polished look and neutral background, but lacks emotional pull and any on-image text.",
+  "score_judge": "openai-gpt4o"
 }

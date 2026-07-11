@@ -1,18 +1,1 @@
-{
-  "product_id": "p11",
-  "product_name": "Vault Canister",
-  "concepts": [
-    {
-      "concept_id": "p11-a",
-      "angle": "Studio hero",
-      "caption": "Freshness, locked in.",
-      "aspect_ratio": "9:16"
-    },
-    {
-      "concept_id": "p11-b",
-      "angle": "In its element",
-      "caption": "Airtight stainless bean canister with a one-way CO2 valve an",
-      "aspect_ratio": "9:16"
-    }
-  ]
-}
+{"product_id":"p11","product_name":"Vault Canister","concepts":[{"concept_id":"p11-a","angle":"Studio hero, brushed steel glow","caption":"Freshness, sealed in steel.","aspect_ratio":"9:16"},{"concept_id":"p11-b","angle":"Warm morning kitchen counter","caption":"Your morning ritual, kept fresh.","aspect_ratio":"9:16"}]}

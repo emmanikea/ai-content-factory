@@ -8,11 +8,11 @@
           "product_id": "p01",
           "product_name": "Summit Tumbler 20oz",
           "concept_id": "p01-b",
-          "angle": "In its element",
-          "caption": "Double-wall vacuum-insulated stainless tumbler with a press-",
+          "angle": "Golden-hour kitchen counter moment",
+          "caption": "Your morning, held longer.",
           "aspect_ratio": "9:16",
           "image": "review/p01/p01-b/frame.jpg",
-          "score": 93,
+          "score": 85,
           "approved": false,
           "video": "review/p01/p01-b/asset.mp4"
         },
@@ -20,11 +20,11 @@
           "product_id": "p01",
           "product_name": "Summit Tumbler 20oz",
           "concept_id": "p01-a",
-          "angle": "Studio hero",
-          "caption": "Hot at 9am, hot at 2pm.",
+          "angle": "Sleek studio hero, dramatic light",
+          "caption": "Built to outlast your day.",
           "aspect_ratio": "9:16",
           "image": "review/p01/p01-a/frame.jpg",
-          "score": 68,
+          "score": 75,
           "approved": false,
           "video": null
         }
@@ -37,23 +37,23 @@
         {
           "product_id": "p02",
           "product_name": "Trail Flask 24oz",
-          "concept_id": "p02-b",
-          "angle": "In its element",
-          "caption": "Brushed stainless single-wall flask with a leakproof screw c",
+          "concept_id": "p02-a",
+          "angle": "Clean studio hero, brushed steel",
+          "caption": "Built for the trail. Leakproof, always.",
           "aspect_ratio": "9:16",
-          "image": "review/p02/p02-b/frame.jpg",
-          "score": 92,
+          "image": "review/p02/p02-a/frame.jpg",
+          "score": 85,
           "approved": false,
-          "video": "review/p02/p02-b/asset.mp4"
+          "video": "review/p02/p02-a/asset.mp4"
         },
         {
           "product_id": "p02",
           "product_name": "Trail Flask 24oz",
-          "concept_id": "p02-a",
-          "angle": "Studio hero",
-          "caption": "The bottle that outlasts the hike.",
+          "concept_id": "p02-b",
+          "angle": "Trailhead morning light, backpack pocket",
+          "caption": "Wherever the trail takes you.",
           "aspect_ratio": "9:16",
-          "image": "review/p02/p02-a/frame.jpg",
+          "image": "review/p02/p02-b/frame.jpg",
           "score": 85,
           "approved": false,
           "video": null
@@ -68,11 +68,11 @@
           "product_id": "p03",
           "product_name": "Daybreak Mug",
           "concept_id": "p03-b",
-          "angle": "In its element",
-          "caption": "Hand-glazed stoneware mug with a comfortable rounded handle ",
+          "angle": "Golden-hour kitchen counter moment",
+          "caption": "Your morning ritual, upgraded.",
           "aspect_ratio": "9:16",
           "image": "review/p03/p03-b/frame.jpg",
-          "score": 98,
+          "score": 95,
           "approved": false,
           "video": "review/p03/p03-b/asset.mp4"
         },
@@ -80,8 +80,8 @@
           "product_id": "p03",
           "product_name": "Daybreak Mug",
           "concept_id": "p03-a",
-          "angle": "Studio hero",
-          "caption": "A morning ritual you can hold.",
+          "angle": "Warm minimalist studio hero shot",
+          "caption": "Slow mornings, held in your hands.",
           "aspect_ratio": "9:16",
           "image": "review/p03/p03-a/frame.jpg",
           "score": 85,
@@ -97,24 +97,24 @@
         {
           "product_id": "p04",
           "product_name": "Helix Pour-Over",
-          "concept_id": "p04-b",
-          "angle": "In its element",
-          "caption": "Stainless steel cone dripper with a laser-etched flow spiral",
+          "concept_id": "p04-a",
+          "angle": "Precision engineering, coffee ritual",
+          "caption": "Precision in every pour.",
           "aspect_ratio": "9:16",
-          "image": "review/p04/p04-b/frame.jpg",
-          "score": 95,
+          "image": "review/p04/p04-a/frame.jpg",
+          "score": 85,
           "approved": false,
-          "video": "review/p04/p04-b/asset.mp4"
+          "video": "review/p04/p04-a/asset.mp4"
         },
         {
           "product_id": "p04",
           "product_name": "Helix Pour-Over",
-          "concept_id": "p04-a",
-          "angle": "Studio hero",
-          "caption": "Precision, one cup at a time.",
+          "concept_id": "p04-b",
+          "angle": "Morning kitchen coffee ritual",
+          "caption": "Your morning ritual, elevated.",
           "aspect_ratio": "9:16",
-          "image": "review/p04/p04-a/frame.jpg",
-          "score": 63,
+          "image": "review/p04/p04-b/frame.jpg",
+          "score": 85,
           "approved": false,
           "video": null
         }
@@ -127,24 +127,24 @@
         {
           "product_id": "p05",
           "product_name": "Clarity Carafe",
-          "concept_id": "p05-b",
-          "angle": "In its element",
-          "caption": "Heat-resistant borosilicate glass server with a walnut colla",
+          "concept_id": "p05-a",
+          "angle": "Studio glass hero shot",
+          "caption": "Pour with clarity.",
           "aspect_ratio": "9:16",
-          "image": "review/p05/p05-b/frame.jpg",
-          "score": 96,
+          "image": "review/p05/p05-a/frame.jpg",
+          "score": 85,
           "approved": false,
-          "video": "review/p05/p05-b/asset.mp4"
+          "video": "review/p05/p05-a/asset.mp4"
         },
         {
           "product_id": "p05",
           "product_name": "Clarity Carafe",
-          "concept_id": "p05-a",
-          "angle": "Studio hero",
-          "caption": "See every drop.",
+          "concept_id": "p05-b",
+          "angle": "Cozy morning kitchen pour",
+          "caption": "Your morning, made clear.",
           "aspect_ratio": "9:16",
-          "image": "review/p05/p05-a/frame.jpg",
-          "score": 80,
+          "image": "review/p05/p05-b/frame.jpg",
+          "score": 85,
           "approved": false,
           "video": null
         }
@@ -157,24 +157,24 @@
         {
           "product_id": "p06",
           "product_name": "Torque Hand Grinder",
-          "concept_id": "p06-b",
-          "angle": "In its element",
-          "caption": "Conical steel burr grinder with 36 click settings and an ano",
+          "concept_id": "p06-a",
+          "angle": "Precision engineering, studio spotlight",
+          "caption": "Built for the ritual, not the rush.",
           "aspect_ratio": "9:16",
-          "image": "review/p06/p06-b/frame.jpg",
-          "score": 95,
+          "image": "review/p06/p06-a/frame.jpg",
+          "score": 85,
           "approved": false,
-          "video": "review/p06/p06-b/asset.mp4"
+          "video": "review/p06/p06-a/asset.mp4"
         },
         {
           "product_id": "p06",
           "product_name": "Torque Hand Grinder",
-          "concept_id": "p06-a",
-          "angle": "Studio hero",
-          "caption": "Grind like you mean it.",
+          "concept_id": "p06-b",
+          "angle": "Sunlit kitchen counter ritual",
+          "caption": "Grind slow. Wake up right.",
           "aspect_ratio": "9:16",
-          "image": "review/p06/p06-a/frame.jpg",
-          "score": 70,
+          "image": "review/p06/p06-b/frame.jpg",
+          "score": 85,
           "approved": false,
           "video": null
         }
@@ -187,24 +187,24 @@
         {
           "product_id": "p07",
           "product_name": "Onyx Kettle",
-          "concept_id": "p07-b",
-          "angle": "In its element",
-          "caption": "Matte-black gooseneck electric kettle with variable temperat",
+          "concept_id": "p07-a",
+          "angle": "Matte-black studio precision hero",
+          "caption": "Precision, poured.",
           "aspect_ratio": "9:16",
-          "image": "review/p07/p07-b/frame.jpg",
-          "score": 96,
+          "image": "review/p07/p07-a/frame.jpg",
+          "score": 85,
           "approved": false,
-          "video": "review/p07/p07-b/asset.mp4"
+          "video": "review/p07/p07-a/asset.mp4"
         },
         {
           "product_id": "p07",
           "product_name": "Onyx Kettle",
-          "concept_id": "p07-a",
-          "angle": "Studio hero",
-          "caption": "A steady pour, every time.",
+          "concept_id": "p07-b",
+          "angle": "Warm morning pour-over ritual",
+          "caption": "Your morning ritual, elevated.",
           "aspect_ratio": "9:16",
-          "image": "review/p07/p07-a/frame.jpg",
-          "score": 90,
+          "image": "review/p07/p07-b/frame.jpg",
+          "score": 85,
           "approved": false,
           "video": null
         }
@@ -217,12 +217,24 @@
         {
           "product_id": "p08",
           "product_name": "Feather Scale",
+          "concept_id": "p08-a",
+          "angle": "Studio hero, water droplet precision",
+          "caption": "Precision to the tenth of a gram.",
+          "aspect_ratio": "9:16",
+          "image": "review/p08/p08-a/frame.jpg",
+          "score": 85,
+          "approved": false,
+          "video": "review/p08/p08-a/asset.mp4"
+        },
+        {
+          "product_id": "p08",
+          "product_name": "Feather Scale",
           "concept_id": "p08-b",
-          "angle": "In its element",
-          "caption": "Slim brewing scale with a 0.1g resolution, built-in timer, a",
+          "angle": "Cozy morning pour-over ritual",
+          "caption": "Every pour, dialed in.",
           "aspect_ratio": "9:16",
           "image": "review/p08/p08-b/frame.jpg",
-          "score": 90,
+          "score": 85,
           "approved": false,
           "video": null
         }
@@ -235,14 +247,26 @@
         {
           "product_id": "p08b",
           "product_name": "Press No.4",
+          "concept_id": "p08b-a",
+          "angle": "Studio hero, warm light",
+          "caption": "Press No.4 - brewed right.",
+          "aspect_ratio": "9:16",
+          "image": "review/p08b/p08b-a/frame.jpg",
+          "score": 85,
+          "approved": false,
+          "video": "review/p08b/p08b-a/asset.mp4"
+        },
+        {
+          "product_id": "p08b",
+          "product_name": "Press No.4",
           "concept_id": "p08b-b",
-          "angle": "In its element",
-          "caption": "Borosilicate glass French press with a matte-steel cage and ",
+          "angle": "Sunlit kitchen counter pour",
+          "caption": "Morning ritual, done right.",
           "aspect_ratio": "9:16",
           "image": "review/p08b/p08b-b/frame.jpg",
-          "score": 95,
+          "score": 85,
           "approved": false,
-          "video": "review/p08b/p08b-b/asset.mp4"
+          "video": null
         }
       ]
     },
@@ -253,24 +277,24 @@
         {
           "product_id": "p09",
           "product_name": "Slow Cold Brew",
-          "concept_id": "p09-b",
-          "angle": "In its element",
-          "caption": "Glass cold brew carafe with a fine stainless mesh basket and",
+          "concept_id": "p09-a",
+          "angle": "Premium studio hero shot",
+          "caption": "Cold brew, done right.",
           "aspect_ratio": "9:16",
-          "image": "review/p09/p09-b/frame.jpg",
-          "score": 95,
+          "image": "review/p09/p09-a/frame.jpg",
+          "score": 85,
           "approved": false,
-          "video": "review/p09/p09-b/asset.mp4"
+          "video": "review/p09/p09-a/asset.mp4"
         },
         {
           "product_id": "p09",
           "product_name": "Slow Cold Brew",
-          "concept_id": "p09-a",
-          "angle": "Studio hero",
-          "caption": "Patience, bottled.",
+          "concept_id": "p09-b",
+          "angle": "Sunlit kitchen morning ritual",
+          "caption": "Your morning, slowed down.",
           "aspect_ratio": "9:16",
-          "image": "review/p09/p09-a/frame.jpg",
-          "score": 70,
+          "image": "review/p09/p09-b/frame.jpg",
+          "score": 85,
           "approved": false,
           "video": null
         }
@@ -283,14 +307,26 @@
         {
           "product_id": "p10",
           "product_name": "Whisk Frother",
+          "concept_id": "p10-a",
+          "angle": "Sleek matte black studio hero",
+          "caption": "Cafe-level foam, right in your hand.",
+          "aspect_ratio": "9:16",
+          "image": "review/p10/p10-a/frame.jpg",
+          "score": 85,
+          "approved": false,
+          "video": "review/p10/p10-a/asset.mp4"
+        },
+        {
+          "product_id": "p10",
+          "product_name": "Whisk Frother",
           "concept_id": "p10-b",
-          "angle": "In its element",
-          "caption": "Rechargeable handheld milk frother with a dual whisk head an",
+          "angle": "Morning latte ritual on counter",
+          "caption": "Your morning ritual, upgraded.",
           "aspect_ratio": "9:16",
           "image": "review/p10/p10-b/frame.jpg",
-          "score": 97,
+          "score": 85,
           "approved": false,
-          "video": "review/p10/p10-b/asset.mp4"
+          "video": null
         }
       ]
     },
@@ -301,24 +337,24 @@
         {
           "product_id": "p11",
           "product_name": "Vault Canister",
-          "concept_id": "p11-b",
-          "angle": "In its element",
-          "caption": "Airtight stainless bean canister with a one-way CO2 valve an",
+          "concept_id": "p11-a",
+          "angle": "Studio hero, brushed steel glow",
+          "caption": "Freshness, sealed in steel.",
           "aspect_ratio": "9:16",
-          "image": "review/p11/p11-b/frame.jpg",
-          "score": 87,
+          "image": "review/p11/p11-a/frame.jpg",
+          "score": 85,
           "approved": false,
-          "video": null
+          "video": "review/p11/p11-a/asset.mp4"
         },
         {
           "product_id": "p11",
           "product_name": "Vault Canister",
-          "concept_id": "p11-a",
-          "angle": "Studio hero",
-          "caption": "Freshness, locked in.",
+          "concept_id": "p11-b",
+          "angle": "Warm morning kitchen counter",
+          "caption": "Your morning ritual, kept fresh.",
           "aspect_ratio": "9:16",
-          "image": "review/p11/p11-a/frame.jpg",
-          "score": 62,
+          "image": "review/p11/p11-b/frame.jpg",
+          "score": 85,
           "approved": false,
           "video": null
         }
@@ -331,14 +367,26 @@
         {
           "product_id": "p12",
           "product_name": "Commuter 12oz",
+          "concept_id": "p12-a",
+          "angle": "Studio hero, clean light",
+          "caption": "Your commute's new favorite passenger.",
+          "aspect_ratio": "9:16",
+          "image": "review/p12/p12-a/frame.jpg",
+          "score": 75,
+          "approved": false,
+          "video": null
+        },
+        {
+          "product_id": "p12",
+          "product_name": "Commuter 12oz",
           "concept_id": "p12-b",
-          "angle": "In its element",
-          "caption": "Compact travel mug with a one-handed flip lid and a slim gri",
+          "angle": "Cupholder commute, morning light",
+          "caption": "One hand on the wheel. One hand on coffee.",
           "aspect_ratio": "9:16",
           "image": "review/p12/p12-b/frame.jpg",
-          "score": 94,
+          "score": 70,
           "approved": false,
-          "video": "review/p12/p12-b/asset.mp4"
+          "video": null
         }
       ]
     },
@@ -350,8 +398,8 @@
           "product_id": "p13",
           "product_name": "Demi Espresso Set",
           "concept_id": "p13-a",
-          "angle": "Studio hero",
-          "caption": "Small cup, big morning.",
+          "angle": "Studio hero, floating crema glow",
+          "caption": "Two cups. Zero burnt fingers.",
           "aspect_ratio": "9:16",
           "image": "review/p13/p13-a/frame.jpg",
           "score": 85,
@@ -362,11 +410,11 @@
           "product_id": "p13",
           "product_name": "Demi Espresso Set",
           "concept_id": "p13-b",
-          "angle": "In its element",
-          "caption": "Set of two double-wall glass espresso cups that keep shots h",
+          "angle": "Cafe counter, warm morning steam",
+          "caption": "Coffee shop feel, kitchen counter reality.",
           "aspect_ratio": "9:16",
           "image": "review/p13/p13-b/frame.jpg",
-          "score": 56,
+          "score": 85,
           "approved": false,
           "video": null
         }
@@ -380,11 +428,11 @@
           "product_id": "p14",
           "product_name": "Verdant Infuser",
           "concept_id": "p14-a",
-          "angle": "Studio hero",
-          "caption": "Loose leaf, anywhere.",
+          "angle": "Pure clarity, studio precision",
+          "caption": "Loose leaf, no compromise.",
           "aspect_ratio": "9:16",
           "image": "review/p14/p14-a/frame.jpg",
-          "score": 77,
+          "score": 85,
           "approved": false,
           "video": null
         },
@@ -392,11 +440,11 @@
           "product_id": "p14",
           "product_name": "Verdant Infuser",
           "concept_id": "p14-b",
-          "angle": "In its element",
-          "caption": "Glass tea bottle with a removable stainless infuser core and",
+          "angle": "Morning ritual, kitchen light",
+          "caption": "Steep it fresh, wherever you are.",
           "aspect_ratio": "9:16",
           "image": "review/p14/p14-b/frame.jpg",
-          "score": 62,
+          "score": 85,
           "approved": false,
           "video": null
         }
@@ -409,24 +457,24 @@
         {
           "product_id": "p15",
           "product_name": "Sphere Ice Press",
-          "concept_id": "p15-b",
-          "angle": "In its element",
-          "caption": "Anodized aluminum press that shapes a single clear ice spher",
+          "concept_id": "p15-a",
+          "angle": "Cold precision, studio spotlight",
+          "caption": "Precision cold, in your hands.",
           "aspect_ratio": "9:16",
-          "image": "review/p15/p15-b/frame.jpg",
-          "score": 89,
+          "image": "review/p15/p15-a/frame.jpg",
+          "score": 70,
           "approved": false,
           "video": null
         },
         {
           "product_id": "p15",
           "product_name": "Sphere Ice Press",
-          "concept_id": "p15-a",
-          "angle": "Studio hero",
-          "caption": "One perfect sphere.",
+          "concept_id": "p15-b",
+          "angle": "Late-night bar, perfect sphere",
+          "caption": "Round out your nightcap.",
           "aspect_ratio": "9:16",
-          "image": "review/p15/p15-a/frame.jpg",
-          "score": 65,
+          "image": "review/p15/p15-b/frame.jpg",
+          "score": 30,
           "approved": false,
           "video": null
         }
@@ -439,24 +487,24 @@
         {
           "product_id": "p16",
           "product_name": "Terra Coasters",
-          "concept_id": "p16-b",
-          "angle": "In its element",
-          "caption": "Set of four cork-and-steel coasters with a magnetic caddy.",
+          "concept_id": "p16-a",
+          "angle": "Minimalist studio elegance",
+          "caption": "Cork. Steel. Zero clutter.",
           "aspect_ratio": "9:16",
-          "image": "review/p16/p16-b/frame.jpg",
-          "score": 92,
+          "image": "review/p16/p16-a/frame.jpg",
+          "score": 85,
           "approved": false,
           "video": null
         },
         {
           "product_id": "p16",
           "product_name": "Terra Coasters",
-          "concept_id": "p16-a",
-          "angle": "Studio hero",
-          "caption": "Rings, retired.",
+          "concept_id": "p16-b",
+          "angle": "Cozy morning coffee ritual",
+          "caption": "Your coffee ritual, upgraded.",
           "aspect_ratio": "9:16",
-          "image": "review/p16/p16-a/frame.jpg",
-          "score": 90,
+          "image": "review/p16/p16-b/frame.jpg",
+          "score": 85,
           "approved": false,
           "video": null
         }
@@ -469,12 +517,24 @@
         {
           "product_id": "p17",
           "product_name": "Nomad Growler 64oz",
+          "concept_id": "p17-a",
+          "angle": "Studio hero, cold confidence",
+          "caption": "Cold for the long haul.",
+          "aspect_ratio": "9:16",
+          "image": "review/p17/p17-a/frame.jpg",
+          "score": 85,
+          "approved": false,
+          "video": null
+        },
+        {
+          "product_id": "p17",
+          "product_name": "Nomad Growler 64oz",
           "concept_id": "p17-b",
-          "angle": "In its element",
-          "caption": "Large vacuum-insulated growler with a swing handle and a lea",
+          "angle": "Campfire golden-hour lifestyle",
+          "caption": "End of the trail, still cold.",
           "aspect_ratio": "9:16",
           "image": "review/p17/p17-b/frame.jpg",
-          "score": 92,
+          "score": 85,
           "approved": false,
           "video": null
         }
@@ -487,24 +547,24 @@
         {
           "product_id": "p18",
           "product_name": "Pebble Cup 8oz",
-          "concept_id": "p18-b",
-          "angle": "In its element",
-          "caption": "Lightweight reusable cup with a soft-touch band and a splash",
+          "concept_id": "p18-a",
+          "angle": "Clean studio hero, soft glow",
+          "caption": "Your morning, held right.",
           "aspect_ratio": "9:16",
-          "image": "review/p18/p18-b/frame.jpg",
-          "score": 94,
+          "image": "review/p18/p18-a/frame.jpg",
+          "score": 85,
           "approved": false,
-          "video": "review/p18/p18-b/asset.mp4"
+          "video": null
         },
         {
           "product_id": "p18",
           "product_name": "Pebble Cup 8oz",
-          "concept_id": "p18-a",
-          "angle": "Studio hero",
-          "caption": "The reusable you'll actually reuse.",
+          "concept_id": "p18-b",
+          "angle": "Morning kitchen counter light",
+          "caption": "Coffee o'clock, sorted.",
           "aspect_ratio": "9:16",
-          "image": "review/p18/p18-a/frame.jpg",
-          "score": 73,
+          "image": "review/p18/p18-b/frame.jpg",
+          "score": 85,
           "approved": false,
           "video": null
         }
@@ -518,11 +578,11 @@
           "product_id": "p19",
           "product_name": "Aera Brewer",
           "concept_id": "p19-b",
-          "angle": "In its element",
-          "caption": "Compact press-style immersion brewer for a fast, clean, full",
+          "angle": "Sunlit kitchen counter, steam rising",
+          "caption": "Your kitchen's new morning ritual",
           "aspect_ratio": "9:16",
           "image": "review/p19/p19-b/frame.jpg",
-          "score": 90,
+          "score": 85,
           "approved": false,
           "video": null
         },
@@ -530,11 +590,11 @@
           "product_id": "p19",
           "product_name": "Aera Brewer",
           "concept_id": "p19-a",
-          "angle": "Studio hero",
-          "caption": "Pressure, on demand.",
+          "angle": "Clean studio hero, morning light",
+          "caption": "Press. Wait. Pour. That's it.",
           "aspect_ratio": "9:16",
           "image": "review/p19/p19-a/frame.jpg",
-          "score": 74,
+          "score": 64,
           "approved": false,
           "video": null
         }
@@ -543,6 +603,6 @@
   ],
   "counts": {
     "products": 20,
-    "concepts": 35
+    "concepts": 40
   }
 }

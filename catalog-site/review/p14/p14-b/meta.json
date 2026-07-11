@@ -7,14 +7,14 @@
   "seed": 1000,
   "reroll_pass": 0,
   "hint": "",
-  "image_prompt": "a clear glass tea infuser water bottle with a slim cylindrical body, a light bamboo screw lid, and a removable stainless steel infuser basket visible inside, held in soft morning light on a minimalist kitchen counter with gentle condensation or steam, cozy premium lifestyle, cinematic warm directional lighting, shallow depth of field, premium lifestyle product ad.",
+  "image_prompt": "the same clear glass tea infuser water bottle with light bamboo screw lid and a removable stainless steel infuser basket visible inside, resting on a sunlit wooden kitchen counter beside a steaming ceramic mug and a small scatter of dried loose-leaf tea, warm golden morning light streaming through a window, soft green bokeh from potted herbs in the background, shallow depth of field, cozy inviting lifestyle photography, cinematic warmth, vertical composition",
   "motion_prompt": "",
-  "caption": "Glass tea bottle with a removable stainless infuser core and",
+  "caption": "Steep it fresh, wherever you are.",
   "frame": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p14\\p14-b\\frame.jpg",
   "asset": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p14\\p14-b\\asset.mp4",
   "seconds": 4,
-  "elapsed_s": 35.7,
-  "score": 62,
-  "score_reason": "heuristic (judge error: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your cu)",
-  "score_judge": "heuristic"
+  "elapsed_s": 40.2,
+  "score": 85,
+  "score_reason": "The image has strong subject clarity, appealing composition, and emotional warmth, but lacks on-image text and features a human hand, which is acceptable.",
+  "score_judge": "openai-gpt4o"
 }

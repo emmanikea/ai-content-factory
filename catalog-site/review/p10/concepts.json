@@ -1,12 +1,1 @@
-{
-  "product_id": "p10",
-  "product_name": "Whisk Frother",
-  "concepts": [
-    {
-      "concept_id": "p10-b",
-      "angle": "In its element",
-      "caption": "Rechargeable handheld milk frother with a dual whisk head an",
-      "aspect_ratio": "9:16"
-    }
-  ]
-}
+{"product_id":"p10","product_name":"Whisk Frother","concepts":[{"concept_id":"p10-a","angle":"Sleek matte black studio hero","caption":"Cafe-level foam, right in your hand.","aspect_ratio":"9:16"},{"concept_id":"p10-b","angle":"Morning latte ritual on counter","caption":"Your morning ritual, upgraded.","aspect_ratio":"9:16"}]}

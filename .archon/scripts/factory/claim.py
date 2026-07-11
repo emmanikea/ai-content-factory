@@ -45,7 +45,7 @@ def claim_product() -> int:
         base = SITE / "review" / pid
         print(json.dumps({
             "product_id": pid, "name": p["name"], "category": p.get("category", ""),
-            "description": p.get("description", ""),
+            "description": p.get("description", ""), "image_prompt": p.get("image_prompt", ""),
             "outdir_a": str(base / f"{pid}-a"), "outdir_b": str(base / f"{pid}-b"),
             "concepts_json": str(base / "concepts.json"),
         }))

@@ -1,12 +1,1 @@
-{
-  "product_id": "p08",
-  "product_name": "Feather Scale",
-  "concepts": [
-    {
-      "concept_id": "p08-b",
-      "angle": "In its element",
-      "caption": "Slim brewing scale with a 0.1g resolution, built-in timer, a",
-      "aspect_ratio": "9:16"
-    }
-  ]
-}
+{"product_id":"p08","product_name":"Feather Scale","concepts":[{"concept_id":"p08-a","angle":"Studio hero, water droplet precision","caption":"Precision to the tenth of a gram.","aspect_ratio":"9:16"},{"concept_id":"p08-b","angle":"Cozy morning pour-over ritual","caption":"Every pour, dialed in.","aspect_ratio":"9:16"}]}

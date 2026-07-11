@@ -7,14 +7,14 @@
   "seed": 1000,
   "reroll_pass": 0,
   "hint": "",
-  "image_prompt": "Minimalist premium product photography, centered single product on a soft neutral warm-grey seamless studio background, gentle diffused daylight, subtle soft shadow, shallow depth of field. a slim brushed stainless steel insulated water bottle with a rounded shoulder and a matte black screw cap with a small carry loop. A single centered premium studio product hero shot, crisp, clean and evenly lit.",
+  "image_prompt": "a slim brushed stainless steel insulated water bottle with a rounded shoulder and a matte black screw cap with a small carry loop, standing upright on a soft neutral warm-grey seamless background, professional product photography, dramatic side rim lighting catching the brushed metal texture, soft shadow beneath, minimalist, shallow depth of field, high-end catalog shot",
   "motion_prompt": "",
-  "caption": "The bottle that outlasts the hike.",
+  "caption": "Built for the trail. Leakproof, always.",
   "frame": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p02\\p02-a\\frame.jpg",
   "asset": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p02\\p02-a\\asset.mp4",
   "seconds": 4,
-  "elapsed_s": 43.3,
+  "elapsed_s": 79.5,
   "score": 85,
-  "score_reason": "The image features a perfectly clear, high-quality shot of the product with excellent production polish and a clean, minimalist composition that highlights the subject effectively while adhering to all brand safety guidelines.",
-  "score_judge": "gemini-vision"
+  "score_reason": "The image features a clear product with a polished look and neutral background, but lacks emotional pull and dynamic composition.",
+  "score_judge": "openai-gpt4o"
 }

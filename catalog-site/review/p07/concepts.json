@@ -1,18 +1,1 @@
-{
-  "product_id": "p07",
-  "product_name": "Onyx Kettle",
-  "concepts": [
-    {
-      "concept_id": "p07-a",
-      "angle": "Studio hero",
-      "caption": "A steady pour, every time.",
-      "aspect_ratio": "9:16"
-    },
-    {
-      "concept_id": "p07-b",
-      "angle": "In its element",
-      "caption": "Matte-black gooseneck electric kettle with variable temperat",
-      "aspect_ratio": "9:16"
-    }
-  ]
-}
+{"product_id":"p07","product_name":"Onyx Kettle","concepts":[{"concept_id":"p07-a","angle":"Matte-black studio precision hero","caption":"Precision, poured.","aspect_ratio":"9:16"},{"concept_id":"p07-b","angle":"Warm morning pour-over ritual","caption":"Your morning ritual, elevated.","aspect_ratio":"9:16"}]}

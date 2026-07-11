@@ -7,14 +7,14 @@
   "seed": 1000,
   "reroll_pass": 0,
   "hint": "",
-  "image_prompt": "Minimalist premium product photography, centered single product on a soft neutral warm-grey seamless studio background, gentle diffused daylight, subtle soft shadow, shallow depth of field. a small lightweight reusable coffee cup in soft sage green with a smooth matte finish, a subtle silicone grip band, and a simple splash lid. A single centered premium studio product hero shot, crisp, clean and evenly lit.",
+  "image_prompt": "a small lightweight reusable coffee cup in soft sage green with a smooth matte finish, a subtle silicone grip band, and a simple splash lid, standing centered on a soft neutral warm-grey seamless studio background, gentle diffused softbox lighting casting a soft shadow beneath the cup, subtle rim light tracing the silicone band, ultra-clean minimal premium product photography, sharp focus, high detail matte texture",
   "motion_prompt": "",
-  "caption": "The reusable you'll actually reuse.",
+  "caption": "Your morning, held right.",
   "frame": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p18\\p18-a\\frame.jpg",
   "asset": "C:\\Users\\colem\\dynamous-engine\\Dynamous\\Content-Ideation\\2026-07-07\\higgsfield-archon\\catalog-site\\review\\p18\\p18-a\\asset.mp4",
   "seconds": 4,
-  "elapsed_s": 31.9,
-  "score": 73,
-  "score_reason": "heuristic (judge error: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your cu)",
-  "score_judge": "heuristic"
+  "elapsed_s": 38.6,
+  "score": 85,
+  "score_reason": "The image features a clear product with a clean composition and good emotional appeal, but lacks any on-image text and may benefit from more dynamic elements.",
+  "score_judge": "openai-gpt4o"
 }
