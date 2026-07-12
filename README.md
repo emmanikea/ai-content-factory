@@ -54,8 +54,6 @@ The takeaway is bigger than ads: these harnesses were built for code, but there 
 
 The human approval gate lives in between, in a small storefront (`catalog-site/`) where every product shows its scored concepts and you click Approve on the winners.
 
-A no-API-key, fully reproducible variant is included too: [`ad-factory-local`](.archon/workflows/ad-factory-local.yaml) uses free image generation + ffmpeg motion so anyone can run the pattern end-to-end before wiring in a real media worker.
-
 ---
 
 ## The media worker is swappable
@@ -71,7 +69,6 @@ The Higgsfield CLI is the media worker here because it drives the frontier video
   workflows/
     content-factory-explore.yaml   # phase 1: explore the catalog (cheap)
     content-factory-render.yaml     # phase 2: render approved winners (gated)
-    ad-factory-local.yaml           # no-API-key reproducible variant
   scripts/
     media_worker.py                 # the swappable media worker + image validate/regenerate gate
     score_frame.py                  # vision score for a concept image (Gemini)
