@@ -6,14 +6,10 @@ The engine is [Archon](https://github.com/coleam00/Archon), an open-source AI co
 
 ## Setup
 
-**1. Install Archon** (the workflow engine). Paste this into your coding agent (Claude Code, Cursor, etc.):
+**1. Install Archon** (the workflow engine) — paste this into your coding agent (Claude Code, Cursor, etc.):
 
-> Set up Archon for me. Clone https://github.com/coleam00/Archon and read the `archon` skill inside it (`.claude/skills/archon/SKILL.md`) to learn how Archon installs, runs, and builds workflows. Then install Archon and get me ready to run this project's two workflows.
-
-Or do it yourself — Archon's [README](https://github.com/coleam00/Archon) has a one-line installer:
-```bash
-curl -fsSL https://archon.diy/install | bash      # macOS / Linux
-irm https://archon.diy/install.ps1 | iex           # Windows (PowerShell)
+```
+Set up Archon for me. Clone https://github.com/coleam00/Archon and read the archon skill inside it (.claude/skills/archon/SKILL.md) so you understand how Archon installs, runs, and builds workflows. Then install it and get me ready to run this project's two workflows.
 ```
 
 **2. Install the Higgsfield CLI** (the media worker that generates the images + videos):
