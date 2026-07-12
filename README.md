@@ -8,6 +8,16 @@ The engine is [Archon](https://github.com/coleam00/Archon), an open-source AI co
 
 ---
 
+## New to Archon? One paste and your agent sets it up
+
+You don't have to learn Archon by hand. Paste this into your coding agent (Claude Code, Cursor, etc.):
+
+> Set up Archon for me. Clone https://github.com/coleam00/Archon and read the `archon` skill inside it (`.claude/skills/archon/SKILL.md`) to learn how Archon installs, runs, and builds workflows. Then install Archon and get me ready to run this project's two workflows.
+
+Your agent reads Archon's own skill, installs it, and can then run — and create — Archon workflows for you. Prefer to do it yourself? Archon's [README](https://github.com/coleam00/Archon) has a one-line installer (`curl -fsSL https://archon.diy/install | bash`, or `irm https://archon.diy/install.ps1 | iex` on Windows).
+
+---
+
 ## The one idea behind the whole system
 
 Your **image** model is cheap and your **video** model is not. On the models used here, a still concept costs about `0.15` credits and animating it to video costs about `7.5` credits: roughly **50x**.
