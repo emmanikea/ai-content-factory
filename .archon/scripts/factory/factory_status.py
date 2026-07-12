@@ -16,7 +16,7 @@ import sys
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[3]
-DEFAULT_SITE = REPO / "catalog-site"
+DEFAULT_SITE = (REPO / "catalog-site") if (REPO / "catalog-site").exists() else (REPO / "Dynamous" / "Content-Ideation" / "2026-07-07" / "higgsfield-archon" / "catalog-site")
 SITE = Path(os.environ.get("SITE_DIR", str(DEFAULT_SITE)))
 IMAGE_COST = float(os.environ.get("IMAGE_COST", "0.15"))
 VIDEO_COST = float(os.environ.get("VIDEO_COST", "7.5"))

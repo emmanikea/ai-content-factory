@@ -13,7 +13,7 @@ change a single flag: --backend pollinations  ->  --backend higgsfield.
                    (authenticated once with `higgsfield auth login`). Image-first: generates
                    a clean Higgsfield image (nano_banana_pro by default; Soul for character
                    consistency) + scores it. Video is generated separately for winners only
-                   (animate_winner.py), because images are ~0.12 credits and video ~7.5-12.5.
+                   (animate_concept.py), because images are ~0.12 credits and video ~7.5-12.5.
                    Set --animate-model <model> to also make video in this step.
 
 Usage (reads one concept from a shotlist.json produced by the shotlist node):
@@ -100,7 +100,7 @@ def gen_image_pollinations(prompt: str, w: int, h: int, seed: int, dest: Path) -
 # The `higgsfield` CLI (npm: @higgsfield/cli) is authenticated once with
 # `higgsfield auth login`. Images (Soul V2) cost ~0.12 credits; image-to-video
 # (Kling / Veo / Seedance) costs ~7.5-12.5 credits. So we generate + score + re-roll
-# IMAGES freely and only spend on VIDEO for the winners (see animate_winner.py).
+# IMAGES freely and only spend on VIDEO for the winners (see animate_concept.py).
 # nano_banana_pro gives clean, text-free product plates (Soul V2 bakes in garbled UGC
 # captions). Both route through Higgsfield/its credits; override with HF_IMAGE_MODEL.
 # Use text2image_soul_v2 / soul_cinematic when you want Soul character consistency.

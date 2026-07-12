@@ -86,7 +86,8 @@ The Higgsfield CLI is the media worker here because it drives the frontier video
     factory/
       claim.py                      # atomic work queue (mkdir-lock) for the worker pool
       factory_seed.py               # drive EXPLORE over the whole catalog directly
-      animate_concept.py            # render ONE approved concept to video + validate + regenerate
+      animate_concept.py            # render ONE approved concept -> product PAN (validate + regenerate)
+      animate_ugc.py                # render ONE approved concept -> ~10s UGC talking-head (gemini_omni)
       factory_render.py             # drive RENDER over the approved winners
       curate_approvals.py           # pick winners (stand-in for the human approval step)
       merge_queue.py                # stitch per-product results into the storefront queue
@@ -106,7 +107,11 @@ docs/architecture.png
 **Prerequisites**
 - [Archon](https://github.com/coleam00/Archon) installed and on your PATH.
 - The [Higgsfield CLI](https://higgsfield.ai/cli) authenticated: `npm i -g @higgsfield/cli && higgsfield auth login`.
+- **ffmpeg** on your PATH (used for image normalization and the video-validation gate).
 - Python 3.10+ (the scripts use only the standard library plus `uv` for the vision scorer).
+- A vision key for the self-check gates — set `GEMINI_API_KEY` (preferred) and/or `OPENAI_API_KEY`. Without one, the scoring gates fall back to a permissive heuristic (they never hard-block).
+
+**Optional env vars:** `SITE_DIR` (point the scripts at a different catalog-site), `HF_IMAGE_MODEL` / `HF_VIDEO_MODEL` (swap generators), `RENDER_DRY_RUN=1` (render fan-out with no spend).
 
 **1. Explore the catalog (cheap).** A worker pool generates + scores two concepts per product:
 ```bash

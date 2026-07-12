@@ -20,7 +20,7 @@ HERE = Path(__file__).resolve()
 FACTORY = HERE.parent
 SCRIPTS = FACTORY.parent
 REPO = FACTORY.parents[2]
-DEFAULT_SITE = REPO / "catalog-site"
+DEFAULT_SITE = (REPO / "catalog-site") if (REPO / "catalog-site").exists() else (REPO / "Dynamous" / "Content-Ideation" / "2026-07-07" / "higgsfield-archon" / "catalog-site")
 SITE = Path(os.environ.get("SITE_DIR", str(DEFAULT_SITE)))
 IMAGE_MODEL = os.environ.get("HF_IMAGE_MODEL", "nano_banana_pro")
 
