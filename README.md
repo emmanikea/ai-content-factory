@@ -20,7 +20,7 @@ Your agent reads Archon's own skill, installs it, and can then run — and creat
 
 ## The one idea behind the whole system
 
-Your **image** model is cheap and your **video** model is not. On the models used here, a still concept costs about `0.15` credits and animating it to video costs about `7.5` credits: roughly **50x**.
+Your **image** model is cheap and your **video** model is not. On the models used here, a still concept (`nano_banana_pro`) costs about `2` credits and a finished video is about `20–30` credits: roughly **10–15x**. Rendering a video for *every* concept would run into the thousands; exploring on images first is what keeps it affordable.
 
 That single price gap dictates the entire shape of the system:
 
@@ -183,7 +183,7 @@ Great for a demo or a recording: show `empty`, "run" explore, flip to `ready`, a
 
 - **The media worker is a choice.** Higgsfield earned this build, but the pattern is portable. Swap in any generator.
 - **Clean assets.** The product-hero concepts are generated with no identifiable people and no borrowed IP.
-- **The cost math is the argument.** ~40 concepts explored and scored for ~6 credits; a video is ~7.5 credits and only ever runs on a human-approved winner. That is a pipeline you can afford to run every week, not a one-off demo.
+- **The cost math is the argument.** ~40 concepts explored and scored for ~80 credits total; a finished video is ~20–30 credits and only ever runs on a human-approved winner. Rendering all 40 would cost thousands — gating on approval is the saving. A pipeline you can afford to run every week, not a one-off demo.
 
 ---
 

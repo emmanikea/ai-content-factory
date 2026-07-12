@@ -8,7 +8,7 @@ description: |
   generated YAML.
 
   Each unit of work: an agent invents two text-free ad concepts and drives the Higgsfield CLI
-  (z_image, ~0.15 cr) to generate them. Self-checking: media_worker.py vision-scores every image
+  (nano_banana_pro, ~2 cr) to generate them. Self-checking: media_worker.py vision-scores every image
   and regenerates a weak one (garbled, off-brand, product unclear) with a cleanup hint up to
   IMAGE_MAX_TRIES, keeping the best - so only clean concepts reach the human review queue. finalize
   stitches everything into the storefront's review queue. NO video here - that is the gated render step.
