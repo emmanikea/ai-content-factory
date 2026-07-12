@@ -16,6 +16,8 @@ You don't have to learn Archon by hand. Paste this into your coding agent (Claud
 
 Your agent reads Archon's own skill, installs it, and can then run — and create — Archon workflows for you. Prefer to do it yourself? Archon's [README](https://github.com/coleam00/Archon) has a one-line installer (`curl -fsSL https://archon.diy/install | bash`, or `irm https://archon.diy/install.ps1 | iex` on Windows).
 
+**For the media side, this repo ships a `higgsfield` skill** at [`.claude/skills/higgsfield/`](.claude/skills/higgsfield/SKILL.md). Open this repo in Claude Code (or Cursor) and it teaches your agent the Higgsfield CLI — the models, the exact one-command UGC-ad recipe, and the gotchas — so you can say "make a UGC ad of this product" and it just works. No MCP, no plugin: the CLI is self-documenting and the skill captures the recipe.
+
 ---
 
 ## The one idea behind the whole system
@@ -98,6 +100,7 @@ catalog-site/                       # the demo storefront (a 20-product "Camber"
   _states/{empty,ready,done}/                # pre-built states for the instant switch
 sample-videos/                      # curated example output from a real run
 docs/architecture.png
+.claude/skills/higgsfield/SKILL.md  # teaches your coding agent the Higgsfield CLI (the UGC-ad recipe)
 ```
 
 ---
