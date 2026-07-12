@@ -4,19 +4,27 @@
 
 The engine is [Archon](https://github.com/coleam00/Archon), an open-source AI coding workflow engine. The media worker is the [Higgsfield CLI](https://higgsfield.ai/cli) (swappable). The whole thing runs from the terminal and can sit on a schedule.
 
-![Architecture](docs/architecture.png)
+## Setup
 
----
-
-## New to Archon? One paste and your agent sets it up
-
-You don't have to learn Archon by hand. Paste this into your coding agent (Claude Code, Cursor, etc.):
+**1. Install Archon** (the workflow engine). Paste this into your coding agent (Claude Code, Cursor, etc.):
 
 > Set up Archon for me. Clone https://github.com/coleam00/Archon and read the `archon` skill inside it (`.claude/skills/archon/SKILL.md`) to learn how Archon installs, runs, and builds workflows. Then install Archon and get me ready to run this project's two workflows.
 
-Your agent reads Archon's own skill, installs it, and can then run — and create — Archon workflows for you. Prefer to do it yourself? Archon's [README](https://github.com/coleam00/Archon) has a one-line installer (`curl -fsSL https://archon.diy/install | bash`, or `irm https://archon.diy/install.ps1 | iex` on Windows).
+Or do it yourself — Archon's [README](https://github.com/coleam00/Archon) has a one-line installer:
+```bash
+curl -fsSL https://archon.diy/install | bash      # macOS / Linux
+irm https://archon.diy/install.ps1 | iex           # Windows (PowerShell)
+```
 
-**For the media side, this repo ships a `higgsfield` skill** at [`.claude/skills/higgsfield/`](.claude/skills/higgsfield/SKILL.md). Open this repo in Claude Code (or Cursor) and it teaches your agent the Higgsfield CLI — the models, the exact one-command UGC-ad recipe, and the gotchas — so you can say "make a UGC ad of this product" and it just works. No MCP, no plugin: the CLI is self-documenting and the skill captures the recipe.
+**2. Install the Higgsfield CLI** (the media worker that generates the images + videos):
+```bash
+npm install -g @higgsfield/cli
+higgsfield auth login
+```
+
+This repo also ships a **`higgsfield` skill** at [`.claude/skills/higgsfield/`](.claude/skills/higgsfield/SKILL.md) — open the repo in your coding agent and it knows the CLI (the models + the exact one-command UGC-ad recipe), so you can just say "make a UGC ad of this product." No MCP, no plugin: the CLI is self-documenting and the skill captures the recipe.
+
+![Architecture](docs/architecture.png)
 
 ---
 
@@ -107,9 +115,7 @@ docs/architecture.png
 
 ## Run it
 
-**Prerequisites**
-- [Archon](https://github.com/coleam00/Archon) installed and on your PATH.
-- The [Higgsfield CLI](https://higgsfield.ai/cli) authenticated: `npm i -g @higgsfield/cli && higgsfield auth login`.
+**Prerequisites** — Archon + the Higgsfield CLI (see [Setup](#setup) above), plus:
 - **ffmpeg** on your PATH (used for image normalization and the video-validation gate).
 - Python 3.10+ (the scripts use only the standard library plus `uv` for the vision scorer).
 - A vision key for the self-check gates — set `GEMINI_API_KEY` (preferred) and/or `OPENAI_API_KEY`. Without one, the scoring gates fall back to a permissive heuristic (they never hard-block).
