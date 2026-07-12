@@ -156,9 +156,11 @@ Great for a demo or a recording: show `empty`, "run" explore, flip to `ready`, a
 
 | File | What it is |
 |------|-----------|
-| `espresso-pull-25s.mp4` | A 25s product-hero ad (chained segments, continuous camera move) |
-| `pour-over.mp4` | A 10s product-hero ad |
-| `espresso-bag-ugc.mp4` | A ~24s UGC-style talking-head ad (native voice + lip-sync) |
+| `camber-tumbler-ugc-10s.mp4` | UGC talking-head ad — a man reviewing the branded Camber tumbler (single continuous take, native voice) |
+| `camber-mug-ugc-10s.mp4` | UGC talking-head ad — a woman reviewing the branded Camber mug |
+| `camber-grinder-ugc-10s.mp4` | UGC talking-head ad — a man reviewing the branded Camber grinder |
+| `camber-kettle-ugc-10s.mp4` | UGC talking-head ad — a woman reviewing the branded Camber kettle |
+| `camber-tumbler-pan-10s.mp4` | Product pan ad — cinematic push-in over the tumbler |
 
 ---
 
