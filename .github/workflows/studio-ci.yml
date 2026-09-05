@@ -4,12 +4,14 @@ on:
   pull_request:
     paths:
       - 'apps/studio/**'
+      - '.archon/scripts/factory/generation_gateway.py'
       - '.github/workflows/studio-ci.yml'
   push:
     branches:
       - main
     paths:
       - 'apps/studio/**'
+      - '.archon/scripts/factory/generation_gateway.py'
       - '.github/workflows/studio-ci.yml'
 
 jobs:
@@ -29,6 +31,11 @@ jobs:
         run: npm install --no-audit --no-fund
       - name: Typecheck
         run: npm run typecheck
+      - name: Regression tests
+        run: npm test
+      - name: Python gateway syntax
+        working-directory: .
+        run: python -m py_compile .archon/scripts/factory/generation_gateway.py
       - name: Build
         run: npm run build
         env:
