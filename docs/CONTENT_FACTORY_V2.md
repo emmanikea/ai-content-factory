@@ -13,7 +13,7 @@ The original architecture remains valuable:
 - validation and retry gates
 - idempotent reruns
 
-V2 adds the infrastructure required for AI influencers, consented real-person digital twins, model routing, reusable references, durable jobs, cost accounting and self-hosted generation.
+V2 adds the infrastructure required for AI influencers, real-person digital twins, model routing, reusable references, durable jobs, cost accounting, object storage and self-hosted generation.
 
 ## Target architecture
 
@@ -34,18 +34,18 @@ OpenRouter  ComfyUI  legacy Higgsfield
 
 The generation provider is an implementation detail. Workflows should depend on the factory contract, not directly on OpenRouter, ComfyUI, Higgsfield, RunPod or a model vendor.
 
-## What exists on `feat/content-factory-v2`
+## Current implementation
 
 ### Factory entities
 
 - `characters`: real people, synthetic influencers, brand mascots
 - `references`: image, video, audio, performance, location, wardrobe
-- `projects`: units of production work
+- `projects`: units of production work, including a lightweight project brief in metadata
 - `generation_jobs`: durable provider-neutral jobs
-- `assets`: generated media + provenance
-- `quality_reviews`: automated/human QA scores
-- `approval_events`: human review decisions
-- `cost_events`: estimated and reconciled spend
+- `assets`: generated media + provenance schema
+- `quality_reviews`: automated/human QA score schema
+- `approval_events`: human review decision schema
+- `cost_events`: estimated and reconciled spend schema
 
 The canonical Postgres schema is `apps/studio/db/schema.sql`.
 
@@ -53,80 +53,85 @@ The canonical Postgres schema is `apps/studio/db/schema.sql`.
 
 `ContentFactoryStore` is the application boundary.
 
-- local development with no `DATABASE_URL`: in-memory store
-- `DATABASE_URL`: portable Postgres adapter
-- production without `DATABASE_URL`: refused by default rather than silently becoming ephemeral
+- development may use the in-memory store
+- production requires `DATABASE_URL` unless ephemeral storage is explicitly enabled
+- `DATABASE_URL` uses the portable Postgres adapter
 
 The application does not depend on Supabase-specific APIs. Supabase, Neon or ordinary Postgres can host the schema.
 
-### Generation lifecycle
+### Generation
 
-`POST /api/generate` now follows a spend-safe order:
+`POST /api/generate` now:
 
-1. validate the request, project and character
-2. enforce verified consent when a real-person character is selected
-3. resolve the provider and query live provider metadata when available
-4. enforce the optional estimated-spend cap
-5. create the durable factory job first
-6. submit to OpenRouter or ComfyUI
-7. attach the provider job ID/result to the factory job
-8. record provider-submission failures against the factory job
+1. validates request shape, provider and tier
+2. validates project and character state
+3. enforces verified consent for real-person digital twins
+4. enforces registered/authorized references for real-person generations
+5. resolves stored reference IDs into short-lived provider URLs
+6. checks idempotency before paid submission
+7. selects the provider
+8. validates current OpenRouter video model capabilities when relevant
+9. estimates generation cost and applies the configured spend cap
+10. creates the durable factory job before provider submission
+11. submits the provider job
+12. persists provider state and exposes server-side playback
 
-Agents can provide an `idempotencyKey`. Duplicate calls return the existing factory job rather than spending again. The database enforces uniqueness for non-null idempotency keys.
+`GET /api/generations/:id` refreshes provider state and updates the factory job.
 
-`GET /api/generations/:id` refreshes non-terminal provider jobs and updates factory state. Terminal jobs no longer repeatedly poll the provider.
+### Provider hardening
 
-Generated content is served through `/api/generations/:id/content`; provider credentials or authenticated provider URLs are not exposed to the browser.
+- OpenRouter media retrieval remains server-side so credentials never reach the browser.
+- OpenRouter model capability/pricing metadata is queried from the live video catalog instead of using a permanent hard-coded pricing table.
+- ComfyUI uses a server-owned workflow by default. Client-supplied arbitrary graphs are disabled unless intentionally enabled for development.
 
-### Cost accounting
+### Object storage
 
-OpenRouter estimates come from the current `/videos/models` pricing metadata rather than a hard-coded model price table. If a model does not advertise a directly comparable per-video-second SKU, the system records that an estimate is unavailable instead of inventing one.
+The Studio has an S3-compatible storage layer suitable for Cloudflare R2, AWS S3, MinIO or equivalent storage.
 
-`STUDIO_MAX_ESTIMATED_COST_USD` can reject a generation before provider submission when a live estimate exceeds the configured per-job cap.
+- browser uploads use short-lived signed PUT URLs
+- the database stores stable object keys/reference IDs
+- generation resolves stored references to short-lived signed GET URLs only when needed
+- temporary signed URLs are not the canonical identity of an asset
 
-Self-hosted ComfyUI cost should ultimately be reconciled from GPU telemetry rather than guessed from hosted API pricing.
+### Studio UX
 
-### ComfyUI execution boundary
+The current Studio intentionally presents creative concepts before infrastructure concepts.
 
-A deployed Studio does not accept arbitrary client-supplied ComfyUI graphs by default.
+Navigation:
 
-- `COMFYUI_WORKFLOW_JSON`: server-owned, tested API-format workflow
-- `COMFYUI_BINDINGS_JSON`: server-owned mapping from portable inputs to graph inputs
-- `COMFYUI_ALLOW_CLIENT_WORKFLOW_OVERRIDES=false`: default safe setting
+```text
+Create
+  Generate
 
-The override flag is an explicit local-development escape hatch only. This matters because installed ComfyUI custom nodes can perform much more than image/video generation.
+Talent & assets
+  Characters
+  Library
 
-### Internal access control
+Production
+  Projects
+  Jobs
+```
 
-The Studio is an internal spend-bearing application. Production requires `STUDIO_BASIC_AUTH_USER` and `STUDIO_BASIC_AUTH_PASSWORD` unless the authentication layer is intentionally replaced with a stronger session/SSO mechanism.
+Generate prioritizes:
 
-Legacy workers use matching `CONTENT_STUDIO_BASIC_AUTH_USER` / `CONTENT_STUDIO_BASIC_AUTH_PASSWORD` values when calling the Studio.
+- visual references
+- scene prompt
+- setup
+- camera
+- color
+- lighting
+- performance
+- resolution / aspect ratio / duration / audio
 
-Basic Auth is an interim internal control, not the long-term multi-user permission model.
+Provider, model and external-reference controls live under Advanced.
+
+Characters is a visual cast manager rather than a database form. Library presents reusable references as Elements. Projects supports a lightweight Project Brief. See `docs/STUDIO_UX_REFERENCE.md`.
 
 ### Legacy bridge
 
 `.archon/scripts/factory/generation_gateway.py` lets existing Python/Archon workers submit and poll through the Studio API.
 
-The gateway supports deterministic idempotency keys. A migrated product-pan worker should use a stable key derived from its production unit, for example:
-
-```text
-product-pan:<product_id>:<concept_id>
-```
-
 This is the migration seam. New workflow code should use the gateway rather than learning OpenRouter/ComfyUI directly.
-
-## Consent rule
-
-For a registered `real_person` character:
-
-- consent cannot be treated as `not_required`
-- generation is blocked unless `consent_status = verified`
-- a reference cannot become consent-verified unless the character itself is verified
-
-Synthetic characters and brand mascots do not use the real-person consent gate.
-
-Raw external reference URLs remain a development convenience. The production digital-twin path should prefer stored reference IDs with durable provenance once object storage is implemented.
 
 ## Migration rule
 
@@ -160,27 +165,22 @@ Track at minimum:
 | raw generation cost | provider economics |
 | cost per usable clip | actual economic KPI |
 
-## Next implementation slices
+## Remaining implementation slices
 
 ### Slice A — make persistence operational
 
 - run `db/schema.sql` against a development Postgres instance
-- test create/list character, project and generation APIs
-- test idempotent submit under concurrent/retried calls
+- smoke-test create/list character, project, reference and generation APIs against the real DB
 - add migration/version tooling before schema changes become frequent
 
-### Slice B — asset storage
+### Slice B — generated asset persistence
 
-Add one object-storage abstraction for:
+Source/reference object storage is implemented. Next:
 
-- source references
-- generated images
-- generated video
-- thumbnails
-- audio
-- QA frame samples
-
-The DB stores stable keys and provenance; provider URLs should not become canonical asset identities. Once storage exists, completed provider output should be copied into object storage and playback should prefer the stable asset.
+- ingest completed provider outputs into object storage
+- create durable `assets` rows
+- stop relying on provider retention for completed media
+- add generated outputs to Library
 
 ### Slice C — real H3 ComfyUI workflow
 
@@ -189,38 +189,34 @@ Do not fabricate workflow JSON from memory.
 - import a current API-format H3 workflow from the installed ComfyUI/model environment
 - validate checkpoint/custom-node names
 - version the known-good graph under `workflows/comfy/`
-- define documented server-owned input bindings
+- define documented input/output bindings
 - run smoke tests from the Studio
 
-Then repeat for LTX or another cheap high-throughput model.
+Then repeat for LTX or another cheap high-throughput model if its economics justify it.
 
 ### Slice D — migrate one legacy render path
 
 Migrate the product-pan path first because it is simpler than UGC/digital-human generation.
 
 - expose the approved still through object storage
-- call `generation_gateway.py` with that reference and a deterministic idempotency key
+- call `generation_gateway.py` with that reference
 - persist output asset + cost + validation
 - compare against the current Higgsfield product-pan output
 
 Do not migrate `animate_ugc.py` until the product-pan bridge is proven.
 
-### Slice E — character/reference UI
+### Slice E — review and approvals
 
-Replace raw project/character IDs in the Generate screen with selectors and add:
+Connect the original factory approval gate to Studio:
 
-- Characters
-- References
-- Projects
-- Jobs
-- Library
-- Review
-
-For real people, use stored references with consent/provenance metadata rather than arbitrary public URLs.
+- Review surface
+- asset-level approve / reject / needs changes
+- QA scores and retry state
+- human decision history
 
 ### Slice F — worker infrastructure
 
-Only after local ComfyUI workflows are proven:
+Only after a real local ComfyUI workflow is proven:
 
 - package the ComfyUI environment
 - deploy one rented GPU worker
@@ -245,13 +241,13 @@ Do not merge V2 to `main` simply because the architecture is broader.
 Minimum merge gates:
 
 - Studio typechecks/builds
-- Postgres schema applies cleanly
-- production configuration refuses unauthenticated/ephemeral defaults
-- idempotent generation submission is verified
+- regression tests pass
+- Python gateway syntax validation passes
+- Postgres schema applies cleanly to a real development DB
 - OpenRouter submit/poll/content smoke test passes
-- ComfyUI submit/poll/content smoke test passes with at least one real server-owned workflow
+- ComfyUI submit/poll/content smoke test passes with at least one real workflow
 - factory job persistence survives process restart
-- verified-consent rule is exercised for a real-person test character
+- source references upload and resolve through object storage
 - one legacy Camber render path works end-to-end through the V2 gateway
 - old Higgsfield path remains available for rollback/comparison
 
