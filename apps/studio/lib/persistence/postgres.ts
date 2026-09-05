@@ -105,6 +105,28 @@ export const postgresStore: ContentFactoryStore = {
     return mapCharacter(row);
   },
 
+  async updateCharacter(id, patch) {
+    const currentRows = await db()`select * from characters where id = ${id} limit 1`;
+    if (!currentRows.length) return undefined;
+    const current = mapCharacter(currentRows[0]);
+    const next = { ...current, ...patch };
+    const sql = db();
+    const [row] = await sql`
+      update characters set
+        name = ${next.name},
+        slug = ${next.slug},
+        kind = ${next.kind},
+        description = ${next.description ?? null},
+        voice_profile_id = ${next.voiceProfileId ?? null},
+        consent_status = ${next.consentStatus},
+        consent_notes = ${next.consentNotes ?? null},
+        metadata = ${sql.json(next.metadata ?? {})}
+      where id = ${id}
+      returning *
+    `;
+    return mapCharacter(row);
+  },
+
   async getCharacter(id) {
     const rows = await db()`select * from characters where id = ${id} limit 1`;
     return rows.length ? mapCharacter(rows[0]) : undefined;
