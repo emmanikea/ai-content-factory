@@ -7,15 +7,18 @@ coupled to another media vendor.
 
 Examples:
   python .archon/scripts/factory/generation_gateway.py submit \
-    --prompt "cinematic coffee grinder product pan" --tier standard --duration 8
+    --prompt "cinematic coffee grinder product pan" --tier standard --duration 8 \
+    --idempotency-key "product-pan:p03:p03-a"
 
   python .archon/scripts/factory/generation_gateway.py wait --factory-job-id <uuid>
 
-Set CONTENT_STUDIO_URL (default http://localhost:3000).
+Set CONTENT_STUDIO_URL (default http://localhost:3000). For a protected deployment also set
+CONTENT_STUDIO_BASIC_AUTH_USER and CONTENT_STUDIO_BASIC_AUTH_PASSWORD.
 """
 from __future__ import annotations
 
 import argparse
+import base64
 import json
 import os
 import sys
@@ -26,13 +29,27 @@ import urllib.request
 BASE = os.environ.get("CONTENT_STUDIO_URL", "http://localhost:3000").rstrip("/")
 
 
+def request_headers() -> dict[str, str]:
+    headers = {"Content-Type": "application/json"}
+    user = os.environ.get("CONTENT_STUDIO_BASIC_AUTH_USER")
+    password = os.environ.get("CONTENT_STUDIO_BASIC_AUTH_PASSWORD")
+    if bool(user) != bool(password):
+        raise RuntimeError(
+            "Set both CONTENT_STUDIO_BASIC_AUTH_USER and CONTENT_STUDIO_BASIC_AUTH_PASSWORD, or neither."
+        )
+    if user and password:
+        token = base64.b64encode(f"{user}:{password}".encode("utf-8")).decode("ascii")
+        headers["Authorization"] = f"Basic {token}"
+    return headers
+
+
 def request_json(path: str, method: str = "GET", payload: dict | None = None) -> dict:
     data = json.dumps(payload).encode("utf-8") if payload is not None else None
     req = urllib.request.Request(
         f"{BASE}{path}",
         data=data,
         method=method,
-        headers={"Content-Type": "application/json"},
+        headers=request_headers(),
     )
     try:
         with urllib.request.urlopen(req, timeout=900) as response:
@@ -47,6 +64,7 @@ def submit(args: argparse.Namespace) -> dict:
         "prompt": args.prompt,
         "tier": args.tier,
         "duration": args.duration,
+        "resolution": args.resolution,
         "aspectRatio": args.aspect,
         "generateAudio": args.audio,
     }
@@ -58,6 +76,8 @@ def submit(args: argparse.Namespace) -> dict:
         payload["projectId"] = args.project_id
     if args.character_id:
         payload["characterId"] = args.character_id
+    if args.idempotency_key:
+        payload["idempotencyKey"] = args.idempotency_key
     if args.reference_url:
         payload["inputReferences"] = [{"url": url} for url in args.reference_url]
     return request_json("/api/generate", "POST", payload)
@@ -85,10 +105,12 @@ def main() -> int:
     p_submit.add_argument("--provider", choices=["openrouter", "comfyui"])
     p_submit.add_argument("--model")
     p_submit.add_argument("--duration", type=int, default=8)
+    p_submit.add_argument("--resolution", default="720p")
     p_submit.add_argument("--aspect", default="9:16")
     p_submit.add_argument("--audio", action=argparse.BooleanOptionalAction, default=True)
     p_submit.add_argument("--project-id")
     p_submit.add_argument("--character-id")
+    p_submit.add_argument("--idempotency-key")
     p_submit.add_argument("--reference-url", action="append", default=[])
     p_submit.add_argument("--wait", action="store_true")
     p_submit.add_argument("--poll-interval", type=float, default=5.0)
