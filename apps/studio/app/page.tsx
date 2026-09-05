@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 
 type Job = {
@@ -27,29 +28,32 @@ type Character = {
 type Project = { id: string; name: string; projectType: string };
 type Reference = { id: string; label?: string; kind: string; consentVerified: boolean };
 
-const field: React.CSSProperties = {
-  width: "100%",
-  boxSizing: "border-box",
-  border: "1px solid #d7d7d2",
-  borderRadius: 8,
-  padding: "10px 12px",
-  background: "white",
-  fontSize: 14,
+const directionOptions = {
+  setup: ["Auto", "Commercial", "Documentary", "Editorial", "Cinematic", "UGC"],
+  camera: ["Auto", "Handheld", "Locked off", "Slow push", "Tracking", "POV"],
+  color: ["Auto", "Natural", "Clean neutral", "High contrast", "Warm film", "Cool editorial"],
+  lighting: ["Auto", "Soft daylight", "Window light", "Studio softbox", "Golden hour", "Low key"],
+  performance: ["Auto", "Natural", "Confident", "Conversational", "Energetic", "Understated"],
 };
 
 export default function HomePage() {
   const [prompt, setPrompt] = useState("");
   const [provider, setProvider] = useState("");
   const [model, setModel] = useState("");
-  const [tier, setTier] = useState("standard");
+  const [tier, setTier] = useState("quality");
   const [duration, setDuration] = useState(8);
   const [aspectRatio, setAspectRatio] = useState("9:16");
-  const [resolution, setResolution] = useState("720p");
+  const [resolution, setResolution] = useState("1080p");
   const [generateAudio, setGenerateAudio] = useState(true);
   const [projectId, setProjectId] = useState("");
   const [characterId, setCharacterId] = useState("");
   const [referenceIds, setReferenceIds] = useState<string[]>([]);
   const [referenceUrl, setReferenceUrl] = useState("");
+  const [setup, setSetup] = useState("Auto");
+  const [camera, setCamera] = useState("Auto");
+  const [color, setColor] = useState("Auto");
+  const [lighting, setLighting] = useState("Auto");
+  const [performance, setPerformance] = useState("Auto");
   const [characters, setCharacters] = useState<Character[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
   const [references, setReferences] = useState<Reference[]>([]);
@@ -61,6 +65,7 @@ export default function HomePage() {
     () => characters.find((character) => character.id === characterId),
     [characters, characterId],
   );
+  const selectedProject = useMemo(() => projects.find((project) => project.id === projectId), [projects, projectId]);
 
   const pollUrl = useMemo(() => {
     if (!job) return null;
@@ -81,10 +86,12 @@ export default function HomePage() {
         if (!response.ok) throw new Error(data.error || "Could not load projects");
         return data as Project[];
       }),
-    ]).then(([characterData, projectData]) => {
-      setCharacters(characterData);
-      setProjects(projectData);
-    }).catch((err) => setError(err instanceof Error ? err.message : "Could not load Studio data"));
+    ])
+      .then(([characterData, projectData]) => {
+        setCharacters(characterData);
+        setProjects(projectData);
+      })
+      .catch((err) => setError(err instanceof Error ? err.message : "Could not load Studio data"));
   }, []);
 
   useEffect(() => {
@@ -102,6 +109,17 @@ export default function HomePage() {
       .catch((err) => setError(err instanceof Error ? err.message : "Could not load references"));
   }, [characterId]);
 
+  function directedPrompt() {
+    const direction = [
+      setup !== "Auto" ? `format/style: ${setup}` : "",
+      camera !== "Auto" ? `camera: ${camera}` : "",
+      color !== "Auto" ? `color: ${color}` : "",
+      lighting !== "Auto" ? `lighting: ${lighting}` : "",
+      performance !== "Auto" ? `performance: ${performance}` : "",
+    ].filter(Boolean);
+    return direction.length ? `${prompt.trim()}\n\nCreative direction: ${direction.join("; ")}.` : prompt.trim();
+  }
+
   async function submit(event: FormEvent) {
     event.preventDefault();
     setBusy(true);
@@ -110,12 +128,11 @@ export default function HomePage() {
       if (selectedCharacter?.kind === "real_person" && selectedCharacter.consentStatus !== "verified") {
         throw new Error(`This real-person character is ${selectedCharacter.consentStatus}; verify consent in Characters before generating.`);
       }
-
       const response = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          prompt,
+          prompt: directedPrompt(),
           tier,
           ...(provider ? { provider } : {}),
           ...(model ? { model } : {}),
@@ -160,46 +177,121 @@ export default function HomePage() {
     }
   }
 
+  const control = (label: string, value: string, values: readonly string[], setValue: (value: string) => void) => (
+    <label className="control-chip">
+      <span>{label}</span>
+      <select value={value} onChange={(event) => setValue(event.target.value)}>
+        {values.map((option) => <option key={option}>{option}</option>)}
+      </select>
+    </label>
+  );
+
   return (
-    <main style={{ maxWidth: 1120, margin: "0 auto", padding: "38px 24px 80px" }}>
-      <div style={{ marginBottom: 28 }}>
-        <h1 style={{ fontSize: 32, lineHeight: 1.1, margin: "0 0 8px" }}>Generation Studio</h1>
-        <p style={{ maxWidth: 760, color: "#555", margin: 0, lineHeight: 1.5 }}>
-          Generate through hosted frontier models or self-hosted ComfyUI while keeping factory jobs, characters, references and costs in one system.
-        </p>
-      </div>
+    <main className="page">
+      <div className="page-kicker">Create</div>
+      <h1 className="page-title">Bring the scene to life.</h1>
+      <p className="page-subtitle">Choose your cast and references, direct the shot, and let the factory route the generation to the right engine.</p>
 
-      <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.2fr) minmax(320px, .8fr)", gap: 24, alignItems: "start" }}>
-        <form onSubmit={submit} style={{ background: "white", border: "1px solid #e2e2dd", borderRadius: 14, padding: 24 }}>
-          <label style={{ display: "block", fontSize: 13, fontWeight: 700, marginBottom: 8 }}>Prompt</label>
-          <textarea required value={prompt} onChange={(e) => setPrompt(e.target.value)} rows={7} style={{ ...field, resize: "vertical", lineHeight: 1.5 }} placeholder="Describe the shot, subject, performance, camera movement, environment and desired result." />
-
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 14, marginTop: 18 }}>
-            <label style={{ fontSize: 13 }}>Project<select value={projectId} onChange={(e) => setProjectId(e.target.value)} style={{ ...field, marginTop: 6 }}><option value="">No project</option>{projects.map((project) => <option key={project.id} value={project.id}>{project.name}</option>)}</select></label>
-            <label style={{ fontSize: 13 }}>Character<select value={characterId} onChange={(e) => setCharacterId(e.target.value)} style={{ ...field, marginTop: 6 }}><option value="">No character</option>{characters.map((character) => <option key={character.id} value={character.id}>{character.name}{character.kind === "real_person" ? ` · consent ${character.consentStatus}` : ""}</option>)}</select></label>
-            <label style={{ fontSize: 13 }}>Tier<select value={tier} onChange={(e) => setTier(e.target.value)} style={{ ...field, marginTop: 6 }}><option value="draft">Draft</option><option value="standard">Standard</option><option value="quality">Quality</option><option value="max">Max</option></select></label>
-            <label style={{ fontSize: 13 }}>Provider<select value={provider} onChange={(e) => setProvider(e.target.value)} style={{ ...field, marginTop: 6 }}><option value="">Auto</option><option value="openrouter">OpenRouter</option><option value="comfyui">ComfyUI</option></select></label>
-            <label style={{ fontSize: 13 }}>Model<input value={model} onChange={(e) => setModel(e.target.value)} style={{ ...field, marginTop: 6 }} placeholder="optional model slug" /></label>
-            <label style={{ fontSize: 13 }}>Duration<input type="number" min={1} max={30} value={duration} onChange={(e) => setDuration(Number(e.target.value))} style={{ ...field, marginTop: 6 }} /></label>
-            <label style={{ fontSize: 13 }}>Aspect ratio<select value={aspectRatio} onChange={(e) => setAspectRatio(e.target.value)} style={{ ...field, marginTop: 6 }}><option>9:16</option><option>16:9</option><option>1:1</option><option>4:5</option></select></label>
-            <label style={{ fontSize: 13 }}>Resolution<select value={resolution} onChange={(e) => setResolution(e.target.value)} style={{ ...field, marginTop: 6 }}><option>720p</option><option>1080p</option><option>480p</option></select></label>
+      <div className="studio-grid">
+        <form onSubmit={submit} className="panel creator">
+          <div className="creator-top">
+            <div className="section-title">References <span style={{ color: "#8b8b85", fontWeight: 500 }}>{referenceIds.length}/{references.length}</span></div>
+            <div className="reference-row">
+              {references.slice(0, 10).map((reference) => {
+                const selected = referenceIds.includes(reference.id);
+                return (
+                  <button
+                    type="button"
+                    key={reference.id}
+                    className={`reference-card ${selected ? "selected" : ""}`}
+                    onClick={() => setReferenceIds((current) => selected ? current.filter((id) => id !== reference.id) : [...current, reference.id])}
+                    title={reference.label || reference.id}
+                  >
+                    <img src={`/api/references/${encodeURIComponent(reference.id)}/content`} alt="" />
+                    <span>{reference.label || "Reference"}</span>
+                  </button>
+                );
+              })}
+              <Link href="/characters" className="reference-add">+ Add<br />reference</Link>
+            </div>
           </div>
 
-          {characterId ? <label style={{ display: "block", fontSize: 13, marginTop: 14 }}>Stored image references<select multiple value={referenceIds} onChange={(e) => setReferenceIds(Array.from(e.currentTarget.selectedOptions, (option) => option.value))} style={{ ...field, marginTop: 6, minHeight: 90 }}>{references.length ? references.map((reference) => <option key={reference.id} value={reference.id}>{reference.label || reference.id}{reference.consentVerified ? " · verified" : ""}</option>) : <option disabled>No stored image references</option>}</select><span style={{ display: "block", color: "#888", fontSize: 11, marginTop: 5 }}>Use Cmd/Ctrl to select more than one.</span></label> : null}
+          <div className="creator-stage">
+            <textarea
+              required
+              value={prompt}
+              onChange={(event) => setPrompt(event.target.value)}
+              className="prompt-box"
+              placeholder="Describe the scene you imagine…"
+            />
+          </div>
 
-          <details style={{ marginTop: 16 }}><summary style={{ cursor: "pointer", fontSize: 13 }}>Advanced external reference</summary><label style={{ display: "block", fontSize: 13, marginTop: 10 }}>Public HTTPS image URL<input value={referenceUrl} onChange={(e) => setReferenceUrl(e.target.value)} style={{ ...field, marginTop: 6 }} placeholder="https://…" /></label></details>
+          <div className="creator-controls">
+            <div className="control-strip">
+              {control("Setup", setup, directionOptions.setup, setSetup)}
+              {control("Camera", camera, directionOptions.camera, setCamera)}
+              {control("Color", color, directionOptions.color, setColor)}
+              {control("Lighting", lighting, directionOptions.lighting, setLighting)}
+              {control("Performance", performance, directionOptions.performance, setPerformance)}
+            </div>
 
-          <label style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 18, fontSize: 13 }}><input type="checkbox" checked={generateAudio} onChange={(e) => setGenerateAudio(e.target.checked)} /> Generate audio when supported</label>
+            <details className="advanced">
+              <summary>Advanced routing & external reference</summary>
+              <div className="advanced-grid">
+                <label className="field-label">Quality tier<select className="field" value={tier} onChange={(e) => setTier(e.target.value)}><option value="draft">Draft</option><option value="standard">Standard</option><option value="quality">Quality</option><option value="max">Max</option></select></label>
+                <label className="field-label">Provider<select className="field" value={provider} onChange={(e) => setProvider(e.target.value)}><option value="">Auto</option><option value="openrouter">OpenRouter</option><option value="comfyui">ComfyUI</option></select></label>
+                <label className="field-label">Model<input className="field" value={model} onChange={(e) => setModel(e.target.value)} placeholder="Auto" /></label>
+                <label className="field-label">External HTTPS image<input className="field" value={referenceUrl} onChange={(e) => setReferenceUrl(e.target.value)} placeholder="https://…" disabled={selectedCharacter?.kind === "real_person"} /></label>
+              </div>
+            </details>
 
-          {error ? <div style={{ marginTop: 18, padding: 12, border: "1px solid #d9b8b8", borderRadius: 8, background: "#fff7f7", fontSize: 13 }}>{error}</div> : null}
+            {error ? <div className="alert">{error}</div> : null}
 
-          <button disabled={busy || !prompt.trim()} style={{ marginTop: 20, border: 0, borderRadius: 8, padding: "11px 16px", fontWeight: 700, background: "#111", color: "white", cursor: "pointer", opacity: busy ? .55 : 1 }}>{busy ? "Working…" : "Generate"}</button>
+            <div className="generation-bar">
+              <select className="compact-field" value={resolution} onChange={(e) => setResolution(e.target.value)}><option>1080p</option><option>720p</option><option>480p</option></select>
+              <select className="compact-field" value={aspectRatio} onChange={(e) => setAspectRatio(e.target.value)}><option>9:16</option><option>16:9</option><option>1:1</option><option>4:5</option></select>
+              <select className="compact-field" value={duration} onChange={(e) => setDuration(Number(e.target.value))}><option value={5}>5s</option><option value={8}>8s</option><option value={10}>10s</option><option value={15}>15s</option><option value={30}>30s</option></select>
+              <label className="compact-field" style={{ display: "flex", alignItems: "center", gap: 7 }}><input type="checkbox" checked={generateAudio} onChange={(e) => setGenerateAudio(e.target.checked)} /> Audio</label>
+              <button className="button-primary" disabled={busy || !prompt.trim()}>{busy ? "Working…" : "Generate"}</button>
+            </div>
+          </div>
         </form>
 
-        <section style={{ background: "white", border: "1px solid #e2e2dd", borderRadius: 14, padding: 24 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}><h2 style={{ fontSize: 18, margin: 0 }}>Current job</h2>{job && pollUrl ? <button onClick={refresh} disabled={busy} style={{ border: "1px solid #d7d7d2", background: "white", borderRadius: 7, padding: "7px 10px", cursor: "pointer" }}>Refresh</button> : null}</div>
-          {!job ? <p style={{ color: "#777", fontSize: 14, lineHeight: 1.5 }}>No generation submitted yet.</p> : <div style={{ marginTop: 18, fontSize: 13, lineHeight: 1.65 }}><div><strong>Status:</strong> {job.status}</div><div><strong>Provider:</strong> {job.provider}</div><div><strong>Model:</strong> {job.model || "provider default"}</div>{job.factoryJobId ? <div style={{ wordBreak: "break-all" }}><strong>Factory job:</strong> {job.factoryJobId}</div> : null}{job.providerJobId ? <div style={{ wordBreak: "break-all" }}><strong>Provider job:</strong> {job.providerJobId}</div> : null}{job.reused ? <div><strong>Idempotency:</strong> reused existing factory job</div> : null}{typeof job.estimatedCostUsd === "number" ? <div><strong>Estimated cost:</strong> ${job.estimatedCostUsd.toFixed(4)}</div> : null}{job.costBasis ? <div style={{ color: "#777" }}>{job.costBasis}</div> : null}{job.error ? <div style={{ marginTop: 12 }}><strong>Error:</strong> {job.error}</div> : null}{job.playbackUrl ? <div style={{ marginTop: 16 }}><video src={job.playbackUrl} controls preload="metadata" style={{ width: "100%", borderRadius: 8, background: "#111" }} /></div> : null}</div>}
-        </section>
+        <aside className="side-stack">
+          <section className="panel-flat side-panel">
+            <h2 className="section-title">Production</h2>
+            <p className="section-note">Keep the scene attached to a project and reusable cast.</p>
+            <label className="field-label" style={{ marginTop: 14 }}>Project<select className="field" value={projectId} onChange={(e) => setProjectId(e.target.value)}><option value="">No project</option>{projects.map((project) => <option key={project.id} value={project.id}>{project.name}</option>)}</select></label>
+            <label className="field-label" style={{ marginTop: 12 }}>Cast<select className="field" value={characterId} onChange={(e) => setCharacterId(e.target.value)}><option value="">No character</option>{characters.map((character) => <option key={character.id} value={character.id}>{character.name}</option>)}</select></label>
+            {selectedCharacter ? (
+              <div className="cast-card">
+                <div className="avatar">{selectedCharacter.name.slice(0, 2).toUpperCase()}</div>
+                <div style={{ minWidth: 0 }}>
+                  <div style={{ fontWeight: 700, fontSize: 13 }}>{selectedCharacter.name}</div>
+                  <div className="meta">{selectedCharacter.kind.replaceAll("_", " ")}{selectedCharacter.kind === "real_person" ? ` · ${selectedCharacter.consentStatus}` : ""}</div>
+                </div>
+              </div>
+            ) : null}
+            {selectedProject ? <div className="meta" style={{ marginTop: 10 }}>Working in {selectedProject.name}</div> : null}
+          </section>
+
+          <section className="panel-flat side-panel">
+            <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "center" }}>
+              <div><h2 className="section-title">Current take</h2><p className="section-note">Provider details stay here, not in the creative surface.</p></div>
+              {job && pollUrl ? <button type="button" className="button-secondary" onClick={refresh} disabled={busy}>Refresh</button> : null}
+            </div>
+            {!job ? <p className="section-note" style={{ marginTop: 14 }}>No generation submitted yet.</p> : (
+              <div style={{ marginTop: 14, fontSize: 12, lineHeight: 1.65 }}>
+                <div><span className="status-dot" />{job.status}</div>
+                <div className="meta">{job.model || "Auto model"} · {job.provider}</div>
+                {typeof job.estimatedCostUsd === "number" ? <div className="meta">Estimated ${job.estimatedCostUsd.toFixed(4)}</div> : null}
+                {job.reused ? <div className="meta">Reused existing job</div> : null}
+                {job.error ? <div className="alert">{job.error}</div> : null}
+                {job.playbackUrl ? <video className="job-video" src={job.playbackUrl} controls preload="metadata" /> : null}
+              </div>
+            )}
+          </section>
+        </aside>
       </div>
     </main>
   );
