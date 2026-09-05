@@ -4,12 +4,16 @@ import { FormEvent, useMemo, useState } from "react";
 
 type Job = {
   id: string;
+  factoryJobId?: string;
   provider: "openrouter" | "comfyui";
   providerJobId: string;
   status: string;
   model?: string;
   outputUrls?: string[];
   error?: string;
+  providerError?: string;
+  estimatedCostUsd?: number;
+  costBasis?: string;
 };
 
 const field: React.CSSProperties = {
@@ -31,12 +35,16 @@ export default function HomePage() {
   const [aspectRatio, setAspectRatio] = useState("9:16");
   const [resolution, setResolution] = useState("720p");
   const [generateAudio, setGenerateAudio] = useState(true);
+  const [projectId, setProjectId] = useState("");
+  const [characterId, setCharacterId] = useState("");
+  const [referenceUrl, setReferenceUrl] = useState("");
   const [job, setJob] = useState<Job | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
   const pollUrl = useMemo(() => {
     if (!job) return null;
+    if (job.factoryJobId) return `/api/generations/${encodeURIComponent(job.factoryJobId)}`;
     return `/api/jobs/${job.provider}/${encodeURIComponent(job.providerJobId)}`;
   }, [job]);
 
@@ -53,6 +61,9 @@ export default function HomePage() {
           tier,
           ...(provider ? { provider } : {}),
           ...(model ? { model } : {}),
+          ...(projectId ? { projectId } : {}),
+          ...(characterId ? { characterId } : {}),
+          ...(referenceUrl ? { inputReferences: [{ url: referenceUrl }] } : {}),
           duration,
           resolution,
           aspectRatio,
@@ -77,7 +88,7 @@ export default function HomePage() {
       const response = await fetch(pollUrl, { cache: "no-store" });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Could not fetch job");
-      setJob(data);
+      setJob((previous) => ({ ...previous, ...data, error: data.providerError ?? data.error } as Job));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not fetch job");
     } finally {
@@ -90,8 +101,8 @@ export default function HomePage() {
       <div style={{ marginBottom: 32 }}>
         <div style={{ fontSize: 12, letterSpacing: 1.3, textTransform: "uppercase", color: "#666" }}>AI Content Factory</div>
         <h1 style={{ fontSize: 34, lineHeight: 1.1, margin: "8px 0 8px" }}>Generation Studio</h1>
-        <p style={{ maxWidth: 720, color: "#555", margin: 0, lineHeight: 1.5 }}>
-          One interface for hosted frontier models and self-hosted ComfyUI workers. Leave provider blank to let the router choose.
+        <p style={{ maxWidth: 760, color: "#555", margin: 0, lineHeight: 1.5 }}>
+          One production surface for hosted frontier models and self-hosted ComfyUI workers. Jobs are tracked at the factory level so the same execution path can be used by the UI, Archon workers and future agents.
         </p>
       </div>
 
@@ -107,7 +118,11 @@ export default function HomePage() {
             <label style={{ fontSize: 13 }}>Duration<input type="number" min={1} max={30} value={duration} onChange={(e) => setDuration(Number(e.target.value))} style={{ ...field, marginTop: 6 }} /></label>
             <label style={{ fontSize: 13 }}>Aspect ratio<select value={aspectRatio} onChange={(e) => setAspectRatio(e.target.value)} style={{ ...field, marginTop: 6 }}><option>9:16</option><option>16:9</option><option>1:1</option><option>4:5</option></select></label>
             <label style={{ fontSize: 13 }}>Resolution<select value={resolution} onChange={(e) => setResolution(e.target.value)} style={{ ...field, marginTop: 6 }}><option>720p</option><option>1080p</option><option>480p</option></select></label>
+            <label style={{ fontSize: 13 }}>Project ID<input value={projectId} onChange={(e) => setProjectId(e.target.value)} style={{ ...field, marginTop: 6 }} placeholder="optional" /></label>
+            <label style={{ fontSize: 13 }}>Character ID<input value={characterId} onChange={(e) => setCharacterId(e.target.value)} style={{ ...field, marginTop: 6 }} placeholder="optional" /></label>
           </div>
+
+          <label style={{ display: "block", fontSize: 13, marginTop: 14 }}>Reference image URL<input value={referenceUrl} onChange={(e) => setReferenceUrl(e.target.value)} style={{ ...field, marginTop: 6 }} placeholder="https://… optional" /></label>
 
           <label style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 18, fontSize: 13 }}>
             <input type="checkbox" checked={generateAudio} onChange={(e) => setGenerateAudio(e.target.checked)} /> Generate audio when supported
@@ -131,7 +146,10 @@ export default function HomePage() {
               <div><strong>Status:</strong> {job.status}</div>
               <div><strong>Provider:</strong> {job.provider}</div>
               <div><strong>Model:</strong> {job.model || "provider default"}</div>
-              <div style={{ wordBreak: "break-all" }}><strong>Job:</strong> {job.providerJobId}</div>
+              {job.factoryJobId ? <div style={{ wordBreak: "break-all" }}><strong>Factory job:</strong> {job.factoryJobId}</div> : null}
+              <div style={{ wordBreak: "break-all" }}><strong>Provider job:</strong> {job.providerJobId}</div>
+              {typeof job.estimatedCostUsd === "number" ? <div><strong>Estimated cost:</strong> ${job.estimatedCostUsd.toFixed(4)}</div> : null}
+              {job.costBasis ? <div style={{ color: "#777" }}>{job.costBasis}</div> : null}
               {job.error ? <div style={{ marginTop: 12 }}><strong>Error:</strong> {job.error}</div> : null}
               {job.outputUrls?.map((url) => (
                 <div key={url} style={{ marginTop: 16 }}>
