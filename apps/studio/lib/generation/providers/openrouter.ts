@@ -6,6 +6,19 @@ import type {
 } from "../types";
 
 const BASE_URL = "https://openrouter.ai/api/v1";
+const MODEL_CACHE_MS = 5 * 60 * 1000;
+
+export interface OpenRouterVideoModel {
+  id: string;
+  supported_durations?: number[];
+  supported_resolutions?: string[];
+  supported_aspect_ratios?: string[];
+  supported_frame_images?: Array<"first_frame" | "last_frame">;
+  pricing_skus?: Record<string, string>;
+  allowed_passthrough_parameters?: string[];
+}
+
+let modelCache: { expiresAt: number; models: OpenRouterVideoModel[] } | undefined;
 
 function apiKey(): string {
   const key = process.env.OPENROUTER_API_KEY;
@@ -13,10 +26,10 @@ function apiKey(): string {
   return key;
 }
 
-function headers(): HeadersInit {
+function headers(includeJson = true): HeadersInit {
   return {
     Authorization: `Bearer ${apiKey()}`,
-    "Content-Type": "application/json",
+    ...(includeJson ? { "Content-Type": "application/json" } : {}),
     ...(process.env.OPENROUTER_SITE_URL
       ? { "HTTP-Referer": process.env.OPENROUTER_SITE_URL }
       : {}),
@@ -46,7 +59,7 @@ function normalize(raw: Record<string, any>, model?: string): GenerationJob {
   const urls = [
     ...(Array.isArray(raw.unsigned_urls) ? raw.unsigned_urls : []),
     ...(Array.isArray(raw.output_urls) ? raw.output_urls : []),
-  ].filter(Boolean);
+  ].filter((value): value is string => typeof value === "string" && value.length > 0);
 
   return {
     id: `openrouter:${raw.id}`,
@@ -76,12 +89,52 @@ async function request(path: string, init?: RequestInit) {
   return response.json();
 }
 
+export async function listOpenRouterVideoModels(): Promise<OpenRouterVideoModel[]> {
+  if (modelCache && modelCache.expiresAt > Date.now()) return modelCache.models;
+  const raw = await request("/videos/models");
+  const models = Array.isArray(raw?.data) ? raw.data as OpenRouterVideoModel[] : [];
+  modelCache = { models, expiresAt: Date.now() + MODEL_CACHE_MS };
+  return models;
+}
+
+export async function getOpenRouterVideoModel(modelId: string) {
+  const models = await listOpenRouterVideoModels();
+  return models.find((model) => model.id === modelId);
+}
+
+async function validateRequest(input: GenerationRequest, modelId: string) {
+  const model = await getOpenRouterVideoModel(modelId);
+  if (!model) throw new Error(`OpenRouter video model is not currently available: ${modelId}`);
+
+  if (input.duration != null && model.supported_durations?.length) {
+    const allowed = model.supported_durations.map(Number);
+    if (!allowed.includes(Number(input.duration))) {
+      throw new Error(`${modelId} does not support ${input.duration}s. Supported durations: ${allowed.join(", ")}`);
+    }
+  }
+  if (input.resolution && model.supported_resolutions?.length && !model.supported_resolutions.includes(input.resolution)) {
+    throw new Error(`${modelId} does not support ${input.resolution}. Supported resolutions: ${model.supported_resolutions.join(", ")}`);
+  }
+  if (input.aspectRatio && model.supported_aspect_ratios?.length && !model.supported_aspect_ratios.includes(input.aspectRatio)) {
+    throw new Error(`${modelId} does not support ${input.aspectRatio}. Supported aspect ratios: ${model.supported_aspect_ratios.join(", ")}`);
+  }
+  if (input.frameImages?.length && model.supported_frame_images?.length) {
+    for (const frame of input.frameImages) {
+      if (!model.supported_frame_images.includes(frame.frameType)) {
+        throw new Error(`${modelId} does not support ${frame.frameType} frame control`);
+      }
+    }
+  }
+}
+
 export const openRouterProvider: VideoProvider = {
   async submit(input: GenerationRequest): Promise<GenerationJob> {
     const model = input.model ?? process.env.OPENROUTER_VIDEO_MODEL;
     if (!model) {
       throw new Error("Set a model or configure OPENROUTER_VIDEO_MODEL");
     }
+
+    await validateRequest(input, model);
 
     const body: Record<string, unknown> = {
       model,
@@ -128,6 +181,25 @@ export const openRouterProvider: VideoProvider = {
   },
 };
 
-export async function listOpenRouterVideoModels() {
-  return request("/videos/models");
+export async function fetchOpenRouterContent(
+  providerJobId: string,
+  index = 0,
+  range?: string,
+): Promise<Response> {
+  const response = await fetch(
+    `${BASE_URL}/videos/${encodeURIComponent(providerJobId)}/content?index=${index}`,
+    {
+      headers: {
+        ...headers(false),
+        ...(range ? { Range: range } : {}),
+      },
+      cache: "no-store",
+      redirect: "follow",
+    },
+  );
+  if (!response.ok && response.status !== 206) {
+    const body = await response.text();
+    throw new Error(`OpenRouter content ${response.status}: ${body.slice(0, 800)}`);
+  }
+  return response;
 }

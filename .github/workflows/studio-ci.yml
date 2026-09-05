@@ -1,0 +1,42 @@
+name: Generation Studio CI
+
+on:
+  pull_request:
+    paths:
+      - 'apps/studio/**'
+      - '.archon/scripts/factory/generation_gateway.py'
+      - '.github/workflows/studio-ci.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'apps/studio/**'
+      - '.archon/scripts/factory/generation_gateway.py'
+      - '.github/workflows/studio-ci.yml'
+
+jobs:
+  validate-studio:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/studio
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: apps/studio/package.json
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Regression tests
+        run: npm test
+      - name: Python gateway syntax
+        working-directory: .
+        run: python -m py_compile .archon/scripts/factory/generation_gateway.py
+      - name: Build
+        run: npm run build
+        env:
+          OPENROUTER_VIDEO_MODEL: google/veo-3.1-lite
