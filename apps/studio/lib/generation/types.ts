@@ -17,8 +17,9 @@ export interface GenerationRequest {
   resolution?: string;
   aspectRatio?: string;
   generateAudio?: boolean;
-  inputReferences?: Array<{ url: string; type?: "image" | "video" | "audio" }>;
-  frameImages?: Array<{ url: string; type: "first_frame" | "last_frame" }>;
+  /** Portable OpenRouter visual references. Provider-specific video/audio refs belong in providerOptions. */
+  inputReferences?: Array<{ url: string }>;
+  frameImages?: Array<{ url: string; frameType: "first_frame" | "last_frame" }>;
   providerOptions?: Record<string, unknown>;
 }
 
