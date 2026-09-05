@@ -1,4 +1,5 @@
 import type { Character, CharacterReference, GenerationRecord, Project } from "@/lib/domain/types";
+import { postgresStore } from "./postgres";
 
 export interface ContentFactoryStore {
   createCharacter(input: Omit<Character, "id" | "createdAt" | "updatedAt">): Promise<Character>;
@@ -76,9 +77,6 @@ export const memoryStore: ContentFactoryStore = {
   },
 };
 
-// V2 keeps persistence behind this boundary. Memory is intentionally the default so the
-// Studio can run before a database is configured. A Postgres adapter should implement this
-// interface and be selected here once DATABASE_URL/SUPABASE_URL is present.
 export function getStore(): ContentFactoryStore {
-  return memoryStore;
+  return process.env.DATABASE_URL ? postgresStore : memoryStore;
 }
