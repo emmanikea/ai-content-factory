@@ -21,6 +21,12 @@ export async function POST(request: Request) {
     if (!name || !slug) return NextResponse.json({ error: "name and slug are required" }, { status: 400 });
     if (!kinds.has(kind)) return NextResponse.json({ error: "invalid character kind" }, { status: 400 });
     if (!consentStates.has(consentStatus)) return NextResponse.json({ error: "invalid consent status" }, { status: 400 });
+    if (kind === "real_person" && consentStatus === "not_required") {
+      return NextResponse.json(
+        { error: "real-person characters require pending, verified, or revoked consent status" },
+        { status: 400 },
+      );
+    }
 
     const character = await getStore().createCharacter({
       name,
