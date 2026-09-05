@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { toJsonObject } from "@/lib/domain/json";
+import type { GenerationRecord } from "@/lib/domain/types";
 import { estimateGenerationCost } from "@/lib/generation/costs";
 import { selectProvider, submitGeneration } from "@/lib/generation/router";
 import type { GenerationProvider, GenerationRequest, GenerationTier } from "@/lib/generation/types";
@@ -14,7 +15,7 @@ function validateHttpsUrl(raw: string) {
   if (url.protocol !== "https:") throw new Error(`reference URLs must use HTTPS: ${raw}`);
 }
 
-function reusedResponse(record: Awaited<ReturnType<ReturnType<typeof getStore>["getGeneration"]>>) {
+function reusedResponse(record: GenerationRecord | undefined) {
   if (!record) return undefined;
   return {
     id: `factory:${record.id}`,
@@ -108,7 +109,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const initialRecord = {
+    const initialRecord: Omit<GenerationRecord, "id" | "createdAt" | "updatedAt"> = {
       projectId: routed.projectId,
       characterId: routed.characterId,
       idempotencyKey: routed.idempotencyKey,
