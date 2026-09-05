@@ -2,8 +2,16 @@ import { NextResponse } from "next/server";
 
 import { getStore } from "@/lib/persistence/store";
 import type { ReferenceKind } from "@/lib/domain/types";
+import { isObjectStorageConfigured, objectExists } from "@/lib/storage/s3";
 
 const kinds = new Set<ReferenceKind>(["image", "video", "audio", "performance", "location", "wardrobe"]);
+
+function httpsUrl(value: unknown) {
+  if (!value) return undefined;
+  const url = new URL(String(value));
+  if (url.protocol !== "https:") throw new Error("sourceUrl must use HTTPS");
+  return url.toString();
+}
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
@@ -17,8 +25,19 @@ export async function POST(request: Request) {
     const kind = body.kind as ReferenceKind;
     const storageKey = String(body.storageKey ?? "").trim();
     const characterId = body.characterId ? String(body.characterId) : undefined;
+    const sourceUrl = httpsUrl(body.sourceUrl);
     if (!kinds.has(kind)) return NextResponse.json({ error: "invalid reference kind" }, { status: 400 });
     if (!storageKey) return NextResponse.json({ error: "storageKey is required" }, { status: 400 });
+
+    if (isObjectStorageConfigured()) {
+      const exists = await objectExists(storageKey);
+      if (!exists && !sourceUrl) {
+        return NextResponse.json(
+          { error: "uploaded object was not found; complete the signed upload before registering the reference" },
+          { status: 409 },
+        );
+      }
+    }
 
     const store = getStore();
     const character = characterId ? await store.getCharacter(characterId) : undefined;
@@ -35,7 +54,7 @@ export async function POST(request: Request) {
       characterId,
       kind,
       storageKey,
-      sourceUrl: body.sourceUrl,
+      sourceUrl,
       label: body.label,
       consentVerified,
       metadata: body.metadata ?? {},
