@@ -9,11 +9,12 @@ type Job = {
   providerJobId: string;
   status: string;
   model?: string;
-  outputUrls?: string[];
+  playbackUrl?: string;
   error?: string;
   providerError?: string;
   estimatedCostUsd?: number;
   costBasis?: string;
+  reused?: boolean;
 };
 
 const field: React.CSSProperties = {
@@ -45,7 +46,8 @@ export default function HomePage() {
   const pollUrl = useMemo(() => {
     if (!job) return null;
     if (job.factoryJobId) return `/api/generations/${encodeURIComponent(job.factoryJobId)}`;
-    return `/api/jobs/${job.provider}/${encodeURIComponent(job.providerJobId)}`;
+    if (job.providerJobId) return `/api/jobs/${job.provider}/${encodeURIComponent(job.providerJobId)}`;
+    return null;
   }, [job]);
 
   async function submit(event: FormEvent) {
@@ -88,7 +90,12 @@ export default function HomePage() {
       const response = await fetch(pollUrl, { cache: "no-store" });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Could not fetch job");
-      setJob((previous) => ({ ...previous, ...data, error: data.providerError ?? data.error } as Job));
+      setJob((previous) => ({
+        ...previous,
+        ...data,
+        factoryJobId: previous?.factoryJobId ?? data.factoryJobId ?? data.id,
+        error: data.providerError ?? data.error,
+      } as Job));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not fetch job");
     } finally {
@@ -138,7 +145,7 @@ export default function HomePage() {
         <section style={{ background: "white", border: "1px solid #e2e2dd", borderRadius: 14, padding: 24 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
             <h2 style={{ fontSize: 18, margin: 0 }}>Current job</h2>
-            {job ? <button onClick={refresh} disabled={busy} style={{ border: "1px solid #d7d7d2", background: "white", borderRadius: 7, padding: "7px 10px", cursor: "pointer" }}>Refresh</button> : null}
+            {job && pollUrl ? <button onClick={refresh} disabled={busy} style={{ border: "1px solid #d7d7d2", background: "white", borderRadius: 7, padding: "7px 10px", cursor: "pointer" }}>Refresh</button> : null}
           </div>
 
           {!job ? <p style={{ color: "#777", fontSize: 14, lineHeight: 1.5 }}>No generation submitted yet.</p> : (
@@ -147,15 +154,16 @@ export default function HomePage() {
               <div><strong>Provider:</strong> {job.provider}</div>
               <div><strong>Model:</strong> {job.model || "provider default"}</div>
               {job.factoryJobId ? <div style={{ wordBreak: "break-all" }}><strong>Factory job:</strong> {job.factoryJobId}</div> : null}
-              <div style={{ wordBreak: "break-all" }}><strong>Provider job:</strong> {job.providerJobId}</div>
+              {job.providerJobId ? <div style={{ wordBreak: "break-all" }}><strong>Provider job:</strong> {job.providerJobId}</div> : null}
+              {job.reused ? <div><strong>Idempotency:</strong> reused existing factory job</div> : null}
               {typeof job.estimatedCostUsd === "number" ? <div><strong>Estimated cost:</strong> ${job.estimatedCostUsd.toFixed(4)}</div> : null}
               {job.costBasis ? <div style={{ color: "#777" }}>{job.costBasis}</div> : null}
               {job.error ? <div style={{ marginTop: 12 }}><strong>Error:</strong> {job.error}</div> : null}
-              {job.outputUrls?.map((url) => (
-                <div key={url} style={{ marginTop: 16 }}>
-                  <video src={url} controls style={{ width: "100%", borderRadius: 8, background: "#111" }} />
+              {job.playbackUrl ? (
+                <div style={{ marginTop: 16 }}>
+                  <video src={job.playbackUrl} controls preload="metadata" style={{ width: "100%", borderRadius: 8, background: "#111" }} />
                 </div>
-              ))}
+              ) : null}
             </div>
           )}
         </section>
