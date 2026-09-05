@@ -125,6 +125,11 @@ export const postgresStore: ContentFactoryStore = {
     return mapReference(row);
   },
 
+  async getReference(id) {
+    const rows = await db()`select * from references where id = ${id} limit 1`;
+    return rows.length ? mapReference(rows[0]) : undefined;
+  },
+
   async listReferences(characterId) {
     const sql = db();
     const rows = characterId
