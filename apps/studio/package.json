@@ -1,7 +1,7 @@
 {
   "name": "ai-content-factory-studio",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "next": "^15.5.2",
+    "postgres": "^3.4.7",
     "react": "^19.1.1",
     "react-dom": "^19.1.1"
   },
