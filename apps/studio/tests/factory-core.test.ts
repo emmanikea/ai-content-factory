@@ -4,6 +4,7 @@ import test from "node:test";
 import { toJsonObject } from "../lib/domain/json";
 import { selectProvider } from "../lib/generation/router";
 import { memoryStore } from "../lib/persistence/store";
+import { resolveImageReference } from "../lib/references/resolve";
 
 function withEnv(
   values: Record<string, string | undefined>,
@@ -83,4 +84,68 @@ test("memory store supports character lookup used by consent enforcement", async
   });
 
   assert.equal((await memoryStore.getCharacter(character.id))?.consentStatus, "verified");
+});
+
+test("stored synthetic image reference can resolve to a public HTTPS source without object storage", async () => {
+  await withEnv(
+    {
+      OBJECT_STORAGE_BUCKET: undefined,
+      OBJECT_STORAGE_ACCESS_KEY_ID: undefined,
+      OBJECT_STORAGE_SECRET_ACCESS_KEY: undefined,
+    },
+    async () => {
+      const character = await memoryStore.createCharacter({
+        name: "Synthetic Test",
+        slug: `synthetic-${crypto.randomUUID()}`,
+        kind: "synthetic",
+        consentStatus: "not_required",
+        metadata: {},
+      });
+      const reference = await memoryStore.addReference({
+        characterId: character.id,
+        kind: "image",
+        storageKey: `external/${crypto.randomUUID()}`,
+        sourceUrl: "https://example.com/reference.jpg",
+        consentVerified: false,
+        metadata: {},
+      });
+
+      assert.equal(
+        await resolveImageReference(reference, memoryStore, character.id),
+        "https://example.com/reference.jpg",
+      );
+    },
+  );
+});
+
+test("real-person reference is rejected when reference authorization is not verified", async () => {
+  await withEnv(
+    {
+      OBJECT_STORAGE_BUCKET: undefined,
+      OBJECT_STORAGE_ACCESS_KEY_ID: undefined,
+      OBJECT_STORAGE_SECRET_ACCESS_KEY: undefined,
+    },
+    async () => {
+      const character = await memoryStore.createCharacter({
+        name: "Verified Person",
+        slug: `verified-person-${crypto.randomUUID()}`,
+        kind: "real_person",
+        consentStatus: "verified",
+        metadata: {},
+      });
+      const reference = await memoryStore.addReference({
+        characterId: character.id,
+        kind: "image",
+        storageKey: `external/${crypto.randomUUID()}`,
+        sourceUrl: "https://example.com/person.jpg",
+        consentVerified: false,
+        metadata: {},
+      });
+
+      await assert.rejects(
+        () => resolveImageReference(reference, memoryStore, character.id),
+        /not verified for real-person generation/,
+      );
+    },
+  );
 });
