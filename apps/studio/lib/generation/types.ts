@@ -10,6 +10,9 @@ export type GenerationStatus =
 
 export interface GenerationRequest {
   prompt: string;
+  projectId?: string;
+  characterId?: string;
+  referenceIds?: string[];
   tier?: GenerationTier;
   provider?: GenerationProvider;
   model?: string;
@@ -25,6 +28,7 @@ export interface GenerationRequest {
 
 export interface GenerationJob {
   id: string;
+  factoryJobId?: string;
   provider: GenerationProvider;
   providerJobId: string;
   model?: string;
