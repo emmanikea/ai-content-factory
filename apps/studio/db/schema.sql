@@ -43,6 +43,7 @@ create table if not exists generation_jobs (
   id uuid primary key default gen_random_uuid(),
   project_id uuid references projects(id) on delete set null,
   character_id uuid references characters(id) on delete set null,
+  idempotency_key text,
   provider text not null,
   provider_job_id text,
   model text,
@@ -63,9 +64,15 @@ create table if not exists generation_jobs (
   updated_at timestamptz not null default now()
 );
 
+-- Keep schema.sql safe to re-run against an early V2 database created before idempotency was added.
+alter table generation_jobs add column if not exists idempotency_key text;
+
 create index if not exists generation_jobs_status_idx on generation_jobs(status, created_at desc);
 create index if not exists generation_jobs_project_idx on generation_jobs(project_id, created_at desc);
 create index if not exists generation_jobs_character_idx on generation_jobs(character_id, created_at desc);
+create unique index if not exists generation_jobs_idempotency_key_idx
+  on generation_jobs(idempotency_key)
+  where idempotency_key is not null;
 
 create table if not exists assets (
   id uuid primary key default gen_random_uuid(),
