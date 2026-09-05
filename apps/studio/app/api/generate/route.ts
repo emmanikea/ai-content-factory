@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { toJsonObject } from "@/lib/domain/json";
-import type { GenerationRecord } from "@/lib/domain/types";
+import type { Character, GenerationRecord } from "@/lib/domain/types";
 import { estimateGenerationCost } from "@/lib/generation/costs";
 import { selectProvider, submitGeneration } from "@/lib/generation/router";
 import type { GenerationProvider, GenerationRequest, GenerationTier } from "@/lib/generation/types";
@@ -67,19 +67,28 @@ export async function POST(request: Request) {
       idempotencyKey: idempotencyKey || undefined,
     };
     const persistedRequest = { ...normalized };
-
     const store = getStore();
 
     if (normalized.projectId && !(await store.getProject(normalized.projectId))) {
       return NextResponse.json({ error: "project not found" }, { status: 404 });
     }
 
+    let selectedCharacter: Character | undefined;
     if (normalized.characterId) {
-      const character = await store.getCharacter(normalized.characterId);
-      if (!character) return NextResponse.json({ error: "character not found" }, { status: 404 });
-      if (character.kind === "real_person" && character.consentStatus !== "verified") {
+      selectedCharacter = await store.getCharacter(normalized.characterId);
+      if (!selectedCharacter) return NextResponse.json({ error: "character not found" }, { status: 404 });
+      if (selectedCharacter.kind === "real_person" && selectedCharacter.consentStatus !== "verified") {
         return NextResponse.json(
-          { error: `real-person character consent is ${character.consentStatus}; verified consent is required for generation` },
+          { error: `real-person character consent is ${selectedCharacter.consentStatus}; verified consent is required for generation` },
+          { status: 409 },
+        );
+      }
+      if (
+        selectedCharacter.kind === "real_person" &&
+        ((body.inputReferences?.length ?? 0) > 0 || (body.frameImages?.length ?? 0) > 0)
+      ) {
+        return NextResponse.json(
+          { error: "real-person generation requires registered consent-verified referenceIds; raw external reference URLs are not allowed" },
           { status: 409 },
         );
       }
