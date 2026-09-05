@@ -21,6 +21,10 @@ function iso(value: Date | string) {
   return new Date(value).toISOString();
 }
 
+function isoOptional(value: Date | string | null | undefined) {
+  return value == null ? undefined : iso(value);
+}
+
 function mapCharacter(row: any): Character {
   return {
     id: row.id,
@@ -68,6 +72,7 @@ function mapGeneration(row: any): GenerationRecord {
     id: row.id,
     projectId: row.project_id ?? undefined,
     characterId: row.character_id ?? undefined,
+    idempotencyKey: row.idempotency_key ?? undefined,
     provider: row.provider,
     providerJobId: row.provider_job_id ?? undefined,
     model: row.model ?? undefined,
@@ -82,6 +87,8 @@ function mapGeneration(row: any): GenerationRecord {
     aspectRatio: row.aspect_ratio ?? undefined,
     estimatedCostUsd: row.estimated_cost_usd == null ? undefined : Number(row.estimated_cost_usd),
     actualCostUsd: row.actual_cost_usd == null ? undefined : Number(row.actual_cost_usd),
+    startedAt: isoOptional(row.started_at),
+    completedAt: isoOptional(row.completed_at),
     createdAt: iso(row.created_at),
     updatedAt: iso(row.updated_at),
   };
@@ -96,6 +103,11 @@ export const postgresStore: ContentFactoryStore = {
       returning *
     `;
     return mapCharacter(row);
+  },
+
+  async getCharacter(id) {
+    const rows = await db()`select * from characters where id = ${id} limit 1`;
+    return rows.length ? mapCharacter(rows[0]) : undefined;
   },
 
   async listCharacters() {
@@ -131,6 +143,11 @@ export const postgresStore: ContentFactoryStore = {
     return mapProject(row);
   },
 
+  async getProject(id) {
+    const rows = await db()`select * from projects where id = ${id} limit 1`;
+    return rows.length ? mapProject(rows[0]) : undefined;
+  },
+
   async listProjects() {
     const rows = await db()`select * from projects order by created_at desc`;
     return rows.map(mapProject);
@@ -140,15 +157,16 @@ export const postgresStore: ContentFactoryStore = {
     const sql = db();
     const [row] = await sql`
       insert into generation_jobs (
-        project_id, character_id, provider, provider_job_id, model, tier, status, prompt,
+        project_id, character_id, idempotency_key, provider, provider_job_id, model, tier, status, prompt,
         request_json, response_json, attempt_number, duration_seconds, resolution, aspect_ratio,
-        estimated_cost_usd, actual_cost_usd
+        estimated_cost_usd, actual_cost_usd, started_at, completed_at
       ) values (
-        ${input.projectId ?? null}, ${input.characterId ?? null}, ${input.provider}, ${input.providerJobId ?? null},
-        ${input.model ?? null}, ${input.tier}, ${input.status}, ${input.prompt},
+        ${input.projectId ?? null}, ${input.characterId ?? null}, ${input.idempotencyKey ?? null},
+        ${input.provider}, ${input.providerJobId ?? null}, ${input.model ?? null}, ${input.tier}, ${input.status}, ${input.prompt},
         ${sql.json(input.requestJson ?? {})}, ${sql.json(input.responseJson ?? {})}, ${input.attemptNumber},
         ${input.durationSeconds ?? null}, ${input.resolution ?? null}, ${input.aspectRatio ?? null},
-        ${input.estimatedCostUsd ?? null}, ${input.actualCostUsd ?? null}
+        ${input.estimatedCostUsd ?? null}, ${input.actualCostUsd ?? null},
+        ${input.startedAt ?? null}, ${input.completedAt ?? null}
       ) returning *
     `;
     return mapGeneration(row);
@@ -164,6 +182,7 @@ export const postgresStore: ContentFactoryStore = {
       update generation_jobs set
         project_id = ${next.projectId ?? null},
         character_id = ${next.characterId ?? null},
+        idempotency_key = ${next.idempotencyKey ?? null},
         provider = ${next.provider},
         provider_job_id = ${next.providerJobId ?? null},
         model = ${next.model ?? null},
@@ -177,7 +196,9 @@ export const postgresStore: ContentFactoryStore = {
         resolution = ${next.resolution ?? null},
         aspect_ratio = ${next.aspectRatio ?? null},
         estimated_cost_usd = ${next.estimatedCostUsd ?? null},
-        actual_cost_usd = ${next.actualCostUsd ?? null}
+        actual_cost_usd = ${next.actualCostUsd ?? null},
+        started_at = ${next.startedAt ?? null},
+        completed_at = ${next.completedAt ?? null}
       where id = ${id}
       returning *
     `;
@@ -186,6 +207,11 @@ export const postgresStore: ContentFactoryStore = {
 
   async getGeneration(id) {
     const rows = await db()`select * from generation_jobs where id = ${id} limit 1`;
+    return rows.length ? mapGeneration(rows[0]) : undefined;
+  },
+
+  async getGenerationByIdempotencyKey(key) {
+    const rows = await db()`select * from generation_jobs where idempotency_key = ${key} limit 1`;
     return rows.length ? mapGeneration(rows[0]) : undefined;
   },
 
