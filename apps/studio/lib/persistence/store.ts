@@ -3,6 +3,7 @@ import { postgresStore } from "./postgres";
 
 export interface ContentFactoryStore {
   createCharacter(input: Omit<Character, "id" | "createdAt" | "updatedAt">): Promise<Character>;
+  updateCharacter(id: string, patch: Partial<Omit<Character, "id" | "createdAt" | "updatedAt">>): Promise<Character | undefined>;
   getCharacter(id: string): Promise<Character | undefined>;
   listCharacters(): Promise<Character[]>;
   addReference(input: Omit<CharacterReference, "id" | "createdAt">): Promise<CharacterReference>;
@@ -37,6 +38,13 @@ export const memoryStore: ContentFactoryStore = {
     const row: Character = { ...input, id: id(), createdAt: timestamp, updatedAt: timestamp };
     characters.set(row.id, row);
     return row;
+  },
+  async updateCharacter(idValue, patch) {
+    const existing = characters.get(idValue);
+    if (!existing) return undefined;
+    const updated = { ...existing, ...patch, id: existing.id, updatedAt: now() };
+    characters.set(idValue, updated);
+    return updated;
   },
   async getCharacter(idValue) {
     return characters.get(idValue);
