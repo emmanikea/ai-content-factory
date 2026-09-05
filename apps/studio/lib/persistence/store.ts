@@ -6,6 +6,7 @@ export interface ContentFactoryStore {
   getCharacter(id: string): Promise<Character | undefined>;
   listCharacters(): Promise<Character[]>;
   addReference(input: Omit<CharacterReference, "id" | "createdAt">): Promise<CharacterReference>;
+  getReference(id: string): Promise<CharacterReference | undefined>;
   listReferences(characterId?: string): Promise<CharacterReference[]>;
   createProject(input: Omit<Project, "id" | "createdAt" | "updatedAt">): Promise<Project>;
   getProject(id: string): Promise<Project | undefined>;
@@ -47,6 +48,9 @@ export const memoryStore: ContentFactoryStore = {
     const row: CharacterReference = { ...input, id: id(), createdAt: now() };
     references.set(row.id, row);
     return row;
+  },
+  async getReference(idValue) {
+    return references.get(idValue);
   },
   async listReferences(characterId) {
     return [...references.values()].filter((row) => !characterId || row.characterId === characterId);
