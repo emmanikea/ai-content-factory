@@ -95,16 +95,17 @@ export const openRouterProvider: VideoProvider = {
       ...(input.inputReferences?.length
         ? {
             input_references: input.inputReferences.map((reference) => ({
-              url: reference.url,
-              ...(reference.type ? { type: reference.type } : {}),
+              type: "image_url",
+              image_url: { url: reference.url },
             })),
           }
         : {}),
       ...(input.frameImages?.length
         ? {
             frame_images: input.frameImages.map((frame) => ({
-              url: frame.url,
-              type: frame.type,
+              type: "image_url",
+              image_url: { url: frame.url },
+              frame_type: frame.frameType,
             })),
           }
         : {}),
