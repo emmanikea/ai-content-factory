@@ -6,6 +6,7 @@ import { estimateGenerationCost } from "@/lib/generation/costs";
 import { selectProvider, submitGeneration } from "@/lib/generation/router";
 import type { GenerationProvider, GenerationRequest, GenerationTier } from "@/lib/generation/types";
 import { getStore } from "@/lib/persistence/store";
+import { resolveImageReferenceIds } from "@/lib/references/resolve";
 
 const validProviders = new Set<GenerationProvider>(["openrouter", "comfyui"]);
 const validTiers = new Set<GenerationTier>(["draft", "standard", "quality", "max"]);
@@ -60,11 +61,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: error instanceof Error ? error.message : "invalid reference URL" }, { status: 400 });
     }
 
-    const normalized: GenerationRequest = {
+    let normalized: GenerationRequest = {
       ...body,
       prompt: body.prompt.trim(),
       idempotencyKey: idempotencyKey || undefined,
     };
+    const persistedRequest = { ...normalized };
 
     const store = getStore();
 
@@ -87,6 +89,28 @@ export async function POST(request: Request) {
       const existing = await store.getGenerationByIdempotencyKey(normalized.idempotencyKey);
       const response = reusedResponse(existing);
       if (response) return NextResponse.json(response, { status: 200 });
+    }
+
+    if (normalized.referenceIds?.length) {
+      try {
+        const urls = await resolveImageReferenceIds(
+          normalized.referenceIds,
+          store,
+          normalized.characterId,
+        );
+        normalized = {
+          ...normalized,
+          inputReferences: [
+            ...(normalized.inputReferences ?? []),
+            ...urls.map((url) => ({ url })),
+          ],
+        };
+      } catch (error) {
+        return NextResponse.json(
+          { error: error instanceof Error ? error.message : "unable to resolve stored references" },
+          { status: 409 },
+        );
+      }
     }
 
     const selectedProvider = selectProvider(normalized);
@@ -118,7 +142,7 @@ export async function POST(request: Request) {
       tier: routed.tier ?? "standard",
       status: "queued",
       prompt: routed.prompt,
-      requestJson: toJsonObject(routed),
+      requestJson: toJsonObject({ ...persistedRequest, provider: selectedProvider }),
       responseJson: {},
       attemptNumber: 1,
       durationSeconds: routed.duration,
