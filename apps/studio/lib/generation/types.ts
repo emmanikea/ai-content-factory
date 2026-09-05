@@ -13,6 +13,7 @@ export interface GenerationRequest {
   projectId?: string;
   characterId?: string;
   referenceIds?: string[];
+  idempotencyKey?: string;
   tier?: GenerationTier;
   provider?: GenerationProvider;
   model?: string;
@@ -20,7 +21,7 @@ export interface GenerationRequest {
   resolution?: string;
   aspectRatio?: string;
   generateAudio?: boolean;
-  /** Portable OpenRouter visual references. Provider-specific video/audio refs belong in providerOptions. */
+  /** Portable visual references. OpenRouter currently accepts public HTTPS image URLs here. */
   inputReferences?: Array<{ url: string }>;
   frameImages?: Array<{ url: string; frameType: "first_frame" | "last_frame" }>;
   providerOptions?: Record<string, unknown>;
@@ -35,6 +36,7 @@ export interface GenerationJob {
   status: GenerationStatus;
   pollingUrl?: string;
   outputUrls?: string[];
+  playbackUrl?: string;
   error?: string;
   estimatedCostUsd?: number;
   raw?: unknown;
