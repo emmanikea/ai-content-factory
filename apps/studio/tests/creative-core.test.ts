@@ -5,14 +5,14 @@ import { preflightGeneration } from "../lib/creative/preflight";
 import { routeCreativeBrief } from "../lib/creative/workflow-router";
 import type {
   AssetLock,
+  ConsentCheck,
   CreativeBrief,
   ModelContract,
   ProductionPlan,
 } from "../lib/creative/types";
+import type { GenerationRequest } from "../lib/generation/types";
 
-function makeBrief(
-  overrides: Partial<CreativeBrief> = {},
-): CreativeBrief {
+function makeBrief(overrides: Partial<CreativeBrief> = {}): CreativeBrief {
   return {
     id: "brief-1",
     projectId: "project-1",
@@ -61,9 +61,7 @@ function makePlan(
   };
 }
 
-function makeModel(
-  overrides: Partial<ModelContract> = {},
-): ModelContract {
+function makeModel(overrides: Partial<ModelContract> = {}): ModelContract {
   return {
     provider: "openrouter",
     model: "test/video-model",
@@ -93,13 +91,9 @@ function runPreflight(options?: {
   brief?: CreativeBrief;
   plan?: ProductionPlan;
   model?: ModelContract;
-  request?: Record<string, unknown>;
+  request?: Partial<GenerationRequest>;
   assetLocks?: AssetLock[];
-  consentChecks?: Array<{
-    characterId: string;
-    kind: "real_person" | "synthetic" | "brand_mascot";
-    consentStatus: "not_required" | "pending" | "verified" | "revoked";
-  }>;
+  consentChecks?: ConsentCheck[];
   resolvedReferenceCounts?: { image?: number; video?: number; audio?: number };
   estimatedCostUsd?: number;
 }) {
@@ -171,7 +165,12 @@ test("video edit preflight blocks a model without video-edit capability", () => 
     },
   });
 
-  const result = runPreflight({ brief, plan, model });
+  const result = runPreflight({
+    brief,
+    plan,
+    model,
+    resolvedReferenceCounts: { video: 1 },
+  });
   assert.equal(result.status, "block");
   assert.ok(
     result.checks.some(
@@ -180,8 +179,23 @@ test("video edit preflight blocks a model without video-edit capability", () => 
   );
 });
 
+test("video edit preflight blocks when the source video was not resolved", () => {
+  const brief = makeBrief({ intent: "video_edit" });
+  const plan = makePlan(brief, { workflow: "video_edit" });
+
+  const result = runPreflight({ brief, plan });
+  assert.equal(result.status, "block");
+  assert.ok(
+    result.checks.some(
+      (item) => item.code === "video_edit_source" && item.status === "block",
+    ),
+  );
+});
+
 test("real-person generation blocks when consent is not verified", () => {
+  const brief = makeBrief({ characterIds: ["person-1"] });
   const result = runPreflight({
+    brief,
     consentChecks: [
       {
         characterId: "person-1",
@@ -199,10 +213,20 @@ test("real-person generation blocks when consent is not verified", () => {
   );
 });
 
+test("character generation blocks when authorization context was not resolved", () => {
+  const brief = makeBrief({ characterIds: ["character-1"] });
+  const result = runPreflight({ brief });
+
+  assert.equal(result.status, "block");
+  assert.ok(
+    result.checks.some(
+      (item) => item.code === "consent:character-1" && item.status === "block",
+    ),
+  );
+});
+
 test("preflight blocks reference counts above the selected model contract", () => {
-  const result = runPreflight({
-    resolvedReferenceCounts: { image: 3 },
-  });
+  const result = runPreflight({ resolvedReferenceCounts: { image: 3 } });
 
   assert.equal(result.status, "block");
   assert.ok(
@@ -237,6 +261,29 @@ test("preflight blocks illegal duration, aspect ratio, and resolution before sub
       `expected ${code} to block`,
     );
   }
+});
+
+test("compiled request must pin the model contract used by preflight", () => {
+  const result = runPreflight({ request: { model: undefined } });
+
+  assert.equal(result.status, "block");
+  assert.ok(
+    result.checks.some(
+      (item) => item.code === "model_contract" && item.status === "block",
+    ),
+  );
+});
+
+test("compiled output settings cannot silently diverge from the production plan", () => {
+  const result = runPreflight({ request: { resolution: "720p" } });
+
+  assert.equal(result.status, "block");
+  assert.ok(
+    result.checks.some(
+      (item) =>
+        item.code === "compiled_resolution_mismatch" && item.status === "block",
+    ),
+  );
 });
 
 test("required asset locks must be present and approved", () => {
