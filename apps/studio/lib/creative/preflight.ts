@@ -16,15 +16,15 @@ const SEVERITY_RANK: Record<PreflightSeverity, number> = {
 
 function resultStatus(checks: PreflightCheck[]): PreflightSeverity {
   return checks.reduce<PreflightSeverity>(
-    (current, check) =>
-      SEVERITY_RANK[check.status] > SEVERITY_RANK[current]
-        ? check.status
+    (current, item) =>
+      SEVERITY_RANK[item.status] > SEVERITY_RANK[current]
+        ? item.status
         : current,
     "pass",
   );
 }
 
-function check(
+function addCheck(
   checks: PreflightCheck[],
   code: string,
   status: PreflightSeverity,
@@ -42,7 +42,7 @@ function validateEnumValue(
 ) {
   if (!value) return;
   if (!allowed?.length) {
-    check(
+    addCheck(
       checks,
       code,
       "warn",
@@ -51,7 +51,7 @@ function validateEnumValue(
     return;
   }
   if (!allowed.includes(value)) {
-    check(
+    addCheck(
       checks,
       code,
       "block",
@@ -59,7 +59,7 @@ function validateEnumValue(
     );
     return;
   }
-  check(checks, code, "pass", `${label} ${value} is supported.`);
+  addCheck(checks, code, "pass", `${label} ${value} is supported.`);
 }
 
 function validateReferenceCount(
@@ -71,7 +71,7 @@ function validateReferenceCount(
   if (count <= 0) return;
   const code = `${kind}_reference_limit`;
   if (limit === undefined || limit <= 0) {
-    check(
+    addCheck(
       checks,
       code,
       "block",
@@ -80,7 +80,7 @@ function validateReferenceCount(
     return;
   }
   if (count > limit) {
-    check(
+    addCheck(
       checks,
       code,
       "block",
@@ -88,7 +88,7 @@ function validateReferenceCount(
     );
     return;
   }
-  check(
+  addCheck(
     checks,
     code,
     "pass",
@@ -107,7 +107,7 @@ function validateRequiredLocks(
   for (const id of requiredIds) {
     const lock = byId.get(id);
     if (!lock) {
-      check(
+      addCheck(
         checks,
         `asset_lock:${id}`,
         "block",
@@ -116,7 +116,7 @@ function validateRequiredLocks(
       continue;
     }
     if (lock.approvalStatus !== "approved") {
-      check(
+      addCheck(
         checks,
         `asset_lock:${id}`,
         "block",
@@ -124,11 +124,58 @@ function validateRequiredLocks(
       );
       continue;
     }
-    check(
+    addCheck(
       checks,
       `asset_lock:${id}`,
       "pass",
       `Required asset lock ${lock.alias} is approved at revision ${lock.revision}.`,
+    );
+  }
+}
+
+function validateCompiledRequestMatchesPlan(
+  checks: PreflightCheck[],
+  context: PreflightContext,
+) {
+  const { plan, compiled } = context;
+  const { request } = compiled;
+
+  if (
+    request.duration !== undefined &&
+    plan.output.durationSeconds !== undefined &&
+    request.duration !== plan.output.durationSeconds
+  ) {
+    addCheck(
+      checks,
+      "compiled_duration_mismatch",
+      "block",
+      `Compiled duration ${request.duration}s does not match planned duration ${plan.output.durationSeconds}s.`,
+    );
+  }
+
+  if (
+    request.aspectRatio !== undefined &&
+    plan.output.aspectRatio !== undefined &&
+    request.aspectRatio !== plan.output.aspectRatio
+  ) {
+    addCheck(
+      checks,
+      "compiled_aspect_ratio_mismatch",
+      "block",
+      `Compiled aspect ratio ${request.aspectRatio} does not match planned aspect ratio ${plan.output.aspectRatio}.`,
+    );
+  }
+
+  if (
+    request.resolution !== undefined &&
+    plan.output.resolution !== undefined &&
+    request.resolution !== plan.output.resolution
+  ) {
+    addCheck(
+      checks,
+      "compiled_resolution_mismatch",
+      "block",
+      `Compiled resolution ${request.resolution} does not match planned resolution ${plan.output.resolution}.`,
     );
   }
 }
@@ -143,14 +190,14 @@ function validateModelCapabilities(
   const expectedMedia = expectedMediaTypeForWorkflow(plan.workflow);
 
   if (plan.output.mediaType !== expectedMedia) {
-    check(
+    addCheck(
       checks,
       "plan_media_type",
       "block",
       `Workflow ${plan.workflow} expects ${expectedMedia} output but the plan requests ${plan.output.mediaType}.`,
     );
   } else {
-    check(
+    addCheck(
       checks,
       "plan_media_type",
       "pass",
@@ -159,14 +206,14 @@ function validateModelCapabilities(
   }
 
   if (model.mediaType !== plan.output.mediaType) {
-    check(
+    addCheck(
       checks,
       "model_media_type",
       "block",
       `Selected model produces ${model.mediaType}, not ${plan.output.mediaType}.`,
     );
   } else {
-    check(
+    addCheck(
       checks,
       "model_media_type",
       "pass",
@@ -174,8 +221,15 @@ function validateModelCapabilities(
     );
   }
 
-  if (request.provider && request.provider !== model.provider) {
-    check(
+  if (!request.provider) {
+    addCheck(
+      checks,
+      "provider_contract",
+      "block",
+      "Compiled generation must pin the provider used by its validated model contract.",
+    );
+  } else if (request.provider !== model.provider) {
+    addCheck(
       checks,
       "provider_contract",
       "block",
@@ -183,8 +237,15 @@ function validateModelCapabilities(
     );
   }
 
-  if (request.model && request.model !== model.model) {
-    check(
+  if (!request.model) {
+    addCheck(
+      checks,
+      "model_contract",
+      "block",
+      "Compiled generation must pin the model used by preflight.",
+    );
+  } else if (request.model !== model.model) {
+    addCheck(
       checks,
       "model_contract",
       "block",
@@ -192,14 +253,18 @@ function validateModelCapabilities(
     );
   }
 
+  const imageCount =
+    context.resolvedReferenceCounts?.image ?? request.inputReferences?.length ?? 0;
+  const videoCount = context.resolvedReferenceCounts?.video ?? 0;
+  const audioCount = context.resolvedReferenceCounts?.audio ?? 0;
+
   if (
     !model.capabilities.textToMedia &&
-    !(context.resolvedReferenceCounts?.image ||
-      context.resolvedReferenceCounts?.video ||
-      request.inputReferences?.length ||
-      request.frameImages?.length)
+    imageCount === 0 &&
+    videoCount === 0 &&
+    request.frameImages?.length === 0
   ) {
-    check(
+    addCheck(
       checks,
       "text_to_media",
       "block",
@@ -208,7 +273,7 @@ function validateModelCapabilities(
   }
 
   if (plan.workflow === "image_edit" && !model.capabilities.imageEdit) {
-    check(
+    addCheck(
       checks,
       "image_edit_capability",
       "block",
@@ -217,18 +282,13 @@ function validateModelCapabilities(
   }
 
   if (plan.workflow === "video_edit" && !model.capabilities.videoEdit) {
-    check(
+    addCheck(
       checks,
       "video_edit_capability",
       "block",
       "Video-edit workflow requires a model with video-edit capability.",
     );
   }
-
-  const imageCount =
-    context.resolvedReferenceCounts?.image ?? request.inputReferences?.length ?? 0;
-  const videoCount = context.resolvedReferenceCounts?.video ?? 0;
-  const audioCount = context.resolvedReferenceCounts?.audio ?? 0;
 
   validateReferenceCount(
     checks,
@@ -249,12 +309,30 @@ function validateModelCapabilities(
     model.capabilities.audioReferences,
   );
 
+  if (plan.workflow === "image_edit" && imageCount === 0) {
+    addCheck(
+      checks,
+      "image_edit_source",
+      "block",
+      "Image-edit workflow requires at least one resolved source image.",
+    );
+  }
+
+  if (plan.workflow === "video_edit" && videoCount === 0) {
+    addCheck(
+      checks,
+      "video_edit_source",
+      "block",
+      "Video-edit workflow requires at least one resolved source video.",
+    );
+  }
+
   if (
     plan.workflow === "product_to_video" &&
     imageCount === 0 &&
     !request.frameImages?.length
   ) {
-    check(
+    addCheck(
       checks,
       "product_source_reference",
       "block",
@@ -268,7 +346,7 @@ function validateModelCapabilities(
     videoCount === 0 &&
     !request.frameImages?.length
   ) {
-    check(
+    addCheck(
       checks,
       "reference_video_source",
       "block",
@@ -278,7 +356,7 @@ function validateModelCapabilities(
 
   for (const frame of request.frameImages ?? []) {
     if (frame.frameType === "first_frame" && !model.capabilities.firstFrame) {
-      check(
+      addCheck(
         checks,
         "first_frame_capability",
         "block",
@@ -286,7 +364,7 @@ function validateModelCapabilities(
       );
     }
     if (frame.frameType === "last_frame" && !model.capabilities.lastFrame) {
-      check(
+      addCheck(
         checks,
         "last_frame_capability",
         "block",
@@ -298,7 +376,7 @@ function validateModelCapabilities(
   const duration = request.duration ?? plan.output.durationSeconds;
   if (duration !== undefined) {
     if (!model.durationSeconds) {
-      check(
+      addCheck(
         checks,
         "duration_contract",
         "warn",
@@ -308,14 +386,14 @@ function validateModelCapabilities(
       duration < model.durationSeconds.min ||
       duration > model.durationSeconds.max
     ) {
-      check(
+      addCheck(
         checks,
         "duration_contract",
         "block",
         `Duration ${duration}s is outside the model range ${model.durationSeconds.min}-${model.durationSeconds.max}s.`,
       );
     } else {
-      check(
+      addCheck(
         checks,
         "duration_contract",
         "pass",
@@ -343,7 +421,7 @@ function validateModelCapabilities(
     (request.generateAudio || plan.audio?.requireNativeAudio) &&
     !model.capabilities.nativeAudio
   ) {
-    check(
+    addCheck(
       checks,
       "native_audio_capability",
       "block",
@@ -359,7 +437,7 @@ function validateModelCapabilities(
     plan.output.durationSeconds !== undefined &&
     totalShotDuration > plan.output.durationSeconds
   ) {
-    check(
+    addCheck(
       checks,
       "shot_timing",
       "block",
@@ -371,7 +449,7 @@ function validateModelCapabilities(
     plan.renderStrategy.stage !== "draft" &&
     !compiled.request.idempotencyKey
   ) {
-    check(
+    addCheck(
       checks,
       "idempotency",
       "block",
@@ -381,7 +459,7 @@ function validateModelCapabilities(
     plan.renderStrategy.stage === "draft" &&
     !compiled.request.idempotencyKey
   ) {
-    check(
+    addCheck(
       checks,
       "idempotency",
       "warn",
@@ -392,25 +470,66 @@ function validateModelCapabilities(
   const maxSpend = brief.budget?.maxEstimatedUsd;
   if (maxSpend !== undefined) {
     if (context.estimatedCostUsd === undefined) {
-      check(
+      addCheck(
         checks,
         "spend_cap",
         "warn",
         `Brief caps spend at $${maxSpend.toFixed(2)}, but no comparable estimate is available.`,
       );
     } else if (context.estimatedCostUsd > maxSpend) {
-      check(
+      addCheck(
         checks,
         "spend_cap",
         "block",
         `Estimated cost $${context.estimatedCostUsd.toFixed(2)} exceeds the brief cap of $${maxSpend.toFixed(2)}.`,
       );
     } else {
-      check(
+      addCheck(
         checks,
         "spend_cap",
         "pass",
         `Estimated cost $${context.estimatedCostUsd.toFixed(2)} is within the brief cap.`,
+      );
+    }
+  }
+}
+
+function validateCharacters(checks: PreflightCheck[], context: PreflightContext) {
+  const expectedIds = new Set(context.brief.characterIds ?? []);
+  const byId = new Map(
+    (context.consentChecks ?? []).map((item) => [item.characterId, item]),
+  );
+
+  for (const characterId of expectedIds) {
+    if (!byId.has(characterId)) {
+      addCheck(
+        checks,
+        `consent:${characterId}`,
+        "block",
+        `Character ${characterId} was not resolved into an authorization/consent check before preflight.`,
+      );
+    }
+  }
+
+  for (const consent of context.consentChecks ?? []) {
+    if (
+      consent.kind === "real_person" &&
+      consent.consentStatus !== "verified"
+    ) {
+      addCheck(
+        checks,
+        `consent:${consent.characterId}`,
+        "block",
+        `Real-person character ${consent.characterId} has consent status ${consent.consentStatus}.`,
+      );
+    } else {
+      addCheck(
+        checks,
+        `consent:${consent.characterId}`,
+        "pass",
+        consent.kind === "real_person"
+          ? `Real-person character ${consent.characterId} has verified consent.`
+          : `Character ${consent.characterId} does not require the real-person consent gate.`,
       );
     }
   }
@@ -421,7 +540,7 @@ export function preflightGeneration(context: PreflightContext): PreflightResult 
   const { brief, plan, compiled } = context;
 
   if (plan.briefId !== brief.id) {
-    check(
+    addCheck(
       checks,
       "brief_plan_link",
       "block",
@@ -429,30 +548,9 @@ export function preflightGeneration(context: PreflightContext): PreflightResult 
     );
   }
 
+  validateCompiledRequestMatchesPlan(checks, context);
   validateModelCapabilities(checks, context, compiled.model);
-
-  for (const consent of context.consentChecks ?? []) {
-    if (
-      consent.kind === "real_person" &&
-      consent.consentStatus !== "verified"
-    ) {
-      check(
-        checks,
-        `consent:${consent.characterId}`,
-        "block",
-        `Real-person character ${consent.characterId} has consent status ${consent.consentStatus}.`,
-      );
-    } else {
-      check(
-        checks,
-        `consent:${consent.characterId}`,
-        "pass",
-        consent.kind === "real_person"
-          ? `Real-person character ${consent.characterId} has verified consent.`
-          : `Character ${consent.characterId} does not require the real-person consent gate.`,
-      );
-    }
-  }
+  validateCharacters(checks, context);
 
   const requiredLockIds = new Set([
     ...plan.assets
