@@ -140,7 +140,7 @@ export const postgresStore: ContentFactoryStore = {
   async addReference(input) {
     const sql = db();
     const [row] = await sql`
-      insert into references (character_id, kind, storage_key, source_url, label, consent_verified, metadata)
+      insert into character_references (character_id, kind, storage_key, source_url, label, consent_verified, metadata)
       values (${input.characterId ?? null}, ${input.kind}, ${input.storageKey}, ${input.sourceUrl ?? null}, ${input.label ?? null}, ${input.consentVerified}, ${sql.json(input.metadata ?? {})})
       returning *
     `;
@@ -148,15 +148,15 @@ export const postgresStore: ContentFactoryStore = {
   },
 
   async getReference(id) {
-    const rows = await db()`select * from references where id = ${id} limit 1`;
+    const rows = await db()`select * from character_references where id = ${id} limit 1`;
     return rows.length ? mapReference(rows[0]) : undefined;
   },
 
   async listReferences(characterId) {
     const sql = db();
     const rows = characterId
-      ? await sql`select * from references where character_id = ${characterId} order by created_at desc`
-      : await sql`select * from references order by created_at desc`;
+      ? await sql`select * from character_references where character_id = ${characterId} order by created_at desc`
+      : await sql`select * from character_references order by created_at desc`;
     return rows.map(mapReference);
   },
 
