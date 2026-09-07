@@ -1,5 +1,5 @@
-import { comfyUiProvider } from "./providers/comfyui";
-import { openRouterProvider } from "./providers/openrouter";
+import { comfyUiProvider, fetchComfyOutput } from "./providers/comfyui";
+import { fetchOpenRouterContent, openRouterProvider } from "./providers/openrouter";
 import type {
   GenerationProvider,
   GenerationRequest,
@@ -18,7 +18,12 @@ function configured(name: GenerationProvider): boolean {
 }
 
 export function selectProvider(request: GenerationRequest): GenerationProvider {
-  if (request.provider) return request.provider;
+  if (request.provider) {
+    if (!configured(request.provider)) {
+      throw new Error(`${request.provider} is not configured`);
+    }
+    return request.provider;
+  }
 
   const tier = request.tier ?? "standard";
 
@@ -36,7 +41,7 @@ export function selectProvider(request: GenerationRequest): GenerationProvider {
 
 export async function submitGeneration(request: GenerationRequest) {
   const providerName = selectProvider(request);
-  return providers[providerName].submit(request);
+  return providers[providerName].submit({ ...request, provider: providerName });
 }
 
 export async function getGeneration(
@@ -44,4 +49,15 @@ export async function getGeneration(
   providerJobId: string,
 ) {
   return providers[providerName].get(providerJobId);
+}
+
+export async function getGenerationContent(
+  providerName: GenerationProvider,
+  providerJobId: string,
+  index = 0,
+  range?: string,
+) {
+  return providerName === "openrouter"
+    ? fetchOpenRouterContent(providerJobId, index, range)
+    : fetchComfyOutput(providerJobId, index, range);
 }

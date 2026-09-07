@@ -10,10 +10,10 @@ function baseUrl(): string {
   return url.replace(/\/$/, "");
 }
 
-function authHeaders(): HeadersInit {
+function authHeaders(includeJson = true): HeadersInit {
   const token = process.env.COMFYUI_API_TOKEN;
   return {
-    "Content-Type": "application/json",
+    ...(includeJson ? { "Content-Type": "application/json" } : {}),
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
   };
 }
@@ -31,26 +31,45 @@ async function comfy(path: string, init?: RequestInit) {
   return response.json();
 }
 
-function workflowFromRequest(input: GenerationRequest): Record<string, unknown> {
-  const direct = input.providerOptions?.workflow;
-  if (direct && typeof direct === "object") {
-    return direct as Record<string, unknown>;
-  }
+type BindingMap = Record<string, { node: string; input: string }>;
 
-  const encoded = process.env.COMFYUI_WORKFLOW_JSON;
-  if (!encoded) {
+function parseBindings(raw: string | undefined): BindingMap | undefined {
+  if (!raw) return undefined;
+  const parsed = JSON.parse(raw) as unknown;
+  if (!parsed || Array.isArray(parsed) || typeof parsed !== "object") {
+    throw new Error("COMFYUI_BINDINGS_JSON must be a JSON object");
+  }
+  return parsed as BindingMap;
+}
+
+function workflowFromRequest(input: GenerationRequest): Record<string, unknown> {
+  const unsafeOverrides = process.env.COMFYUI_ALLOW_CLIENT_WORKFLOW_OVERRIDES === "true";
+  const direct = input.providerOptions?.workflow;
+  const directBindings = input.providerOptions?.bindings;
+
+  if (!unsafeOverrides && (direct !== undefined || directBindings !== undefined)) {
     throw new Error(
-      "ComfyUI needs providerOptions.workflow or COMFYUI_WORKFLOW_JSON. Export an API-format workflow from ComfyUI and provide it server-side.",
+      "Client-supplied ComfyUI workflow/binding overrides are disabled. Configure the tested workflow server-side.",
     );
   }
 
-  const workflow = JSON.parse(encoded) as Record<string, any>;
-  const bindings = input.providerOptions?.bindings as
-    | Record<string, { node: string; input: string }>
-    | undefined;
+  let workflow: Record<string, any>;
+  if (unsafeOverrides && direct && typeof direct === "object") {
+    workflow = JSON.parse(JSON.stringify(direct)) as Record<string, any>;
+  } else {
+    const encoded = process.env.COMFYUI_WORKFLOW_JSON;
+    if (!encoded) {
+      throw new Error(
+        "COMFYUI_WORKFLOW_JSON is not configured. Export a tested API-format workflow and configure it server-side.",
+      );
+    }
+    workflow = JSON.parse(encoded) as Record<string, any>;
+  }
 
-  // Optional lightweight binding map lets a saved graph remain provider-specific
-  // without teaching the application about node IDs.
+  const bindings = unsafeOverrides && directBindings && typeof directBindings === "object"
+    ? directBindings as BindingMap
+    : parseBindings(process.env.COMFYUI_BINDINGS_JSON);
+
   const values: Record<string, unknown> = {
     prompt: input.prompt,
     duration: input.duration,
@@ -59,12 +78,21 @@ function workflowFromRequest(input: GenerationRequest): Record<string, unknown> 
     generateAudio: input.generateAudio,
   };
 
+  input.inputReferences?.forEach((reference, index) => {
+    values[`reference${index}`] = reference.url;
+  });
+  input.frameImages?.forEach((frame) => {
+    values[`frame_${frame.frameType}`] = frame.url;
+  });
+
   if (bindings) {
     for (const [key, binding] of Object.entries(bindings)) {
       const value = values[key];
       if (value === undefined) continue;
       const node = workflow[binding.node] as Record<string, any> | undefined;
-      if (!node?.inputs) continue;
+      if (!node?.inputs || typeof binding.input !== "string") {
+        throw new Error(`Invalid ComfyUI binding for ${key}`);
+      }
       node.inputs[binding.input] = value;
     }
   }
@@ -148,3 +176,33 @@ export const comfyUiProvider: VideoProvider = {
     };
   },
 };
+
+export async function fetchComfyOutput(
+  providerJobId: string,
+  index = 0,
+  range?: string,
+): Promise<Response> {
+  const job = await comfyUiProvider.get(providerJobId);
+  const outputUrl = job.outputUrls?.[index];
+  if (job.status !== "completed" || !outputUrl) {
+    throw new Error(`ComfyUI output ${index} is not available for ${providerJobId}`);
+  }
+
+  const expectedPrefix = `${baseUrl()}/view?`;
+  if (!outputUrl.startsWith(expectedPrefix)) {
+    throw new Error("Refusing to proxy a ComfyUI output outside the configured server");
+  }
+
+  const response = await fetch(outputUrl, {
+    headers: {
+      ...authHeaders(false),
+      ...(range ? { Range: range } : {}),
+    },
+    cache: "no-store",
+  });
+  if (!response.ok && response.status !== 206) {
+    const body = await response.text();
+    throw new Error(`ComfyUI output ${response.status}: ${body.slice(0, 800)}`);
+  }
+  return response;
+}
