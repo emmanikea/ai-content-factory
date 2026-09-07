@@ -1,5 +1,5 @@
 -- AI Content Factory V2 schema
--- Portable Postgres; works with Supabase, Neon, or standard Postgres.
+-- Portable Postgres compatible with Supabase, Neon, or standard Postgres
 
 create extension if not exists pgcrypto;
 
@@ -17,7 +17,7 @@ create table if not exists characters (
   updated_at timestamptz not null default now()
 );
 
-create table if not exists references (
+create table if not exists character_references (
   id uuid primary key default gen_random_uuid(),
   character_id uuid references characters(id) on delete cascade,
   kind text not null check (kind in ('image','video','audio','performance','location','wardrobe')),
@@ -64,7 +64,6 @@ create table if not exists generation_jobs (
   updated_at timestamptz not null default now()
 );
 
--- Keep schema.sql safe to re-run against an early V2 database created before idempotency was added.
 alter table generation_jobs add column if not exists idempotency_key text;
 
 create index if not exists generation_jobs_status_idx on generation_jobs(status, created_at desc);
