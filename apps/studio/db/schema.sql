@@ -127,19 +127,3 @@ create table if not exists cost_events (
   metadata jsonb not null default '{}'::jsonb,
   created_at timestamptz not null default now()
 );
-
-create or replace function set_updated_at() returns trigger language plpgsql as $$
-begin
-  new.updated_at = now();
-  return new;
-end;
-$$;
-
-drop trigger if exists characters_set_updated_at on characters;
-create trigger characters_set_updated_at before update on characters for each row execute function set_updated_at();
-
-drop trigger if exists projects_set_updated_at on projects;
-create trigger projects_set_updated_at before update on projects for each row execute function set_updated_at();
-
-drop trigger if exists generation_jobs_set_updated_at on generation_jobs;
-create trigger generation_jobs_set_updated_at before update on generation_jobs for each row execute function set_updated_at();
