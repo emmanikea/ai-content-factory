@@ -103,6 +103,70 @@ a { color: inherit; }
 .pill { padding: 8px 11px; border: 1px solid var(--line); border-radius: 999px; background: white; color: #555550; font-size: 12px; cursor: pointer; }
 .pill.active { border-color: #111; background: #111; color: #fff; }
 
+/* Studio UX preview */
+.studio-heading-row,
+.section-heading-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.preview-pill,
+.plan-status,
+.preview-only { display: inline-flex; align-items: center; width: max-content; border: 1px solid var(--line); border-radius: 999px; background: #fff; color: #696964; font-size: 10px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+.preview-pill { padding: 7px 10px; margin-top: 2px; }
+.workflow-strip { display: grid; grid-template-columns: repeat(7, minmax(140px, 1fr)); gap: 10px; margin-top: 26px; overflow-x: auto; padding-bottom: 3px; }
+.workflow-card { min-width: 146px; min-height: 132px; padding: 14px; border: 1px solid var(--line); border-radius: 14px; background: rgba(255,255,255,.72); text-align: left; cursor: pointer; transition: border-color .15s ease, background .15s ease, transform .15s ease; }
+.workflow-card:hover { border-color: var(--line-strong); transform: translateY(-1px); }
+.workflow-card.active { border-color: #111; background: #fff; box-shadow: inset 0 0 0 1px #111; }
+.workflow-card-top { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; font-weight: 750; letter-spacing: -.01em; }
+.workflow-output { color: #8b8b85; font-size: 9px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.workflow-card p { margin: 16px 0 0; color: var(--muted); font-size: 11px; line-height: 1.45; }
+.preview-only { margin-top: 12px; padding: 4px 7px; }
+.ux-grid { grid-template-columns: minmax(0, 1.55fr) minmax(320px, .72fr); }
+.elements-zone { padding-bottom: 20px; }
+.text-link { color: #666660; font-size: 11px; text-decoration: none; }
+.text-link:hover { color: #111; }
+.element-pills { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+.element-pill { min-height: 34px; padding: 0 11px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface-2); color: #686862; font-size: 11px; cursor: default; }
+.element-pill.filled { border-color: #b6b6ae; background: #fff; color: #222; }
+.compact-references .reference-card,
+.compact-references .reference-add { width: 78px; height: 84px; }
+.compact-references .reference-card img { height: 58px; }
+.director-stage { min-height: 315px; justify-content: flex-start; background: linear-gradient(180deg, #f7f7f4 0%, #ecece7 100%); }
+.director-label { margin-bottom: 34px; color: #888882; font-size: 10px; font-weight: 750; letter-spacing: .12em; text-transform: uppercase; }
+.director-stage .prompt-box { min-height: 172px; font-size: 20px; }
+.ux-generation-bar { flex-wrap: wrap; }
+.render-stage-toggle { display: inline-flex; padding: 3px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-2); }
+.render-stage-toggle button { min-height: 30px; padding: 0 10px; border: 0; border-radius: 7px; background: transparent; color: #777770; font-size: 11px; cursor: pointer; }
+.render-stage-toggle button.active { background: #fff; color: #111; box-shadow: 0 1px 2px rgba(0,0,0,.06); }
+.audio-toggle { display: flex; align-items: center; gap: 7px; }
+.plan-panel { padding: 20px; }
+.plan-kicker,
+.plan-lock-label { color: #8b8b85; font-size: 9px; font-weight: 750; letter-spacing: .11em; text-transform: uppercase; }
+.plan-kicker { margin-bottom: 5px; }
+.plan-status { padding: 5px 8px; }
+.plan-summary-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 18px; }
+.plan-summary-grid > div { padding: 11px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-2); }
+.plan-summary-grid span { display: block; color: #8b8b85; font-size: 9px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.plan-summary-grid strong { display: block; margin-top: 5px; overflow: hidden; color: #222; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+.plan-shot-list { display: grid; gap: 0; margin-top: 20px; border-top: 1px solid var(--line); }
+.plan-shot { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 10px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+.shot-index { color: #aaa9a2; font-size: 10px; font-weight: 700; }
+.plan-shot strong { font-size: 12px; }
+.plan-shot p { margin: 3px 0 0; color: var(--muted); font-size: 11px; line-height: 1.45; }
+.plan-locks { margin-top: 18px; }
+.plan-lock-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.plan-lock-row span { padding: 6px 8px; border-radius: 999px; background: #efefeb; color: #555550; font-size: 10px; }
+.plan-lock-row .empty-lock { color: #8b8b85; }
+.plan-footnote { margin-top: 18px; padding: 12px; border-radius: 10px; background: #f7f7f4; color: #777770; font-size: 10px; line-height: 1.5; }
+.field-spacing { margin-top: 14px; }
+.truncate-box { min-width: 0; }
+.cast-name { font-size: 13px; font-weight: 700; }
+.context-meta { margin-top: 10px; }
+.current-take-head { align-items: center; }
+.current-take-empty { margin-top: 14px; }
+.take-details { margin-top: 14px; font-size: 12px; line-height: 1.65; }
+
+@media (max-width: 1120px) {
+  .workflow-strip { grid-template-columns: repeat(4, minmax(160px, 1fr)); }
+}
+
 @media (max-width: 900px) {
   .app-shell { grid-template-columns: 1fr; }
   .sidebar { position: static; height: auto; display: flex; align-items: center; gap: 8px; overflow-x: auto; padding: 12px 16px; border-right: 0; border-bottom: 1px solid var(--line); }
@@ -112,6 +176,8 @@ a { color: inherit; }
   .page { width: min(100% - 28px, 1220px); padding-top: 26px; }
   .studio-grid { grid-template-columns: 1fr; }
   .control-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .workflow-strip { display: flex; }
+  .workflow-card { flex: 0 0 180px; }
 }
 
 @media (max-width: 560px) {
@@ -121,4 +187,8 @@ a { color: inherit; }
   .generation-bar { align-items: stretch; flex-wrap: wrap; }
   .generation-bar .compact-field { flex: 1 1 40%; }
   .button-primary { width: 100%; margin-left: 0; }
+  .studio-heading-row { align-items: flex-start; }
+  .preview-pill { display: none; }
+  .director-stage .prompt-box { font-size: 17px; }
+  .plan-summary-grid { grid-template-columns: 1fr 1fr; }
 }
