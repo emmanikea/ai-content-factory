@@ -120,7 +120,8 @@ export const postgresStore: ContentFactoryStore = {
         voice_profile_id = ${next.voiceProfileId ?? null},
         consent_status = ${next.consentStatus},
         consent_notes = ${next.consentNotes ?? null},
-        metadata = ${sql.json(next.metadata ?? {})}
+        metadata = ${sql.json(next.metadata ?? {})},
+        updated_at = now()
       where id = ${id}
       returning *
     `;
@@ -225,7 +226,8 @@ export const postgresStore: ContentFactoryStore = {
         estimated_cost_usd = ${next.estimatedCostUsd ?? null},
         actual_cost_usd = ${next.actualCostUsd ?? null},
         started_at = ${next.startedAt ?? null},
-        completed_at = ${next.completedAt ?? null}
+        completed_at = ${next.completedAt ?? null},
+        updated_at = now()
       where id = ${id}
       returning *
     `;
