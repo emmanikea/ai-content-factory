@@ -8,8 +8,6 @@ PR: #5
 
 Build a UGC/Reels production system that owns the creative workflow and calls underlying models directly. Higgsfield is optional and disabled by default.
 
-Default routing philosophy:
-
 ```text
 exact UI / owned media -> deterministic local capture/composition
 cheap draft video      -> Wan direct
@@ -23,114 +21,116 @@ Higgsfield             -> proprietary-only / benchmark / explicit fallback
 ## Implemented
 
 ### Product/contracts
-- `docs/ugc-factory/PRD.md`
-- `docs/ugc-factory/DIRECT_MODEL_EXECUTION_PLAN.md`
-- `openspec/changes/ugc-studio-v1/*`
-- `ugc-studio/schemas/creative-spec.schema.json`
-- `ugc-studio/schemas/creator.schema.json`
-- `ugc-studio/schemas/reference-analysis.schema.json`
+- UGC PRD + direct-model execution plan
+- OpenSpec proposal/design/tasks
+- CreativeSpec schema
+- Creator/rights schema
+- ReferenceAnalysis schema
+- CreatorIdentityPack schema
 
-### Rights
-- `.archon/scripts/ugc/rights.py`
-- blocks inactive/expired/unapproved creator transformations
-- blocks literal motion/character transfer from `creative_dna_only` references
+### Rights and live safeguards
+- creator rights-policy evaluator
+- blocks literal motion transfer from `creative_dna_only` references
+- direct job compilation requires `rights_approved: true`
+- live provider execution independently requires `rights_approved: true`
+- live provider execution also requires `approved_for_spend: true`
+- `FAL_KEY` is runtime-only; never store it in the repo
 
 ### Direct model router
-- `ugc-studio/providers/model-registry.json`
-- `.archon/scripts/ugc/model_router.py`
-- `.archon/scripts/ugc/plan_render.py` compatibility CLI
-- direct Wan/Kling/Seedance pricing formulas are configuration data
-- Higgsfield is not an enabled default provider
+- dated model registry with pricing/capability metadata
+- Wan direct for draft/cost-first generation
+- Kling Standard direct for normal creator shots
+- Kling Motion direct for licensed/owned motion transfer
+- Seedance/Kling premium for premium/reference-heavy work
+- Higgsfield excluded from default routing
+- per-concept budget cap
+- alternatives returned in dry-run plan
 
 ### fal execution
-- `ugc-studio/providers/fal/`
 - `@fal-ai/client` pinned to `1.10.1`
-- `.archon/scripts/ugc/build_fal_job.py`
-- provider-ready jobs for Wan I2V, Kling I2V, Kling Motion, Seedance reference-to-video
-- `render.mjs` is dry-run unless `--live`
-- live additionally requires `approved_for_spend: true` and `FAL_KEY`
-- completed jobs write provenance and download the output asset
+- provider-ready job compiler for Wan I2V, Kling I2V, Kling Motion and Seedance reference-to-video
+- renderer is dry-run unless `--live`
+- completed live jobs write provenance and download the output asset
 
 ### App capture
-- `ugc-studio/capture/`
 - Playwright `1.63.0`
 - declarative actions: goto/click/tap/fill/press/wait/wait_for/scroll/screenshot
-- vertical capture defaults
-- provenance JSON
+- mobile/vertical capture defaults
+- recorded video + capture provenance
 
 ### Reel assembly
-- `ugc-studio/assembly/`
-- Remotion + CLI pinned to `4.0.523`
+- Remotion + CLI `4.0.523`
 - React/ReactDOM `19.3.0`
 - 1080x1920 composition
-- timed creator/app/B-roll clips
-- captions
+- creator/app/B-roll clip sequencing
+- timed captions
 - CTA overlay
 - per-clip audio controls
+- local asset staging into Remotion public media
+- FFmpeg 1080x1920/H.264/AAC normalization + loudness normalization + faststart
+
+### QA retry policy
+- one same-tier retry for stochastic failures
+- structural quality failures may escalate one quality tier
+- budget is checked before another attempt
+- rights/source/UI failures stop and are never routed around
 
 ### Tests
-- `.archon/scripts/ugc/test_rights.py`
-- `.archon/scripts/ugc/test_model_router.py`
-- `.github/workflows/ugc-studio-tests.yml`
-- latest CI pass: successful on 2026-09-12
+- creator rights tests
+- direct routing/cost tests
+- direct job rights guards
+- Creative-DNA vs licensed motion-transfer guards
+- retry/escalation tests
+- GitHub Actions workflow
+- latest expanded guard suite: passing on 2026-09-12
 
 ## No paid work has been run
 
 No direct provider generation has been submitted from this branch.
 
-The first paid test requires:
-1. `FAL_KEY` in the runtime environment
-2. an approved creator/reference image URL
-3. a selected CreativeSpec shot
-4. a compiled job whose `approved_for_spend` is deliberately changed to `true`
-5. `node render.mjs --job <job.json> --live`
+## First live benchmark
 
-Do not put API keys in the repo.
+Use one synthetic or explicitly consented creator identity image and one 5-second creator hook.
 
-## Recommended first live benchmark
+1. Build/confirm creator rights record.
+2. Produce assets manifest with `rights_approved: true` and evidence reference.
+3. Compile the CreativeSpec shot into a direct fal job.
+4. Inspect the dry-run job and estimated cost.
+5. Deliberately set `approved_for_spend: true`.
+6. Run with `FAL_KEY` and `--live`.
+7. Score the result.
+8. Compare Wan 3.0 720p vs Kling 3 Standard using the same creative direction.
+9. Escalate to Kling Pro/Seedance only if measured quality warrants it.
 
-Use one approved synthetic or consented creator image and one 5-second creator hook.
-
-Run the same creative direction through:
-1. Wan 3.0 720p
-2. Kling 3 Standard
-3. Kling 3 Pro or Seedance only if needed
-
-Record:
-- raw generation price
-- retries required
+Track:
+- raw provider cost
+- number of attempts
 - identity consistency
-- facial realism
-- hands/body
-- lip sync/audio if enabled
-- human usable/pass result
+- face/hands/body quality
+- motion adherence
+- lip sync/audio where relevant
+- human pass/fail
+- cost per usable approved second
 
-The metric is `cost per usable approved second`, not cost per generation.
+## Remaining autonomous slices
 
-## Next autonomous code slices
+1. Creator identity-pack importer/builder.
+2. Automated reference video segmentation/transcription into ReferenceAnalysis.
+3. Identity/lip-sync/final-timeline QA scorers.
+4. Measured provider pass-rate database replacing static quality priors.
+5. Self-host Wan2.2 Animate worker + GPU cost benchmark.
+6. Maestro mobile capture lane.
+7. Performance analytics feedback into creative ranking.
 
-1. Artifact preparation for Remotion local/static media.
-2. FFmpeg final normalization and loudness pass.
-3. Retry/escalation policy driven by QA result.
-4. Creator identity-pack builder and canonical references.
-5. Automated reference-video segmentation/transcription -> ReferenceAnalysis.
-6. Self-host Wan2.2 Animate worker contract and GPU benchmark.
-7. Replace static model-quality priors with measured pass-rate data.
-8. Connect performance analytics back to CreativeSpec dimensions.
+## External inputs still needed for real production
 
-## Inputs still needed for real production
-
-- direct provider credentials
+- `FAL_KEY` or another direct-provider credential
 - approved creator reference assets
-- licensed/owned performance clips when literal motion transfer is desired
-- production app authentication/capture instructions where login is required
-- legal review of final creator NIL/AI-use/commission agreement language
+- licensed/owned motion clips for literal performance transfer
+- production app auth/capture instructions where login is required
+- GPU target when self-host benchmarking begins
+- legal review of final creator NIL/AI-use/commission agreements
 
 ## Merge policy
 
-Keep this PR draft until:
-- first direct-model job is successfully compiled and dry-run inspected
-- assembly local-asset path is validated
-- capture + assembly can complete end-to-end on fixture media
-
-Live provider spending is not required before the architecture can be merged, but the spend gate must remain intact.
+Keep PR #5 draft until fixture capture + assembly are verified end-to-end and the first provider-ready direct job has been inspected. Live spending is not required to merge the architecture, but the rights and spend gates must remain intact.
