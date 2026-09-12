@@ -15,17 +15,25 @@
 
 Exit condition: the workflow is understandable and clickable before provider integration.
 
-## Phase 1: local domain layer
+## Phase 1: local domain + reference intelligence
 
 - [ ] Add filesystem repositories for campaigns, creators, references, specs, jobs, and artifacts.
 - [ ] Add full JSON Schema runtime validation.
 - [x] Add rights-policy evaluator.
 - [ ] Add CreativeSpec generator interface.
-- [x] Add reference-analysis result format.
+- [x] Add final ReferenceAnalysis result format.
+- [x] Add factual ReferenceObservation schema.
+- [x] Add deterministic ffprobe/ffmpeg reference observer.
+- [x] Add scene-cut segmentation and optional keyframe extraction.
+- [x] Add optional transcript JSON and local Whisper CLI ingestion.
+- [x] Add strict semantic-label schema for observed segments.
+- [x] Add observation + semantic-label -> ReferenceAnalysis compiler.
+- [x] Keep reference rights separate from semantic interpretation.
+- [ ] Add automatic multimodal semantic-label adapter.
 - [x] Add dry-run cost estimator.
 - [x] Add provider capability contract.
 
-Exit condition: campaign -> CreativeSpec -> approval -> render plan can run without spending on media.
+Exit condition: campaign -> reference observation/analysis -> CreativeSpec -> approval -> render plan can run without spending on media.
 
 ## Phase 2: direct-model render path
 
@@ -91,13 +99,17 @@ Exit condition: provider selection is driven by measured quality-per-usable-doll
 
 ## Phase 6: creator identity system
 
-- [ ] Add creator onboarding checklist.
+- [x] Add creator onboarding checklist/guidance.
 - [x] Define canonical creator identity-pack schema.
 - [x] Define voice-reference storage contract inside identity pack.
 - [x] Define wardrobe/location preset contract inside identity pack.
 - [x] Define performance-reference library contract inside identity pack.
 - [x] Enforce explicit creator rights before direct job compilation/render.
-- [ ] Add pack builder/importer.
+- [x] Add portable pack builder/importer.
+- [x] Hash and record local asset provenance; leave remote assets un-fetched.
+- [x] Require motion-transfer permission for performance samples marked transferable.
+- [x] Add onboarding coverage warnings without pretending to perform semantic identity QA.
+- [ ] Add semantic visual identity-reference QA.
 - [ ] Add revocation propagation behavior.
 
 Exit condition: an approved creator can safely become a reusable production asset.
@@ -139,9 +151,11 @@ Do not overwrite historical job provenance with new pricing or new recommendatio
 Implemented without paid generation:
 - domain contracts and schemas
 - Campaign Studio UI
-- reference-analysis structure
+- factual reference observation and segmentation
+- optional local/JSON transcription ingestion
+- reference semantic-label contract + compiler
 - rights enforcement
-- creator identity-pack contract
+- creator identity-pack contract + builder
 - direct-model registry and router
 - provider-ready job compilation
 - model-aware prompt compiler
@@ -158,7 +172,8 @@ Requires external credentials/assets or human decisions for live production:
 - `FAL_KEY` or equivalent direct-provider credentials
 - one approved creator identity/reference pack
 - licensed/owned performance clips for literal motion transfer
+- multimodal model/provider credentials if automatic semantic labeling is enabled
 - production app login flows where authentication is needed
 - GPU infrastructure if self-hosting Wan2.2 Animate
-- final legal review of creator NIL/commission agreements
+- final legal review of creator NIL/AI-use/commission agreements
 - publishing credentials when automatic distribution is added
