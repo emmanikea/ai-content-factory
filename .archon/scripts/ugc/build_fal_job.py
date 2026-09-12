@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Any
 
 from model_router import route_shot
+from prompt_compiler import compile_shot_prompt
 from rights import enforce_reference_mode
 
 
@@ -25,14 +26,6 @@ def _whole_duration(seconds: float, low: int, high: int) -> int:
     return max(low, min(high, int(math.ceil(seconds))))
 
 
-def _prompt(shot: dict[str, Any]) -> str:
-    parts = [shot.get("visual_direction") or shot.get("purpose") or "Natural creator performance."]
-    if shot.get("dialogue"):
-        parts.append(f'The creator says naturally: "{shot["dialogue"]}"')
-    parts.append("Natural smartphone UGC aesthetic. Preserve the creator's identity. No on-screen UI or captions unless explicitly requested.")
-    return " ".join(parts)
-
-
 def compile_input(
     model_id: str,
     *,
@@ -41,16 +34,16 @@ def compile_input(
     resolution: str,
     aspect_ratio: str,
     generate_audio: bool,
+    prompt_text: str,
 ) -> dict[str, Any]:
     duration = _duration(shot)
-    prompt = _prompt(shot)
     creator_image = assets.get("creator_image_url")
 
     if model_id == "alibaba/wan-3.0/image-to-video":
         if not creator_image:
             raise ValueError("Wan I2V requires assets.creator_image_url")
         return {
-            "prompt": prompt,
+            "prompt": prompt_text,
             "resolution": resolution,
             "aspect_ratio": aspect_ratio,
             "duration": _whole_duration(duration, 1, 30),
@@ -68,7 +61,7 @@ def compile_input(
         if not creator_image:
             raise ValueError("Kling I2V requires assets.creator_image_url")
         return {
-            "prompt": prompt,
+            "prompt": prompt_text,
             "start_image_url": creator_image,
             "duration": str(_whole_duration(duration, 3, 15)),
             "generate_audio": generate_audio,
@@ -79,7 +72,7 @@ def compile_input(
         if not creator_image or not assets.get("motion_video_url"):
             raise ValueError("Kling Motion requires creator_image_url and motion_video_url")
         return {
-            "prompt": prompt,
+            "prompt": prompt_text,
             "image_url": creator_image,
             "video_url": assets["motion_video_url"],
             "keep_original_sound": bool(assets.get("keep_original_sound", False)),
@@ -93,7 +86,7 @@ def compile_input(
         if not image_urls and not video_urls:
             raise ValueError("Seedance reference-to-video requires at least one image or video reference")
         return {
-            "prompt": prompt,
+            "prompt": prompt_text,
             "task": "reference",
             "image_urls": image_urls,
             "video_urls": video_urls,
@@ -140,6 +133,11 @@ def build_job(spec: dict[str, Any], shot_id: str, assets: dict[str, Any]) -> dic
         raise ValueError(f"shot routes to {route['provider']!r}, not fal")
 
     model_id = route["model"]
+    compiled_prompt = compile_shot_prompt(
+        shot,
+        model_id=model_id,
+        generate_audio=generate_audio,
+    )
     input_payload = compile_input(
         model_id,
         shot=shot,
@@ -147,6 +145,7 @@ def build_job(spec: dict[str, Any], shot_id: str, assets: dict[str, Any]) -> dic
         resolution=resolution,
         aspect_ratio=aspect_ratio,
         generate_audio=generate_audio,
+        prompt_text=compiled_prompt.text,
     )
     return {
         "version": "1.0",
@@ -165,6 +164,8 @@ def build_job(spec: dict[str, Any], shot_id: str, assets: dict[str, Any]) -> dic
             "creator_id": spec.get("creator_id"),
             "source_type": shot.get("source_type"),
             "rights_evidence": assets.get("rights_evidence"),
+            "prompt_compiler_version": compiled_prompt.version,
+            "prompt_strategy": compiled_prompt.strategy,
         },
     }
 
