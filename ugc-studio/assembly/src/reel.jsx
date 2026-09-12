@@ -18,8 +18,7 @@ const layerStyle = {
 const Caption = ({ caption }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
-  const localFrame = frame - Math.round(caption.start * fps);
-  const fade = interpolate(localFrame, [0, 4, Math.max(5, (caption.end - caption.start) * fps - 4)], [0, 1, 1], {
+  const fade = interpolate(frame, [0, 4, Math.max(5, (caption.end - caption.start) * fps - 4)], [0, 1, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
