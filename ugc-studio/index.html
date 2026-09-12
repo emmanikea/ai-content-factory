@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>UGC Studio</title>
+<style>
+:root{--bg:#0b0b0d;--panel:#121216;--panel2:#17171c;--line:#292930;--muted:#8f8f9a;--text:#f5f5f7;--soft:#c5c5cc;--accent:#d9ff68;--accent2:#9fffcb;--danger:#ff8b8b;--warn:#ffd166;--r:18px}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 72% 0,#181821 0,#0b0b0d 38%);color:var(--text);font:14px/1.4 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,input,select{font:inherit}.app{min-height:100vh;display:grid;grid-template-columns:224px minmax(0,1fr)}aside{border-right:1px solid var(--line);padding:24px 18px;position:sticky;top:0;height:100vh;background:#0c0c0f}.brand{font-weight:800;font-size:17px;letter-spacing:-.03em;margin:0 8px 28px}.brand span{color:var(--accent)}nav{display:grid;gap:5px}.nav{padding:10px 12px;border-radius:11px;color:var(--muted);text-decoration:none}.nav.active{background:#18181d;color:#fff}.nav:hover{color:#fff}.sidefoot{position:absolute;bottom:20px;left:18px;right:18px;padding:12px;border:1px solid var(--line);border-radius:14px;background:#121216}.sidefoot b{display:block;font-size:12px;margin-bottom:4px}.sidefoot span{font-size:11px;color:var(--muted)}main{padding:28px 34px 60px;max-width:1540px;width:100%;margin:auto}.top{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:24px}.eyebrow{color:var(--muted);font-size:12px;margin-bottom:8px}.top h1{margin:0;font-size:28px;letter-spacing:-.04em}.top p{margin:8px 0 0;color:var(--muted);max-width:660px}.actions{display:flex;gap:8px}.btn{border:1px solid var(--line);background:#17171c;color:#fff;padding:10px 14px;border-radius:12px;cursor:pointer;font-weight:650}.btn.primary{background:var(--accent);color:#111;border-color:var(--accent)}.btn:hover{transform:translateY(-1px)}.brief{display:grid;grid-template-columns:1.1fr .9fr .7fr .7fr;gap:10px;padding:14px;border:1px solid var(--line);background:rgba(18,18,22,.85);border-radius:var(--r);margin-bottom:14px}.field label{display:block;color:var(--muted);font-size:11px;margin:0 0 7px 2px}.control{width:100%;height:42px;border-radius:11px;border:1px solid var(--line);background:#0f0f13;color:#fff;padding:0 11px;outline:none}.workspace{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:14px}.card{border:1px solid var(--line);background:rgba(18,18,22,.9);border-radius:var(--r);overflow:hidden}.cardHead{padding:15px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}.cardHead h2{font-size:13px;margin:0}.pill{font-size:10px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:4px 8px}.cardBody{padding:14px}.drop{min-height:186px;border:1px dashed #3a3a43;border-radius:14px;padding:14px;background:linear-gradient(145deg,#111116,#19191f);display:flex;flex-direction:column;justify-content:space-between}.thumb{height:104px;border-radius:11px;border:1px solid #303038;background:radial-gradient(circle at 30% 25%,#6d6d82,transparent 8%),linear-gradient(135deg,#252531,#15151b);position:relative;overflow:hidden}.thumb.person:after{content:"";position:absolute;width:82px;height:112px;border-radius:50% 50% 28% 28%;left:50%;top:18px;transform:translateX(-50%);background:linear-gradient(#777785,#363641)}.thumb.phone:after{content:"";position:absolute;width:58px;height:96px;border:5px solid #71717d;border-radius:14px;left:50%;top:6px;transform:translateX(-50%);background:linear-gradient(#b8ffda 0 22%,#202128 22%)}.thumb.ref:before{content:"▶";position:absolute;display:grid;place-items:center;inset:0;margin:auto;width:38px;height:38px;background:#ffffffdd;color:#111;border-radius:50%;z-index:2}.meta{display:flex;justify-content:space-between;gap:10px;margin-top:12px}.meta b{font-size:12px}.meta span{font-size:11px;color:var(--muted)}.ok{color:var(--accent2)!important}.builder{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:12px;margin-bottom:14px}.sliders{padding:16px}.sliders h2,.summary h2{font-size:13px;margin:0 0 4px}.sliders>p,.summary>p{color:var(--muted);font-size:12px;margin:0 0 15px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.step{padding:12px;border:1px solid var(--line);border-radius:13px;background:#101014}.stepTop{display:flex;justify-content:space-between;margin-bottom:10px}.stepTop b{font-size:12px}.count{min-width:27px;text-align:center;border-radius:8px;padding:2px 6px;background:#24242b}.step input{width:100%;accent-color:var(--accent)}.summary{padding:16px;background:linear-gradient(155deg,#17171c,#101014)}.big{font-size:35px;font-weight:800;letter-spacing:-.05em}.big small{font-size:12px;font-weight:500;color:var(--muted);letter-spacing:0}.math{display:grid;gap:8px;margin:12px 0 15px}.math div{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}.math b{color:#fff}.budget{padding:10px 12px;border-radius:11px;background:#1d2017;border:1px solid #343a22;font-size:11px;color:#dbe7bd}.sectionHead{display:flex;justify-content:space-between;align-items:flex-end;margin:24px 2px 10px}.sectionHead h2{margin:0;font-size:16px}.sectionHead p{margin:5px 0 0;color:var(--muted);font-size:12px}.filters{display:flex;gap:7px}.chip{padding:7px 10px;border:1px solid var(--line);border-radius:999px;color:var(--muted);font-size:11px}.chip.active{color:#111;background:var(--accent);border-color:var(--accent)}.variants{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.variant{border:1px solid var(--line);border-radius:15px;background:#111115;overflow:hidden}.preview{height:228px;background:linear-gradient(160deg,#32323b,#16161c 60%);position:relative;overflow:hidden}.preview:after{content:"";position:absolute;width:90px;height:142px;border-radius:48% 48% 27% 27%;left:50%;top:30px;transform:translateX(-50%);background:linear-gradient(#878792,#34343d)}.score{position:absolute;z-index:3;top:10px;left:10px;border-radius:10px;padding:6px 8px;background:#0c0c0edb;font-size:11px;font-weight:800}.score strong{color:var(--accent)}.duration{position:absolute;z-index:3;right:10px;bottom:10px;background:#0c0c0edb;border-radius:8px;padding:5px 7px;font-size:10px}.variantBody{padding:12px}.variantBody h3{font-size:12px;margin:0 0 6px;line-height:1.35}.variantBody p{font-size:11px;color:var(--muted);margin:0 0 10px;min-height:30px}.tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:11px}.tag{font-size:9px;padding:4px 6px;background:#1c1c22;border-radius:7px;color:#b9b9c1}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}.stat{background:#0c0c10;border-radius:8px;padding:7px}.stat span{display:block;font-size:8px;color:var(--muted);text-transform:uppercase}.stat b{font-size:10px}.variantActions{display:flex;gap:6px;margin-top:9px}.variantActions button{flex:1;padding:8px;border-radius:9px;border:1px solid var(--line);background:#17171c;color:#fff;font-size:10px;cursor:pointer}.variantActions .render{background:#f2f2f4;color:#111}.footerNote{margin-top:18px;color:var(--muted);font-size:11px;text-align:center}@media(max-width:1100px){.app{grid-template-columns:76px 1fr}.brand{font-size:0}.brand:before{content:"UF";font-size:16px}.nav{font-size:0;text-align:center}.nav:before{content:"•";font-size:18px}.sidefoot{display:none}.workspace,.variants{grid-template-columns:repeat(2,1fr)}.brief{grid-template-columns:repeat(2,1fr)}}@media(max-width:780px){main{padding:20px 14px 50px}.app{display:block}aside{display:none}.workspace,.builder,.variants,.brief{grid-template-columns:1fr}.grid{grid-template-columns:repeat(2,1fr)}.top{display:block}.actions{margin-top:14px}.variants{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside>
+  <div class="brand">UGC <span>Studio</span></div>
+  <nav>
+    <a class="nav active" href="#">Campaigns</a>
+    <a class="nav" href="#">Creators</a>
+    <a class="nav" href="#">References</a>
+    <a class="nav" href="#">Products</a>
+    <a class="nav" href="#">Renders</a>
+    <a class="nav" href="#">Learnings</a>
+  </nav>
+  <div class="sidefoot"><b>Dry-run mode</b><span>No paid media jobs will be submitted.</span></div>
+</aside>
+<main>
+  <div class="top">
+    <div>
+      <div class="eyebrow">Campaign / BorderETA Growth Batch 01</div>
+      <h1>Build a batch before you spend on it.</h1>
+      <p>Choose the reference, creator and product. Generate CreativeSpecs first, rank them, then render only the winners.</p>
+    </div>
+    <div class="actions"><button class="btn">Save draft</button><button class="btn primary" id="generateTop">Generate specs</button></div>
+  </div>
+
+  <section class="brief">
+    <div class="field"><label>Campaign</label><input class="control" value="BorderETA Growth Batch 01" /></div>
+    <div class="field"><label>Audience</label><input class="control" value="Frequent cross-border travelers" /></div>
+    <div class="field"><label>Platform</label><select class="control"><option>Instagram Reels</option><option>TikTok</option><option>YouTube Shorts</option></select></div>
+    <div class="field"><label>Target length</label><select class="control"><option>15–20 seconds</option><option>8–12 seconds</option><option>25–30 seconds</option></select></div>
+  </section>
+
+  <section class="workspace">
+    <article class="card"><div class="cardHead"><h2>1. Reference</h2><span class="pill">Creative DNA</span></div><div class="cardBody"><div class="drop"><div class="thumb ref"></div><div class="meta"><div><b>Reaction → demo → payoff</b><br><span>17.8s · 6 cuts · public reference</span></div><span class="ok">Safe mode</span></div></div></div></article>
+    <article class="card"><div class="cardHead"><h2>2. Creator</h2><span class="pill">Rights active</span></div><div class="cardBody"><div class="drop"><div class="thumb person"></div><div class="meta"><div><b>Creator A</b><br><span>Voice · likeness · wardrobe edits</span></div><span class="ok">Approved</span></div></div></div></article>
+    <article class="card"><div class="cardHead"><h2>3. Product</h2><span class="pill">App capture</span></div><div class="cardBody"><div class="drop"><div class="thumb phone"></div><div class="meta"><div><b>BorderETA</b><br><span>Real UI capture · 3 saved flows</span></div><span class="ok">Ready</span></div></div></div></article>
+  </section>
+
+  <section class="builder">
+    <article class="card sliders">
+      <h2>Variation builder</h2><p>Create the concept space cheaply. Rendering is a separate approval step.</p>
+      <div class="grid">
+        <div class="step"><div class="stepTop"><b>Hooks</b><span class="count" id="hooksVal">5</span></div><input data-key="hooks" type="range" min="1" max="10" value="5"></div>
+        <div class="step"><div class="stepTop"><b>Scripts</b><span class="count" id="scriptsVal">3</span></div><input data-key="scripts" type="range" min="1" max="6" value="3"></div>
+        <div class="step"><div class="stepTop"><b>Creators</b><span class="count" id="creatorsVal">2</span></div><input data-key="creators" type="range" min="1" max="5" value="2"></div>
+        <div class="step"><div class="stepTop"><b>Outfits</b><span class="count" id="outfitsVal">2</span></div><input data-key="outfits" type="range" min="1" max="5" value="2"></div>
+        <div class="step"><div class="stepTop"><b>Locations</b><span class="count" id="locationsVal">2</span></div><input data-key="locations" type="range" min="1" max="5" value="2"></div>
+        <div class="step"><div class="stepTop"><b>CTAs</b><span class="count" id="ctasVal">2</span></div><input data-key="ctas" type="range" min="1" max="5" value="2"></div>
+      </div>
+    </article>
+    <aside class="card summary" style="position:static;height:auto">
+      <h2>Concept space</h2><p>Rank first. Render a small frontier.</p>
+      <div class="big" id="combo">240 <small>possible variants</small></div>
+      <div class="math"><div><span>CreativeSpecs to generate</span><b id="specs">24</b></div><div><span>Suggested render shortlist</span><b id="shortlist">8</b></div><div><span>Estimated draft spend</span><b id="cost">$8–$20</b></div></div>
+      <div class="budget">The planner caps expensive video renders and prefers cheap/deterministic paths for app footage, captions and assembly.</div>
+    </aside>
+  </section>
+
+  <div class="sectionHead"><div><h2>Ranked concepts</h2><p>Mock scores show the review experience; model calls are not connected yet.</p></div><div class="filters"><span class="chip active">Top ranked</span><span class="chip">Needs review</span><span class="chip">Approved</span></div></div>
+  <section class="variants" id="variants"></section>
+  <div class="footerNote">Prototype branch · provider calls disabled · no paid generation</div>
+</main>
+</div>
+<script>
+const state={hooks:5,scripts:3,creators:2,outfits:2,locations:2,ctas:2};
+const ideas=[
+ {s:94,t:'“I cross the border all the time and somehow missed this.”',a:'Surprise → live bridge comparison → fastest route',f:'Reaction demo',c:'Creator A',cost:'$1.10'},
+ {s:91,t:'“Stop guessing which bridge is faster.”',a:'Pain point → proof → app interaction',f:'Problem / solution',c:'Creator B',cost:'$0.90'},
+ {s:89,t:'“This is the screen I check before I leave Juárez.”',a:'Routine → app proof → low-pressure CTA',f:'Daily habit',c:'Creator A',cost:'$1.35'},
+ {s:86,t:'“Google Maps doesn’t show me this part.”',a:'Contrast → BorderETA UI → route decision',f:'Comparison',c:'Creator B',cost:'$1.55'}
+];
+function renderCards(){document.querySelector('#variants').innerHTML=ideas.map((x,i)=>`<article class="variant"><div class="preview"><div class="score"><strong>${x.s}</strong> / 100</div><div class="duration">${15+i}s</div></div><div class="variantBody"><h3>${x.t}</h3><p>${x.a}</p><div class="tags"><span class="tag">${x.f}</span><span class="tag">${x.c}</span><span class="tag">rights ✓</span></div><div class="stats"><div class="stat"><span>est. cost</span><b>${x.cost}</b></div><div class="stat"><span>UI</span><b>capture</b></div><div class="stat"><span>QA</span><b>planned</b></div></div><div class="variantActions"><button>Open spec</button><button class="render" onclick="this.textContent=this.textContent==='Approved'?'Render':'Approved'">Approve</button></div></div></article>`).join('')}
+function recalc(){let total=Object.values(state).reduce((a,b)=>a*b,1);document.querySelector('#combo').innerHTML=`${total.toLocaleString()} <small>possible variants</small>`;let specs=Math.min(40,Math.max(12,Math.round(Math.sqrt(total)*1.6)));let shortlist=Math.max(4,Math.min(12,Math.round(specs/3)));document.querySelector('#specs').textContent=specs;document.querySelector('#shortlist').textContent=shortlist;document.querySelector('#cost').textContent=`$${shortlist}–$${shortlist*3}`}
+document.querySelectorAll('input[type=range]').forEach(el=>el.addEventListener('input',e=>{state[e.target.dataset.key]=Number(e.target.value);document.querySelector('#'+e.target.dataset.key+'Val').textContent=e.target.value;recalc()}));
+document.querySelector('#generateTop').addEventListener('click',e=>{e.target.textContent='Specs generated';setTimeout(()=>e.target.textContent='Generate specs',1200)});renderCards();recalc();
+</script>
+</body>
+</html>
