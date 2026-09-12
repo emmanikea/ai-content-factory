@@ -1,0 +1,11 @@
+{
+  "name": "ugc-studio-capture",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "capture": "node capture.mjs"
+  },
+  "dependencies": {
+    "playwright": "1.63.0"
+  }
+}
