@@ -2,8 +2,8 @@
 """Compile a CreativeSpec shot into a provider-ready fal job.
 
 This compiler never submits work. It creates the JSON consumed by
-ugc-studio/providers/fal/render.mjs. A human or higher-level approval step must set
-`approved_for_spend` to true before the renderer may run with --live.
+ugc-studio/providers/fal/render.mjs. A higher-level rights check must explicitly mark the
+assets manifest `rights_approved: true`; live rendering separately requires spend approval.
 """
 from __future__ import annotations
 
@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Any
 
 from model_router import route_shot
+from rights import enforce_reference_mode
 
 
 def _duration(shot: dict[str, Any]) -> float:
@@ -113,6 +114,17 @@ def build_job(spec: dict[str, Any], shot_id: str, assets: dict[str, Any]) -> dic
     if not shot:
         raise ValueError(f"shot {shot_id!r} not found")
 
+    if assets.get("rights_approved") is not True:
+        raise ValueError("direct creator render blocked: assets.rights_approved must be true")
+
+    if shot.get("source_type") == "creator_motion_transfer":
+        decision = enforce_reference_mode(
+            {"rights_mode": spec.get("rights_mode", "creative_dna_only")},
+            "motion_transfer",
+        )
+        if not decision.allowed:
+            raise ValueError("; ".join(decision.reasons))
+
     quality_tier = spec.get("quality_tier", "standard")
     resolution = spec.get("render_resolution", "720p")
     aspect_ratio = spec.get("aspect_ratio", "9:16")
@@ -144,6 +156,7 @@ def build_job(spec: dict[str, Any], shot_id: str, assets: dict[str, Any]) -> dic
         "provider": "fal",
         "model_id": model_id,
         "estimated_cost_usd": route["estimated_cost_usd"],
+        "rights_approved": True,
         "approved_for_spend": False,
         "input": input_payload,
         "provenance": {
@@ -151,6 +164,7 @@ def build_job(spec: dict[str, Any], shot_id: str, assets: dict[str, Any]) -> dic
             "rights_mode": spec.get("rights_mode"),
             "creator_id": spec.get("creator_id"),
             "source_type": shot.get("source_type"),
+            "rights_evidence": assets.get("rights_evidence"),
         },
     }
 
@@ -159,7 +173,7 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("spec")
     parser.add_argument("--shot", required=True)
-    parser.add_argument("--assets", required=True, help="JSON file with creator/reference URLs")
+    parser.add_argument("--assets", required=True, help="JSON file with creator/reference URLs and rights approval")
     parser.add_argument("--out")
     args = parser.parse_args()
 
