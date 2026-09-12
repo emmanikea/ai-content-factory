@@ -27,15 +27,21 @@ Exit condition: the workflow is understandable and clickable before provider int
 
 Exit condition: campaign -> CreativeSpec -> approval -> render plan can run without spending on media.
 
-## Phase 2: existing Higgsfield path behind adapter
+## Phase 2: direct-model render path
 
-- [ ] Wrap existing Higgsfield/media-worker behavior in provider interface.
-- [ ] Keep current UGC and product-pan workflows working.
-- [ ] Record provider, model, cost estimate, prompt/config, and artifact provenance.
-- [ ] Route one CreativeSpec shot through existing media worker.
+The default production path should call the underlying models directly rather than paying for Higgsfield as an intermediary. Higgsfield remains an optional benchmark/fallback for proprietary features such as Soul/Soul ID or when its economics are genuinely better for a specific job.
+
+- [ ] Add direct Seedance adapter for premium multimodal/reference-to-video generation.
+- [ ] Add direct Kling adapter for image-to-video and motion control.
+- [ ] Add direct Wan adapter for motion transfer/character replacement.
+- [ ] Add self-hostable Wan worker configuration for high-volume cost reduction.
+- [ ] Add direct/open identity-still path for recurring creators.
+- [ ] Record provider, model, actual quote, prompt/config, and artifact provenance.
+- [ ] Route one CreativeSpec creator shot through a direct model adapter.
 - [x] Add dry-run output for planned render jobs.
+- [ ] Keep the existing Higgsfield worker as an optional adapter, not the default router target.
 
-Exit condition: the new domain layer can produce existing outputs without changing the existing provider behavior.
+Exit condition: a CreativeSpec can render without requiring a Higgsfield subscription or Higgsfield credits.
 
 ## Phase 3: deterministic app capture
 
@@ -60,16 +66,16 @@ Exit condition: a CreativeSpec can include real product/app interactions as time
 
 Exit condition: mixed creator + app + B-roll shots compile into a final Reel without asking a video model to create the edit.
 
-## Phase 5: multi-provider routing
+## Phase 5: cost/quality routing
 
-- [ ] Add one reference/motion-transfer provider.
-- [ ] Add one premium reference-to-video provider.
-- [ ] Add one low-cost/open worker path.
-- [ ] Add provider scoring by capability, cost, latency, and QA history.
+- [ ] Score providers by capability, cost, latency, and QA history.
+- [ ] Prefer low-cost/open paths for iteration.
+- [ ] Promote winning concepts to premium models only when justified.
 - [ ] Add fallback/retry policy.
 - [ ] Add per-campaign budget cap.
+- [ ] Compare direct-model cost and QA against Higgsfield on the same test set.
 
-Exit condition: provider selection is configuration rather than application code.
+Exit condition: provider selection is driven by measured quality-per-dollar, not platform preference.
 
 ## Phase 6: creator identity system
 
@@ -114,13 +120,16 @@ Can be implemented autonomously now:
 - rights enforcement logic
 - provider interfaces
 - dry-run planner
+- direct-model adapters
+- self-host worker configuration
 - app capture framework
 - Remotion assembly
 - QA framework
 - tests
 
 Requires external credentials/assets or human decisions:
-- paid provider keys/auth
+- direct provider API keys where applicable
+- GPU infrastructure if self-hosting open video models
 - creator consent documents and approved reference media
 - creator voice/identity source assets
 - production app login flows where authentication is needed
