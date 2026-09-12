@@ -1,0 +1,50 @@
+{
+  "durationSeconds": 17.5,
+  "background": "#0b0b0d",
+  "clips": [
+    {
+      "id": "s1-creator-hook",
+      "type": "video",
+      "src": "../artifacts/s1/asset.mp4",
+      "start": 0,
+      "end": 2.4,
+      "fit": "cover",
+      "volume": 1
+    },
+    {
+      "id": "s2-app-demo",
+      "type": "video",
+      "src": "../artifacts/s2/app-demo.webm",
+      "start": 2.4,
+      "end": 8.8,
+      "fit": "cover",
+      "muted": true
+    },
+    {
+      "id": "s3-creator-payoff",
+      "type": "video",
+      "src": "../artifacts/s3/asset.mp4",
+      "start": 8.8,
+      "end": 11.4,
+      "fit": "cover",
+      "volume": 1
+    },
+    {
+      "id": "s4-app-result",
+      "type": "video",
+      "src": "../artifacts/s4/app-demo.webm",
+      "start": 11.4,
+      "end": 15.4,
+      "fit": "cover",
+      "muted": true
+    }
+  ],
+  "captions": [
+    {"id": "c1", "start": 0.1, "end": 2.3, "text": "Wait, why did nobody tell me this existed?"},
+    {"id": "c2", "start": 8.9, "end": 11.3, "text": "That is literally what I needed."}
+  ],
+  "cta": {
+    "start": 15.4,
+    "text": "Check BorderETA before your next crossing"
+  }
+}
