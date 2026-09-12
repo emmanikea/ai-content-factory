@@ -37,6 +37,11 @@ The default production path calls underlying models directly. Higgsfield remains
 - [x] Compile CreativeSpec creator shots into provider-ready Wan/Kling/Seedance/Kling-Motion jobs.
 - [x] Require explicit rights approval in compiled/live jobs.
 - [x] Pin current `@fal-ai/client` dependency.
+- [x] Research Higgsfield's public skills repo as an optional knowledge/benchmark layer.
+- [x] Record Higgsfield upstream version/commit/license and relevant skill/reference paths.
+- [x] Add dated model pricing/source ledger and machine-readable research-source registry.
+- [x] Add model-aware prompt compiler informed by public provider/Higgsfield prompting guidance.
+- [x] Store prompt compiler version/strategy in direct-job provenance.
 - [ ] Run first credentialed direct-model render.
 - [ ] Add actual-cost reconciliation after provider completion.
 - [ ] Add self-hostable Wan worker configuration for high-volume cost reduction.
@@ -118,6 +123,17 @@ Exit condition: the system rejects obvious bad outputs before a human sees them.
 
 Exit condition: the system becomes a creative learning loop rather than a generation queue.
 
+## Knowledge-source refresh policy
+
+During active development, periodically re-check:
+
+- `higgsfield-ai/skills` version/commit and relevant generate/Marketing Studio/Soul docs
+- direct provider model schemas
+- direct provider pricing
+- optional Higgsfield credit/job economics if benchmarking it
+
+Do not overwrite historical job provenance with new pricing or new recommendations. Every benchmark should preserve the source/rate assumptions that existed when it ran.
+
 ## Autonomous vs external-input boundary
 
 Implemented without paid generation:
@@ -128,6 +144,8 @@ Implemented without paid generation:
 - creator identity-pack contract
 - direct-model registry and router
 - provider-ready job compilation
+- model-aware prompt compiler
+- dated pricing and research-source ledger
 - rights + spend-gated fal runner
 - app-capture framework
 - local-media staging
