@@ -5,13 +5,13 @@
 - [x] Write PRD.
 - [x] Write OpenSpec proposal.
 - [x] Define architecture and migration path.
-- [ ] Add CreativeSpec JSON Schema.
-- [ ] Add Creator + rights JSON Schema.
-- [ ] Build visual Campaign Studio prototype with demo data.
-- [ ] Add reference / creator / product selectors.
-- [ ] Add variation controls and combinatorial estimate.
-- [ ] Add ranked concept review cards.
-- [ ] Add render-cost preview states.
+- [x] Add CreativeSpec JSON Schema.
+- [x] Add Creator + rights JSON Schema.
+- [x] Build visual Campaign Studio prototype with demo data.
+- [x] Add reference / creator / product selectors.
+- [x] Add variation controls and combinatorial estimate.
+- [x] Add ranked concept review cards.
+- [x] Add render-cost preview states.
 
 Exit condition: the workflow is understandable and clickable before provider integration.
 
@@ -19,11 +19,11 @@ Exit condition: the workflow is understandable and clickable before provider int
 
 - [ ] Add filesystem repositories for campaigns, creators, references, specs, jobs, and artifacts.
 - [ ] Add schema validation.
-- [ ] Add rights-policy evaluator.
+- [x] Add rights-policy evaluator.
 - [ ] Add CreativeSpec generator interface.
 - [ ] Add reference-analysis result format.
-- [ ] Add cost estimator.
-- [ ] Add provider capability registry.
+- [x] Add dry-run cost estimator.
+- [x] Add provider capability contract.
 
 Exit condition: campaign -> CreativeSpec -> approval -> render plan can run without spending on media.
 
@@ -33,7 +33,7 @@ Exit condition: campaign -> CreativeSpec -> approval -> render plan can run with
 - [ ] Keep current UGC and product-pan workflows working.
 - [ ] Record provider, model, cost estimate, prompt/config, and artifact provenance.
 - [ ] Route one CreativeSpec shot through existing media worker.
-- [ ] Add dry-run output for every planned render job.
+- [x] Add dry-run output for planned render jobs.
 
 Exit condition: the new domain layer can produce existing outputs without changing the existing provider behavior.
 
@@ -78,7 +78,7 @@ Exit condition: provider selection is configuration rather than application code
 - [ ] Add voice-reference storage contract.
 - [ ] Add wardrobe/location presets.
 - [ ] Add performance-reference library.
-- [ ] Enforce rights on every render request.
+- [x] Enforce explicit creator rights before render planning.
 - [ ] Add revocation behavior.
 
 Exit condition: an approved creator can safely become a reusable production asset.
