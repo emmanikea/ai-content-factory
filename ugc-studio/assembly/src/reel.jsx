@@ -5,6 +5,7 @@ import {
   OffthreadVideo,
   Sequence,
   interpolate,
+  staticFile,
   useCurrentFrame,
   useVideoConfig,
 } from 'remotion';
@@ -13,6 +14,11 @@ const layerStyle = {
   width: '100%',
   height: '100%',
   objectFit: 'cover',
+};
+
+const resolveSrc = (src) => {
+  if (/^(https?:|data:|blob:)/.test(src)) return src;
+  return staticFile(src.replace(/^\//, ''));
 };
 
 const Caption = ({ caption }) => {
@@ -113,14 +119,15 @@ export const UGCReel = ({ clips = [], captions = [], cta = null, background = '#
         const from = Math.round(clip.start * fps);
         const durationInFrames = Math.max(1, Math.round((clip.end - clip.start) * fps));
         const trimBefore = Math.round((clip.trimStartSeconds ?? 0) * fps);
+        const src = resolveSrc(clip.src);
         return (
           <Sequence key={clip.id} from={from} durationInFrames={durationInFrames} premountFor={fps}>
             <AbsoluteFill>
               {clip.type === 'image' ? (
-                <Img src={clip.src} style={{ ...layerStyle, objectFit: clip.fit ?? 'cover' }} />
+                <Img src={src} style={{ ...layerStyle, objectFit: clip.fit ?? 'cover' }} />
               ) : (
                 <OffthreadVideo
-                  src={clip.src}
+                  src={src}
                   trimBefore={trimBefore}
                   muted={clip.muted ?? false}
                   volume={clip.volume ?? 1}
