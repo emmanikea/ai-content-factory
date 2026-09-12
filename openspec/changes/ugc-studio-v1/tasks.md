@@ -18,10 +18,10 @@ Exit condition: the workflow is understandable and clickable before provider int
 ## Phase 1: local domain layer
 
 - [ ] Add filesystem repositories for campaigns, creators, references, specs, jobs, and artifacts.
-- [ ] Add schema validation.
+- [ ] Add full JSON Schema runtime validation.
 - [x] Add rights-policy evaluator.
 - [ ] Add CreativeSpec generator interface.
-- [ ] Add reference-analysis result format.
+- [x] Add reference-analysis result format.
 - [x] Add dry-run cost estimator.
 - [x] Add provider capability contract.
 
@@ -29,58 +29,62 @@ Exit condition: campaign -> CreativeSpec -> approval -> render plan can run with
 
 ## Phase 2: direct-model render path
 
-The default production path should call the underlying models directly rather than paying for Higgsfield as an intermediary. Higgsfield remains an optional benchmark/fallback for proprietary features such as Soul/Soul ID or when its economics are genuinely better for a specific job.
+The default production path calls underlying models directly. Higgsfield remains optional for proprietary features or benchmark/fallback cases where it proves better economics.
 
-- [ ] Add direct Seedance adapter for premium multimodal/reference-to-video generation.
-- [ ] Add direct Kling adapter for image-to-video and motion control.
-- [ ] Add direct Wan adapter for motion transfer/character replacement.
+- [x] Add dated direct-model registry with Wan, Kling, Seedance capabilities and pricing formulas.
+- [x] Add cost/quality router that excludes Higgsfield by default.
+- [x] Add direct fal provider runner with explicit live/spend gates.
+- [x] Compile CreativeSpec creator shots into provider-ready Wan/Kling/Seedance/Kling-Motion jobs.
+- [x] Pin current `@fal-ai/client` dependency.
+- [ ] Run first credentialed direct-model render.
+- [ ] Add actual-cost reconciliation after provider completion.
 - [ ] Add self-hostable Wan worker configuration for high-volume cost reduction.
-- [ ] Add direct/open identity-still path for recurring creators.
-- [ ] Record provider, model, actual quote, prompt/config, and artifact provenance.
-- [ ] Route one CreativeSpec creator shot through a direct model adapter.
-- [x] Add dry-run output for planned render jobs.
-- [ ] Keep the existing Higgsfield worker as an optional adapter, not the default router target.
+- [ ] Add direct/open identity-still generation worker.
+- [ ] Keep the existing Higgsfield worker as optional only.
 
 Exit condition: a CreativeSpec can render without requiring a Higgsfield subscription or Higgsfield credits.
 
 ## Phase 3: deterministic app capture
 
-- [ ] Add Playwright capture runner.
-- [ ] Add capture script format.
-- [ ] Add vertical viewport presets.
+- [x] Add Playwright capture runner.
+- [x] Add declarative capture script format.
+- [x] Add vertical viewport/video presets.
 - [ ] Add optional pointer/touch visualization.
 - [ ] Add Maestro mobile capture contract.
-- [ ] Store capture provenance and version.
+- [x] Store capture provenance and version metadata.
 
 Exit condition: a CreativeSpec can include real product/app interactions as timed shots.
 
 ## Phase 4: deterministic assembly
 
-- [ ] Add Remotion project.
-- [ ] Implement 9:16 UGC timeline component.
-- [ ] Add captions.
-- [ ] Add B-roll inserts.
-- [ ] Add CTA overlay/card.
-- [ ] Add audio mixing and normalization.
-- [ ] Add FFmpeg output normalization.
+- [x] Add Remotion project pinned to current matching package versions.
+- [x] Implement 1080x1920 UGC timeline component.
+- [x] Add timed captions.
+- [x] Support creator/app/B-roll video inserts through the same clip contract.
+- [x] Add CTA overlay/card.
+- [x] Support clip audio/mute/volume controls.
+- [ ] Add background music ducking and loudness normalization.
+- [ ] Add explicit FFmpeg output-normalization wrapper.
+- [ ] Add artifact-preparation step for local Remotion static assets.
 
 Exit condition: mixed creator + app + B-roll shots compile into a final Reel without asking a video model to create the edit.
 
 ## Phase 5: cost/quality routing
 
-- [ ] Score providers by capability, cost, latency, and QA history.
-- [ ] Prefer low-cost/open paths for iteration.
-- [ ] Promote winning concepts to premium models only when justified.
-- [ ] Add fallback/retry policy.
-- [ ] Add per-campaign budget cap.
+- [x] Score providers using capability, tier, configured quality and estimated cost.
+- [x] Prefer low-cost/open paths for draft iteration.
+- [x] Promote premium jobs to premium models by explicit tier.
+- [ ] Replace static quality priors with measured QA pass rates.
+- [ ] Add fallback/retry escalation policy.
+- [x] Enforce per-concept render budget cap.
 - [ ] Compare direct-model cost and QA against Higgsfield on the same test set.
 
-Exit condition: provider selection is driven by measured quality-per-dollar, not platform preference.
+Exit condition: provider selection is driven by measured quality-per-usable-dollar, not platform preference.
 
 ## Phase 6: creator identity system
 
 - [ ] Add creator onboarding checklist.
-- [ ] Add canonical identity/reference set.
+- [ ] Add canonical identity/reference pack builder.
 - [ ] Add voice-reference storage contract.
 - [ ] Add wardrobe/location presets.
 - [ ] Add performance-reference library.
@@ -112,26 +116,23 @@ Exit condition: the system becomes a creative learning loop rather than a genera
 
 ## Autonomous vs external-input boundary
 
-Can be implemented autonomously now:
-- domain contracts
-- schemas
-- UI
+Implemented or implementable without paid generation:
+- domain contracts and schemas
+- Campaign Studio UI
 - reference-analysis structure
-- rights enforcement logic
-- provider interfaces
-- dry-run planner
-- direct-model adapters
-- self-host worker configuration
-- app capture framework
+- rights enforcement
+- direct-model registry and router
+- provider-ready job compilation
+- spend-gated fal runner
+- app-capture framework
 - Remotion assembly
-- QA framework
-- tests
+- unit/CI tests
 
-Requires external credentials/assets or human decisions:
-- direct provider API keys where applicable
-- GPU infrastructure if self-hosting open video models
-- creator consent documents and approved reference media
-- creator voice/identity source assets
+Requires external credentials/assets or human decisions for live production:
+- `FAL_KEY` or equivalent direct-provider credentials
+- one approved creator identity/reference pack
+- licensed/owned performance clips for literal motion transfer
 - production app login flows where authentication is needed
-- final social-platform publishing credentials
-- legal review of creator NIL/commission agreements
+- GPU infrastructure if self-hosting Wan2.2 Animate
+- final legal review of creator NIL/commission agreements
+- publishing credentials when automatic distribution is added
