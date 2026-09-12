@@ -1,0 +1,132 @@
+{
+  "version": "2026-09-12",
+  "currency": "USD",
+  "notes": "Reference pricing is configuration metadata, not a billing guarantee. Re-verify before production use.",
+  "providers": [
+    {
+      "id": "local-playwright",
+      "kind": "deterministic",
+      "enabled_by_default": true,
+      "capabilities": ["app_capture"],
+      "models": [
+        {
+          "id": "playwright-capture",
+          "quality_score": 1.0,
+          "cost_model": {"type": "fixed", "usd": 0.0}
+        }
+      ]
+    },
+    {
+      "id": "local-remotion",
+      "kind": "deterministic",
+      "enabled_by_default": true,
+      "capabilities": ["graphic", "assembly"],
+      "models": [
+        {
+          "id": "remotion-ffmpeg",
+          "quality_score": 1.0,
+          "cost_model": {"type": "fixed", "usd": 0.0}
+        }
+      ]
+    },
+    {
+      "id": "fal",
+      "kind": "direct_hosted",
+      "enabled_by_default": true,
+      "credential_env": "FAL_KEY",
+      "models": [
+        {
+          "id": "alibaba/wan-3.0/image-to-video",
+          "label": "Wan 3.0 I2V",
+          "capabilities": ["image_to_video", "broll"],
+          "quality_score": 0.86,
+          "recommended_for": ["draft", "standard"],
+          "pricing_checked_at": "2026-09-12",
+          "cost_model": {
+            "type": "per_second_by_resolution",
+            "rates": {"480p": 0.05, "720p": 0.10, "1080p": 0.20}
+          },
+          "source": "https://fal.ai/models/alibaba/wan-3.0/image-to-video"
+        },
+        {
+          "id": "fal-ai/kling-video/v3/standard/image-to-video",
+          "label": "Kling 3 Standard I2V",
+          "capabilities": ["image_to_video", "creator_video"],
+          "quality_score": 0.91,
+          "recommended_for": ["standard"],
+          "pricing_checked_at": "2026-09-12",
+          "cost_model": {
+            "type": "per_second_audio_toggle",
+            "audio_off": 0.084,
+            "audio_on": 0.126,
+            "voice_control": 0.154
+          },
+          "source": "https://fal.ai/models/fal-ai/kling-video/v3/standard/image-to-video"
+        },
+        {
+          "id": "fal-ai/kling-video/v3/pro/image-to-video",
+          "label": "Kling 3 Pro I2V",
+          "capabilities": ["image_to_video", "creator_video"],
+          "quality_score": 0.95,
+          "recommended_for": ["premium"],
+          "pricing_checked_at": "2026-09-12",
+          "cost_model": {
+            "type": "per_second_audio_toggle",
+            "audio_off": 0.112,
+            "audio_on": 0.168,
+            "voice_control": 0.196
+          },
+          "source": "https://fal.ai/models/fal-ai/kling-video/v3/pro/image-to-video"
+        },
+        {
+          "id": "fal-ai/kling-video/v3/standard/motion-control",
+          "label": "Kling 3 Standard Motion Control",
+          "capabilities": ["motion_transfer"],
+          "quality_score": 0.92,
+          "recommended_for": ["standard", "premium"],
+          "pricing_checked_at": "2026-09-12",
+          "cost_model": {"type": "per_second", "rate": 0.126},
+          "source": "https://fal.ai/models/fal-ai/kling-video/v3/standard/motion-control"
+        },
+        {
+          "id": "bytedance/seedance-2.5/reference-to-video",
+          "label": "Seedance 2.5 Reference-to-Video",
+          "capabilities": ["reference_to_video", "creator_video", "multimodal_video"],
+          "quality_score": 0.97,
+          "recommended_for": ["premium"],
+          "pricing_checked_at": "2026-09-12",
+          "cost_model": {
+            "type": "token_formula",
+            "usd_per_1000_tokens": 0.0214,
+            "fps": 24,
+            "video_reference_multiplier": 0.6,
+            "notes": "Input video duration is billed alongside output duration on reference-to-video."
+          },
+          "source": "https://fal.ai/models/bytedance/seedance-2.5/reference-to-video"
+        }
+      ]
+    },
+    {
+      "id": "selfhost-wan",
+      "kind": "self_hosted",
+      "enabled_by_default": false,
+      "models": [
+        {
+          "id": "Wan2.2-Animate-14B",
+          "capabilities": ["motion_transfer", "character_replace"],
+          "quality_score": 0.90,
+          "cost_model": {"type": "compute_metered", "rate": null},
+          "source": "https://github.com/Wan-Video/Wan2.2"
+        }
+      ]
+    },
+    {
+      "id": "higgsfield",
+      "kind": "optional_suite",
+      "enabled_by_default": false,
+      "models": [],
+      "capabilities": ["proprietary_identity", "proprietary_camera", "benchmark_fallback"],
+      "policy": "Never route here unless campaign.allow_higgsfield_fallback is true or a Higgsfield-specific capability is explicitly requested."
+    }
+  ]
+}
