@@ -35,12 +35,13 @@ The default production path calls underlying models directly. Higgsfield remains
 - [x] Add cost/quality router that excludes Higgsfield by default.
 - [x] Add direct fal provider runner with explicit live/spend gates.
 - [x] Compile CreativeSpec creator shots into provider-ready Wan/Kling/Seedance/Kling-Motion jobs.
+- [x] Require explicit rights approval in compiled/live jobs.
 - [x] Pin current `@fal-ai/client` dependency.
 - [ ] Run first credentialed direct-model render.
 - [ ] Add actual-cost reconciliation after provider completion.
 - [ ] Add self-hostable Wan worker configuration for high-volume cost reduction.
 - [ ] Add direct/open identity-still generation worker.
-- [ ] Keep the existing Higgsfield worker as optional only.
+- [x] Keep the existing Higgsfield worker optional rather than a default router target.
 
 Exit condition: a CreativeSpec can render without requiring a Higgsfield subscription or Higgsfield credits.
 
@@ -63,9 +64,10 @@ Exit condition: a CreativeSpec can include real product/app interactions as time
 - [x] Support creator/app/B-roll video inserts through the same clip contract.
 - [x] Add CTA overlay/card.
 - [x] Support clip audio/mute/volume controls.
-- [ ] Add background music ducking and loudness normalization.
-- [ ] Add explicit FFmpeg output-normalization wrapper.
-- [ ] Add artifact-preparation step for local Remotion static assets.
+- [ ] Add background music ducking.
+- [x] Add final loudness normalization.
+- [x] Add explicit FFmpeg output-normalization wrapper.
+- [x] Add artifact-preparation step for local Remotion static assets.
 
 Exit condition: mixed creator + app + B-roll shots compile into a final Reel without asking a video model to create the edit.
 
@@ -75,7 +77,8 @@ Exit condition: mixed creator + app + B-roll shots compile into a final Reel wit
 - [x] Prefer low-cost/open paths for draft iteration.
 - [x] Promote premium jobs to premium models by explicit tier.
 - [ ] Replace static quality priors with measured QA pass rates.
-- [ ] Add fallback/retry escalation policy.
+- [x] Add cost-aware fallback/retry escalation policy.
+- [x] Do not retry around rights, source, or deterministic UI failures.
 - [x] Enforce per-concept render budget cap.
 - [ ] Compare direct-model cost and QA against Higgsfield on the same test set.
 
@@ -84,12 +87,13 @@ Exit condition: provider selection is driven by measured quality-per-usable-doll
 ## Phase 6: creator identity system
 
 - [ ] Add creator onboarding checklist.
-- [ ] Add canonical identity/reference pack builder.
-- [ ] Add voice-reference storage contract.
-- [ ] Add wardrobe/location presets.
-- [ ] Add performance-reference library.
-- [x] Enforce explicit creator rights before render planning.
-- [ ] Add revocation behavior.
+- [x] Define canonical creator identity-pack schema.
+- [x] Define voice-reference storage contract inside identity pack.
+- [x] Define wardrobe/location preset contract inside identity pack.
+- [x] Define performance-reference library contract inside identity pack.
+- [x] Enforce explicit creator rights before direct job compilation/render.
+- [ ] Add pack builder/importer.
+- [ ] Add revocation propagation behavior.
 
 Exit condition: an approved creator can safely become a reusable production asset.
 
@@ -116,16 +120,20 @@ Exit condition: the system becomes a creative learning loop rather than a genera
 
 ## Autonomous vs external-input boundary
 
-Implemented or implementable without paid generation:
+Implemented without paid generation:
 - domain contracts and schemas
 - Campaign Studio UI
 - reference-analysis structure
 - rights enforcement
+- creator identity-pack contract
 - direct-model registry and router
 - provider-ready job compilation
-- spend-gated fal runner
+- rights + spend-gated fal runner
 - app-capture framework
+- local-media staging
 - Remotion assembly
+- FFmpeg normalization
+- retry/escalation policy
 - unit/CI tests
 
 Requires external credentials/assets or human decisions for live production:
