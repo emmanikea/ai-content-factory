@@ -39,6 +39,7 @@ class Candidate:
     capability: str
     source: str | None
     kind: str
+    recommended_for: tuple[str, ...]
 
 
 def load_registry(path: Path = DEFAULT_REGISTRY) -> dict[str, Any]:
@@ -151,16 +152,22 @@ def candidates_for(
                 capability=capability,
                 source=model.get("source"),
                 kind=kind,
+                recommended_for=tuple(model.get("recommended_for") or ()),
             )
         )
+
+    # Respect explicitly curated tiers when at least one eligible model declares itself
+    # suitable for the requested tier. This prevents a standard job from silently drifting
+    # into a premium model just because its static quality score is a few points higher.
+    tier_matches = [c for c in out if quality_tier in c.recommended_for]
+    if tier_matches:
+        out = tier_matches
 
     if quality_tier == "draft":
         out.sort(key=lambda c: (c.cost, -c.quality))
     elif quality_tier == "premium":
         out.sort(key=lambda c: (-c.quality, c.cost))
     else:
-        # Cost is a modest penalty in standard mode. QA history will replace the static
-        # quality score once enough production data exists.
         out.sort(key=lambda c: -(c.quality - min(c.cost, 10.0) * 0.06))
     return out
 
