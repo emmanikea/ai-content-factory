@@ -6,7 +6,9 @@ PR: #5
 
 ## Product direction
 
-Build a UGC/Reels production system that owns the creative workflow and calls underlying models directly. Higgsfield is optional and disabled by default.
+Build a UGC/Reels production system that owns the creative workflow and calls underlying models directly. Higgsfield is optional and disabled by default as a rendering dependency.
+
+Higgsfield's public skills repo is now treated separately as a useful **knowledge/benchmark upstream**.
 
 ```text
 exact UI / owned media -> deterministic local capture/composition
@@ -15,8 +17,57 @@ standard creator shot  -> Kling Standard direct
 licensed motion        -> Kling Motion direct
 premium/reference      -> Seedance / Kling premium
 high-volume future     -> self-host Wan2.2 Animate
-Higgsfield             -> proprietary-only / benchmark / explicit fallback
+Higgsfield runtime     -> proprietary-only / benchmark / explicit fallback
+Higgsfield skills      -> prompt/model/workflow research source
 ```
+
+## Higgsfield skills research snapshot
+
+Upstream: `https://github.com/higgsfield-ai/skills`
+
+Reviewed:
+- version `0.12.0`
+- commit `d071406147a37b835bed09543d85ab3e9bd85c7d`
+- commit date 2026-09-11
+- MIT license
+
+Optional terminal-agent install:
+
+```bash
+npx skills add higgsfield-ai/skills
+```
+
+or:
+
+```bash
+gh skill install higgsfield-ai/skills
+```
+
+Use the installed skills to research current Higgsfield behavior or run optional benchmarks. Do not let installation change our default direct-model router.
+
+Durable derived notes are stored in:
+- `docs/ugc-factory/HIGGSFIELD_SKILLS_RESEARCH.md`
+- `docs/ugc-factory/MODEL_PRICING_AND_SOURCES.md`
+- `ugc-studio/providers/research-sources.json`
+
+## Important Higgsfield-derived lessons already adopted
+
+- Keep generation prompts concise and concrete.
+- For image-to-video, prompt motion/performance/camera rather than redescribing the reference frame.
+- Treat provider/model media schemas as contracts instead of guessing parameters.
+- Represent Hook, Setting, Creator/Avatar, Product and Reference as reusable creative primitives.
+- Separate reference-driven creative from block-composed Hook + Setting creative.
+- Maintain reusable processed reference analysis rather than repeatedly re-understanding a source video.
+- Creator identity onboarding should contain diverse clean references across angle, lighting, expression and distance.
+- Batch creative variants at the concept/spec layer, then render only a ranked frontier.
+- Keep post-render attention/retention/creative analysis as part of the eventual feedback loop.
+
+The direct fal job builder now uses `.archon/scripts/ugc/prompt_compiler.py`, which compiles different prompt shapes for:
+- normal image-to-video creator shots
+- licensed motion transfer
+- Seedance-style multimodal reference generation
+
+Prompt compiler strategy/version are persisted in job provenance.
 
 ## Implemented
 
@@ -45,6 +96,21 @@ Higgsfield             -> proprietary-only / benchmark / explicit fallback
 - Higgsfield excluded from default routing
 - per-concept budget cap
 - alternatives returned in dry-run plan
+
+### Pricing/research provenance
+- dated Markdown pricing ledger
+- structured model registry with verification dates and source URLs
+- machine-readable research-source registry
+- upstream Higgsfield skills version/commit/license captured
+- historical job pricing should never be overwritten with current rates
+
+### Prompt compiler
+- motion-first I2V guidance
+- licensed motion-transfer guidance
+- structured multimodal reference guidance
+- prompt length cap
+- native-audio vs later-lip-sync dialogue handling
+- compiler strategy/version saved to job provenance
 
 ### fal execution
 - `@fal-ai/client` pinned to `1.10.1`
@@ -81,8 +147,8 @@ Higgsfield             -> proprietary-only / benchmark / explicit fallback
 - direct job rights guards
 - Creative-DNA vs licensed motion-transfer guards
 - retry/escalation tests
+- model-aware prompt compiler tests
 - GitHub Actions workflow
-- latest expanded guard suite: passing on 2026-09-12
 
 ## No paid work has been run
 
@@ -95,15 +161,18 @@ Use one synthetic or explicitly consented creator identity image and one 5-secon
 1. Build/confirm creator rights record.
 2. Produce assets manifest with `rights_approved: true` and evidence reference.
 3. Compile the CreativeSpec shot into a direct fal job.
-4. Inspect the dry-run job and estimated cost.
+4. Inspect generated prompt strategy + provider payload + estimated cost.
 5. Deliberately set `approved_for_spend: true`.
 6. Run with `FAL_KEY` and `--live`.
 7. Score the result.
-8. Compare Wan 3.0 720p vs Kling 3 Standard using the same creative direction.
+8. Compare Wan 3.0 720p vs Kling 3 Standard using equivalent creative direction.
 9. Escalate to Kling Pro/Seedance only if measured quality warrants it.
+10. Optionally benchmark a comparable Higgsfield render after checking current Higgsfield credit cost.
 
 Track:
 - raw provider cost
+- source pricing snapshot/date
+- prompt compiler strategy/version
 - number of attempts
 - identity consistency
 - face/hands/body quality
@@ -121,12 +190,13 @@ Track:
 5. Self-host Wan2.2 Animate worker + GPU cost benchmark.
 6. Maestro mobile capture lane.
 7. Performance analytics feedback into creative ranking.
+8. Periodic upstream-model/pricing refresh utility.
 
 ## External inputs still needed for real production
 
 - `FAL_KEY` or another direct-provider credential
 - approved creator reference assets
-- licensed/owned motion clips for literal performance transfer
+- licensed/owned motion clips for literal motion transfer
 - production app auth/capture instructions where login is required
 - GPU target when self-host benchmarking begins
 - legal review of final creator NIL/AI-use/commission agreements
