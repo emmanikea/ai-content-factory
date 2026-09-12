@@ -48,6 +48,8 @@ async function main() {
     provider: 'fal',
     model_id: job.model_id,
     estimated_cost_usd: job.estimated_cost_usd ?? null,
+    rights_approved: job.rights_approved === true,
+    approved_for_spend: job.approved_for_spend === true,
     input: job.input,
   };
 
@@ -58,6 +60,9 @@ async function main() {
 
   if (!process.env.FAL_KEY) {
     throw new Error('FAL_KEY is required for --live. Dry-run mode never needs credentials.');
+  }
+  if (job.rights_approved !== true) {
+    throw new Error('Live render blocked: job.rights_approved must be true.');
   }
   if (job.approved_for_spend !== true) {
     throw new Error('Live render blocked: job.approved_for_spend must be true.');
@@ -87,6 +92,7 @@ async function main() {
     started_at: startedAt,
     completed_at: new Date().toISOString(),
     estimated_cost_usd: job.estimated_cost_usd ?? null,
+    rights_approved: true,
     approved_for_spend: true,
     input: job.input,
     result: result.data,
