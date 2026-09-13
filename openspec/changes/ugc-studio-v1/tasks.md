@@ -29,7 +29,8 @@ Exit condition: the workflow is understandable and clickable before provider int
 - [x] Add strict semantic-label schema for observed segments.
 - [x] Add observation + semantic-label -> ReferenceAnalysis compiler.
 - [x] Keep reference rights separate from semantic interpretation.
-- [ ] Add automatic multimodal semantic-label adapter.
+- [x] Add optional automatic multimodal semantic-label adapter with fail-closed credential behavior.
+- [x] Validate automatic semantic labels through the same final ReferenceAnalysis compiler.
 - [x] Add dry-run cost estimator.
 - [x] Add provider capability contract.
 
@@ -44,6 +45,9 @@ The default production path calls underlying models directly. Higgsfield remains
 - [x] Add direct fal provider runner with explicit live/spend gates.
 - [x] Compile CreativeSpec creator shots into provider-ready Wan/Kling/Seedance/Kling-Motion jobs.
 - [x] Require explicit rights approval in compiled/live jobs.
+- [x] Derive normal creator render rights approval from CreatorIdentityPack rather than hand-entering it.
+- [x] Preserve rights-decision evidence in render provenance.
+- [x] Fix product/category allow-list semantics so a populated category restriction cannot be bypassed by an empty product list.
 - [x] Pin current `@fal-ai/client` dependency.
 - [x] Research Higgsfield's public skills repo as an optional knowledge/benchmark layer.
 - [x] Record Higgsfield upstream version/commit/license and relevant skill/reference paths.
@@ -109,6 +113,7 @@ Exit condition: provider selection is driven by measured quality-per-usable-doll
 - [x] Hash and record local asset provenance; leave remote assets un-fetched.
 - [x] Require motion-transfer permission for performance samples marked transferable.
 - [x] Add onboarding coverage warnings without pretending to perform semantic identity QA.
+- [x] Add creator-pack -> render-assets resolver with date/product/platform/transformation rights checks.
 - [ ] Add semantic visual identity-reference QA.
 - [ ] Add revocation propagation behavior.
 
@@ -154,8 +159,10 @@ Implemented without paid generation:
 - factual reference observation and segmentation
 - optional local/JSON transcription ingestion
 - reference semantic-label contract + compiler
+- optional credentialed vision semantic-enrichment adapter
 - rights enforcement
 - creator identity-pack contract + builder
+- creator-pack rights resolver for render assets
 - direct-model registry and router
 - provider-ready job compilation
 - model-aware prompt compiler
@@ -172,7 +179,7 @@ Requires external credentials/assets or human decisions for live production:
 - `FAL_KEY` or equivalent direct-provider credentials
 - one approved creator identity/reference pack
 - licensed/owned performance clips for literal motion transfer
-- multimodal model/provider credentials if automatic semantic labeling is enabled
+- vision/model credential for automatic semantic labeling; manual labels remain supported without one
 - production app login flows where authentication is needed
 - GPU infrastructure if self-hosting Wan2.2 Animate
 - final legal review of creator NIL/AI-use/commission agreements
