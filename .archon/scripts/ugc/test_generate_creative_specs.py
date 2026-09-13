@@ -85,7 +85,7 @@ class CreativeSpecGenerationTests(unittest.TestCase):
         campaign = self.campaign()
         campaign["use_literal_motion"] = True
         spec = generate_specs(campaign, self.reference("licensed_performance_transfer"))[0]
-        creator_shots = [x for x in spec["shots"] if x["shot_id"]] if False else [x for x in spec["shots"] if x["source_type"] == "creator_motion_transfer"]
+        creator_shots = [x for x in spec["shots"] if x["source_type"] == "creator_motion_transfer"]
         self.assertEqual(len(creator_shots), 2)
         self.assertTrue(all(x["motion_reference_id"] == "ref-1" for x in creator_shots))
 
