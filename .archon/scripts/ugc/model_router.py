@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Direct-model router for UGC Studio.
 
-Reads ugc-studio/providers/model-registry.json and chooses a route by capability,
-quality tier, and estimated usable cost. Higgsfield is excluded unless explicitly enabled.
+Reads the model registry and chooses a route by capability, quality tier, and estimated
+usable cost. Higgsfield is excluded unless explicitly enabled. Static quality priors remain
+the fallback; measured benchmark history only influences routing after a minimum sample size.
 
 This module only plans. It never submits a paid job.
 """
@@ -10,12 +11,14 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_REGISTRY = REPO_ROOT / "ugc-studio" / "providers" / "model-registry.json"
+MIN_MEASURED_SAMPLES = 5
 
 RESOLUTION_DIMS = {
     ("480p", "9:16"): (480, 864),
@@ -40,10 +43,50 @@ class Candidate:
     source: str | None
     kind: str
     recommended_for: tuple[str, ...]
+    measured_samples: int = 0
+    measured_pass_rate: float | None = None
+    measured_cost_per_usable_second: float | None = None
+    expected_usable_cost: float | None = None
 
 
 def load_registry(path: Path = DEFAULT_REGISTRY) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def load_metrics(path: Path | str | None = None) -> dict[tuple[str, str], dict[str, Any]]:
+    """Aggregate summary rows by provider/model across prompt strategies.
+
+    Metrics are optional. Missing/unreadable metric files return an empty map so planning
+    remains available before the benchmark loop has data.
+    """
+    if path is None:
+        env = os.environ.get("UGC_MODEL_METRICS")
+        if not env:
+            return {}
+        path = env
+    metric_path = Path(path).expanduser()
+    if not metric_path.exists():
+        return {}
+    payload = json.loads(metric_path.read_text(encoding="utf-8"))
+    buckets: dict[tuple[str, str], dict[str, float]] = {}
+    for row in payload.get("models") or []:
+        key = (str(row.get("provider")), str(row.get("model_id")))
+        bucket = buckets.setdefault(key, {"attempts": 0.0, "passes": 0.0, "total_cost": 0.0, "usable_seconds": 0.0})
+        bucket["attempts"] += float(row.get("attempts") or 0)
+        bucket["passes"] += float(row.get("passes") or 0)
+        bucket["total_cost"] += float(row.get("total_cost_usd") or 0)
+        bucket["usable_seconds"] += float(row.get("usable_seconds") or 0)
+    result: dict[tuple[str, str], dict[str, Any]] = {}
+    for key, bucket in buckets.items():
+        attempts = int(bucket["attempts"])
+        result[key] = {
+            "attempts": attempts,
+            "pass_rate": (bucket["passes"] / attempts) if attempts else None,
+            "cost_per_usable_second": (
+                bucket["total_cost"] / bucket["usable_seconds"] if bucket["usable_seconds"] > 0 else None
+            ),
+        }
+    return result
 
 
 def estimate_model_cost(
@@ -109,6 +152,31 @@ def _models(registry: dict[str, Any], *, allow_higgsfield: bool, allow_selfhost:
             yield provider_id, kind, model
 
 
+def _measured_fields(
+    provider_id: str,
+    model_id: str,
+    *,
+    raw_cost: float,
+    duration_seconds: float,
+    static_quality: float,
+    metrics: dict[tuple[str, str], dict[str, Any]],
+) -> tuple[float, int, float | None, float | None, float]:
+    metric = metrics.get((provider_id, model_id)) or {}
+    samples = int(metric.get("attempts") or 0)
+    pass_rate = metric.get("pass_rate")
+    cps = metric.get("cost_per_usable_second")
+    if samples < MIN_MEASURED_SAMPLES or not isinstance(pass_rate, (int, float)):
+        return static_quality, samples, pass_rate if isinstance(pass_rate, (int, float)) else None, cps if isinstance(cps, (int, float)) else None, raw_cost
+
+    bounded_pass = max(0.05, min(1.0, float(pass_rate)))
+    effective_quality = (static_quality * 0.40) + (bounded_pass * 0.60)
+    if isinstance(cps, (int, float)) and cps > 0:
+        expected_usable_cost = float(cps) * max(duration_seconds, 0.001)
+    else:
+        expected_usable_cost = raw_cost / bounded_pass
+    return effective_quality, samples, float(pass_rate), float(cps) if isinstance(cps, (int, float)) else None, expected_usable_cost
+
+
 def candidates_for(
     capability: str,
     *,
@@ -121,8 +189,10 @@ def candidates_for(
     allow_higgsfield: bool = False,
     allow_selfhost: bool = False,
     registry: dict[str, Any] | None = None,
+    metrics: dict[tuple[str, str], dict[str, Any]] | None = None,
 ) -> list[Candidate]:
     registry = registry or load_registry()
+    metrics = metrics if metrics is not None else load_metrics()
     out: list[Candidate] = []
 
     for provider_id, kind, model in _models(
@@ -143,32 +213,42 @@ def candidates_for(
             )
         except ValueError:
             continue
+        static_quality = float(model.get("quality_score", 0.5))
+        quality, samples, pass_rate, measured_cps, expected = _measured_fields(
+            provider_id,
+            model["id"],
+            raw_cost=cost,
+            duration_seconds=duration_seconds,
+            static_quality=static_quality,
+            metrics=metrics,
+        )
         out.append(
             Candidate(
                 provider=provider_id,
                 model=model["id"],
-                quality=float(model.get("quality_score", 0.5)),
+                quality=quality,
                 cost=cost,
                 capability=capability,
                 source=model.get("source"),
                 kind=kind,
                 recommended_for=tuple(model.get("recommended_for") or ()),
+                measured_samples=samples,
+                measured_pass_rate=pass_rate,
+                measured_cost_per_usable_second=measured_cps,
+                expected_usable_cost=expected,
             )
         )
 
-    # Respect explicitly curated tiers when at least one eligible model declares itself
-    # suitable for the requested tier. This prevents a standard job from silently drifting
-    # into a premium model just because its static quality score is a few points higher.
     tier_matches = [c for c in out if quality_tier in c.recommended_for]
     if tier_matches:
         out = tier_matches
 
     if quality_tier == "draft":
-        out.sort(key=lambda c: (c.cost, -c.quality))
+        out.sort(key=lambda c: (c.expected_usable_cost if c.expected_usable_cost is not None else c.cost, -c.quality))
     elif quality_tier == "premium":
-        out.sort(key=lambda c: (-c.quality, c.cost))
+        out.sort(key=lambda c: (-c.quality, c.expected_usable_cost if c.expected_usable_cost is not None else c.cost))
     else:
-        out.sort(key=lambda c: -(c.quality - min(c.cost, 10.0) * 0.06))
+        out.sort(key=lambda c: -(c.quality - min(c.expected_usable_cost if c.expected_usable_cost is not None else c.cost, 10.0) * 0.06))
     return out
 
 
@@ -194,6 +274,7 @@ def route_shot(
     allow_higgsfield: bool = False,
     allow_selfhost: bool = False,
     registry: dict[str, Any] | None = None,
+    metrics: dict[tuple[str, str], dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     source_type = shot["source_type"]
     duration = max(0.0, float(shot["end"]) - float(shot["start"]))
@@ -211,6 +292,7 @@ def route_shot(
             "provider": provider,
             "model": model,
             "estimated_cost_usd": cost,
+            "expected_usable_cost_usd": cost,
             "reason": reason,
             "alternatives": [],
         }
@@ -231,30 +313,49 @@ def route_shot(
         allow_higgsfield=allow_higgsfield,
         allow_selfhost=allow_selfhost,
         registry=registry,
+        metrics=metrics,
     )
     if not choices:
         raise ValueError(f"no enabled model supports {capability!r}")
 
     chosen = choices[0]
+    measured = chosen.measured_samples >= MIN_MEASURED_SAMPLES and chosen.measured_pass_rate is not None
+    measured_note = (
+        f"; measured pass={chosen.measured_pass_rate:.0%} across {chosen.measured_samples} attempts"
+        if measured else
+        "; static quality prior (insufficient benchmark samples)"
+    )
     return {
         "provider": chosen.provider,
         "model": chosen.model,
         "estimated_cost_usd": chosen.cost,
-        "reason": f"{quality_tier} direct route for {capability}; quality={chosen.quality:.2f}",
+        "expected_usable_cost_usd": round(chosen.expected_usable_cost if chosen.expected_usable_cost is not None else chosen.cost, 4),
+        "measured_samples": chosen.measured_samples,
+        "measured_pass_rate": round(chosen.measured_pass_rate, 4) if chosen.measured_pass_rate is not None else None,
+        "reason": f"{quality_tier} direct route for {capability}; effective_quality={chosen.quality:.2f}{measured_note}",
         "source": chosen.source,
         "alternatives": [
             {
                 "provider": c.provider,
                 "model": c.model,
                 "estimated_cost_usd": c.cost,
-                "quality": c.quality,
+                "expected_usable_cost_usd": round(c.expected_usable_cost if c.expected_usable_cost is not None else c.cost, 4),
+                "quality": round(c.quality, 4),
+                "measured_samples": c.measured_samples,
+                "measured_pass_rate": round(c.measured_pass_rate, 4) if c.measured_pass_rate is not None else None,
             }
             for c in choices[1:4]
         ],
     }
 
 
-def plan_spec(spec: dict[str, Any], *, allow_higgsfield: bool = False, allow_selfhost: bool = False) -> dict[str, Any]:
+def plan_spec(
+    spec: dict[str, Any],
+    *,
+    allow_higgsfield: bool = False,
+    allow_selfhost: bool = False,
+    metrics: dict[tuple[str, str], dict[str, Any]] | None = None,
+) -> dict[str, Any]:
     quality_tier = spec.get("quality_tier", "standard")
     aspect_ratio = spec.get("aspect_ratio", "9:16")
     resolution = spec.get("render_resolution", "720p")
@@ -271,6 +372,7 @@ def plan_spec(spec: dict[str, Any], *, allow_higgsfield: bool = False, allow_sel
             generate_audio=generate_audio,
             allow_higgsfield=allow_higgsfield,
             allow_selfhost=allow_selfhost,
+            metrics=metrics,
         )
         duration = round(float(shot["end"]) - float(shot["start"]), 3)
         total += float(route["estimated_cost_usd"])
@@ -303,6 +405,7 @@ def main() -> int:
     parser.add_argument("spec", help="CreativeSpec JSON")
     parser.add_argument("--allow-higgsfield", action="store_true", help="Permit Higgsfield fallback candidates")
     parser.add_argument("--allow-selfhost", action="store_true", help="Permit configured self-host candidates")
+    parser.add_argument("--metrics", help="Optional benchmark summary JSON from benchmark_metrics.py summarize")
     parser.add_argument("--out")
     args = parser.parse_args()
 
@@ -311,6 +414,7 @@ def main() -> int:
         spec,
         allow_higgsfield=args.allow_higgsfield,
         allow_selfhost=args.allow_selfhost,
+        metrics=load_metrics(args.metrics) if args.metrics else None,
     )
     text = json.dumps(result, indent=2)
     if args.out:
