@@ -1,0 +1,40 @@
+{
+  "campaign_id": "bordereta-growth-batch-01",
+  "product": {
+    "id": "bordereta",
+    "name": "BorderETA",
+    "category": "apps",
+    "kind": "app"
+  },
+  "audience": "Frequent El Paso and Juárez cross-border travelers who want to choose a crossing before leaving.",
+  "platform": "instagram",
+  "target_duration_seconds": 18,
+  "creator_ids": ["creator-a", "creator-b"],
+  "hook_options": [
+    "Wait, why did nobody tell me this existed?",
+    "Stop guessing which bridge is faster.",
+    "I cross all the time and somehow missed this."
+  ],
+  "cta_options": [
+    "Check BorderETA before your next crossing.",
+    "Look at BorderETA before you pick a bridge."
+  ],
+  "locations": ["parked car", "home before leaving"],
+  "outfits": ["casual neutral top", "athleisure"],
+  "role_lines": {
+    "payoff": [
+      "That is literally what I needed.",
+      "Okay, this actually makes the decision easier."
+    ]
+  },
+  "app_capture_script": "Open BorderETA; show the bridge comparison view; pause long enough to read the options; select one bridge; show its ETA/route summary.",
+  "product_capture_script": null,
+  "angle": "surprise followed by immediate utility proof",
+  "language": "en",
+  "quality_tier": "standard",
+  "render_resolution": "720p",
+  "max_render_cost_usd": 6,
+  "use_literal_motion": false,
+  "generate_native_audio": false,
+  "max_specs": 24
+}
