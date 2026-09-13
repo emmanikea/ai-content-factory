@@ -22,6 +22,23 @@ def _contains_or_unrestricted(values: Iterable[str] | None, requested: str) -> b
     return not values or "*" in values or requested in values
 
 
+def _product_scope_allows(rights: dict, product_id: str, product_category: str) -> bool:
+    """Allow when both scopes are empty, or either explicit scope matches.
+
+    Important: an empty product list must not erase a populated category restriction.
+    Likewise, an empty category list must not erase a populated product allow-list.
+    """
+    products = tuple(rights.get("allowed_products") or ())
+    categories = tuple(rights.get("allowed_product_categories") or ())
+    if not products and not categories:
+        return True
+    if "*" in products or product_id in products:
+        return True
+    if "*" in categories or product_category in categories:
+        return True
+    return False
+
+
 def evaluate_creator_rights(
     creator: dict,
     *,
@@ -34,7 +51,8 @@ def evaluate_creator_rights(
     """Return an allow/block decision from stored creator permissions.
 
     Synthetic creators may use `not_required`; real/founder identities must be active.
-    Empty product/platform lists mean unrestricted within the agreement rather than deny-all.
+    Product/category scope is unrestricted only when both corresponding lists are empty.
+    Empty platform lists remain unrestricted within the agreement.
     """
     today = on_date or date.today()
     creator_type = creator.get("creator_type")
@@ -55,9 +73,8 @@ def evaluate_creator_rights(
     if valid_until and today > date.fromisoformat(valid_until):
         reasons.append(f"rights expired on {valid_until}")
 
-    if not _contains_or_unrestricted(rights.get("allowed_products"), product_id):
-        if not _contains_or_unrestricted(rights.get("allowed_product_categories"), product_category):
-            reasons.append(f"product/category not permitted: {product_id}/{product_category}")
+    if not _product_scope_allows(rights, product_id, product_category):
+        reasons.append(f"product/category not permitted: {product_id}/{product_category}")
 
     if not _contains_or_unrestricted(rights.get("allowed_platforms"), platform):
         reasons.append(f"platform not permitted: {platform}")
