@@ -133,6 +133,8 @@ def main() -> int:
     put.add_argument("id")
     put.add_argument("json_file")
     put.add_argument("--expected-version", type=int)
+    put.add_argument("--skip-validation", action="store_true", help="Skip domain schema validation; intended only for untyped internal records")
+    put.add_argument("--schema-kind", help="Explicit schema kind override for typed collections")
 
     get = sub.add_parser("get")
     get.add_argument("collection", choices=sorted(COLLECTIONS))
@@ -152,6 +154,13 @@ def main() -> int:
 
     if args.command == "put":
         document = json.loads(Path(args.json_file).read_text(encoding="utf-8"))
+        if not args.skip_validation:
+            from schema_validation import COLLECTION_SCHEMA, validate_collection_document, validate_document
+
+            if args.schema_kind:
+                validate_document(args.schema_kind, document)
+            elif args.collection in COLLECTION_SCHEMA:
+                validate_collection_document(args.collection, document)
         print(json.dumps(store.put(args.collection, args.id, document, expected_version=args.expected_version), indent=2))
     elif args.command == "get":
         result = store.get_envelope(args.collection, args.id) if args.envelope else store.get(args.collection, args.id)
