@@ -161,6 +161,9 @@ def build_job(spec: dict[str, Any], shot_id: str, assets: dict[str, Any]) -> dic
         "input": input_payload,
         "provenance": {
             "router_reason": route["reason"],
+            "quality_tier": quality_tier,
+            "resolution": resolution,
+            "aspect_ratio": aspect_ratio,
             "rights_mode": spec.get("rights_mode"),
             "creator_id": spec.get("creator_id"),
             "source_type": shot.get("source_type"),
