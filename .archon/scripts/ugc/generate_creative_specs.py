@@ -73,6 +73,10 @@ def generate_specs(campaign: dict[str, Any], reference: dict[str, Any]) -> list[
     if not creators or not hooks or not ctas:
         raise ValueError("campaign requires creator_ids, hook_options, and cta_options")
 
+    creator_positions = [index for index, beat in enumerate(beats, start=1) if beat.get("shot_type") == "creator"]
+    first_creator = creator_positions[0] if creator_positions else None
+    last_creator = creator_positions[-1] if creator_positions else None
+
     max_specs = int(campaign.get("max_specs", 24))
     reference_duration = float(reference.get("duration_seconds") or beats[-1]["end"])
     target_duration = float(campaign.get("target_duration_seconds") or reference_duration)
@@ -88,7 +92,6 @@ def generate_specs(campaign: dict[str, Any], reference: dict[str, Any]) -> list[
         concept_id = _variant_id((campaign["campaign_id"], reference["id"], creator_id, hook, cta, location, outfit))
         shots = []
         spoken_lines: list[str] = []
-        creator_seen = 0
         for index, beat in enumerate(beats, start=1):
             shot_type = beat["shot_type"]
             if shot_type not in SHOT_SOURCE_MAP:
@@ -98,10 +101,13 @@ def generate_specs(campaign: dict[str, Any], reference: dict[str, Any]) -> list[
             role_lower = role.lower()
             dialogue = None
             if shot_type == "creator":
-                creator_seen += 1
-                if "hook" in role_lower or creator_seen == 1:
+                is_first_creator = index == first_creator
+                is_last_creator = index == last_creator
+                if is_first_creator and is_last_creator:
+                    dialogue = f"{hook} {cta}".strip()
+                elif "hook" in role_lower or is_first_creator:
                     dialogue = hook
-                elif "cta" in role_lower or index == len(beats):
+                elif "cta" in role_lower or is_last_creator:
                     dialogue = cta
                 else:
                     dialogue = _choice_for_role(role_lines, role, variant_index)
@@ -153,6 +159,8 @@ def generate_specs(campaign: dict[str, Any], reference: dict[str, Any]) -> list[
             "format": "custom",
             "duration_seconds": round(target_duration, 3),
             "aspect_ratio": "9:16",
+            "render_resolution": campaign.get("render_resolution", "720p"),
+            "generate_native_audio": bool(campaign.get("generate_native_audio", False)),
             "hook": hook,
             "angle": campaign.get("angle") or str(dna.get("hook_mechanic") or "reference-informed UGC"),
             "script": " ".join(spoken_lines),
