@@ -30,5 +30,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Install contract validation dependency
+        run: python -m pip install 'jsonschema>=4.23,<5'
       - name: Run UGC unit tests
         run: python -m unittest discover -v -p 'test_*.py'
