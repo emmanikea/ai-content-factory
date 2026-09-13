@@ -1,0 +1,15 @@
+{
+  "start_url": "https://example.com",
+  "wait_until": "networkidle",
+  "viewport": {"width": 390, "height": 844},
+  "video_size": {"width": 720, "height": 1280},
+  "is_mobile": true,
+  "has_touch": true,
+  "output_name": "app-demo.webm",
+  "actions": [
+    {"type": "wait", "ms": 700},
+    {"type": "scroll", "y": 380},
+    {"type": "wait", "ms": 800}
+  ],
+  "hold_final_ms": 1200
+}

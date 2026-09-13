@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-content-factory.local/schemas/qa-result.schema.json",
+  "title": "QAResult",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["artifact_id", "profile", "status", "checked_at", "deterministic_checks", "semantic_checks", "failures"],
+  "properties": {
+    "artifact_id": {"type": "string", "minLength": 1},
+    "profile": {"type": "string", "enum": ["creator_shot", "app_capture", "broll", "final_reel"]},
+    "status": {"type": "string", "enum": ["pass", "fail", "needs_review"]},
+    "checked_at": {"type": "string", "format": "date-time"},
+    "score": {"type": ["number", "null"], "minimum": 0, "maximum": 100},
+    "deterministic_checks": {"type": "array", "items": {"$ref": "#/$defs/check"}},
+    "semantic_checks": {"type": "array", "items": {"$ref": "#/$defs/check"}},
+    "failures": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["code", "severity", "message"],
+        "properties": {
+          "code": {"type": "string"},
+          "severity": {"type": "string", "enum": ["warning", "retryable", "structural", "rights", "source"]},
+          "message": {"type": "string"}
+        }
+      }
+    },
+    "retry_hint": {"type": ["string", "null"], "enum": ["retry_same", "escalate_quality", "stop", "manual_review", null]},
+    "provenance": {"type": "object", "additionalProperties": true}
+  },
+  "$defs": {
+    "check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "status"],
+      "properties": {
+        "name": {"type": "string"},
+        "status": {"type": "string", "enum": ["pass", "fail", "not_run", "needs_review"]},
+        "value": {},
+        "message": {"type": ["string", "null"]}
+      }
+    }
+  }
+}

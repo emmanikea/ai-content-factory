@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-content-factory.local/schemas/creator-identity-pack.schema.json",
+  "title": "CreatorIdentityPack",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["creator_id", "creator_type", "version", "canonical_images", "rights_snapshot", "quality_summary"],
+  "properties": {
+    "creator_id": {"type": "string", "minLength": 1},
+    "creator_type": {"type": "string", "enum": ["real_consenting", "synthetic", "founder_owned"]},
+    "version": {"type": "string", "minLength": 1},
+    "created_at": {"type": "string", "format": "date-time"},
+    "canonical_images": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/imageAsset"}
+    },
+    "voice_samples": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/voiceAsset"}
+    },
+    "performance_samples": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/performanceAsset"}
+    },
+    "appearance_presets": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "outfits": {"type": "array", "items": {"type": "string"}},
+        "hairstyles": {"type": "array", "items": {"type": "string"}},
+        "locations": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "provider_bindings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["provider", "binding_type", "value"],
+        "properties": {
+          "provider": {"type": "string"},
+          "binding_type": {"type": "string"},
+          "value": {"type": "string"},
+          "portable": {"type": "boolean", "default": true}
+        }
+      }
+    },
+    "rights_snapshot": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Immutable snapshot/reference to creator rights used when this pack version was created."
+    },
+    "quality_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["identity_image_count", "views_present", "voice_sample_count", "performance_sample_count", "warnings", "semantic_identity_review_required"],
+      "properties": {
+        "identity_image_count": {"type": "integer", "minimum": 1},
+        "views_present": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "voice_sample_count": {"type": "integer", "minimum": 0},
+        "performance_sample_count": {"type": "integer", "minimum": 0},
+        "warnings": {"type": "array", "items": {"type": "string"}},
+        "semantic_identity_review_required": {"type": "boolean"}
+      }
+    }
+  },
+  "$defs": {
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_kind"],
+      "properties": {
+        "source_kind": {"type": "string", "enum": ["local", "remote"]},
+        "sha256": {"type": "string"},
+        "bytes": {"type": "integer", "minimum": 0},
+        "mime_type": {"type": ["string", "null"]},
+        "width": {"type": "integer", "minimum": 1},
+        "height": {"type": "integer", "minimum": 1},
+        "duration_seconds": {"type": "number", "minimum": 0}
+      }
+    },
+    "imageAsset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "uri", "view", "provenance"],
+      "properties": {
+        "id": {"type": "string"},
+        "uri": {"type": "string"},
+        "view": {"type": "string", "enum": ["front", "three_quarter", "profile", "full_body", "upper_body", "expression", "other"]},
+        "lighting": {"type": ["string", "null"]},
+        "notes": {"type": ["string", "null"]},
+        "provenance": {"$ref": "#/$defs/provenance"}
+      }
+    },
+    "voiceAsset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "uri", "provenance"],
+      "properties": {
+        "id": {"type": "string"},
+        "uri": {"type": "string"},
+        "language": {"type": "string"},
+        "style": {"type": ["string", "null"]},
+        "duration_seconds": {"type": ["number", "null"], "minimum": 0},
+        "provenance": {"$ref": "#/$defs/provenance"}
+      }
+    },
+    "performanceAsset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "uri", "performance_type", "provenance"],
+      "properties": {
+        "id": {"type": "string"},
+        "uri": {"type": "string"},
+        "performance_type": {"type": "string", "enum": ["talking", "reaction", "gesture", "walking", "product_hold", "turn", "other"]},
+        "duration_seconds": {"type": ["number", "null"], "minimum": 0},
+        "approved_for_motion_transfer": {"type": "boolean", "default": false},
+        "provenance": {"$ref": "#/$defs/provenance"}
+      }
+    }
+  }
+}
