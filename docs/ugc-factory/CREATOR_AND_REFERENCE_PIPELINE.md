@@ -22,9 +22,11 @@ build_identity_pack.py
         ↓
 CreatorIdentityPack
         ↓
-optional provider bindings
+prepare_creator_assets.py
         ↓
-Wan / Kling / Seedance / local identity model / Higgsfield Soul
+rights-approved render assets
+        ↓
+Wan / Kling / Seedance / local identity model / optional Higgsfield
 ```
 
 ### Recommended source pack
@@ -57,6 +59,14 @@ If a performance clip is marked `approved_for_motion_transfer: true`, the rights
 
 A provider binding never overrides the rights snapshot.
 
+Product/category scope has explicit semantics:
+
+- both product and category allow-lists empty = unrestricted within the agreement
+- either populated list creates a restriction
+- a render is allowed when the requested product OR category matches an explicit allowed value
+
+This prevents an empty product list from accidentally erasing a populated category restriction.
+
 ### Asset provenance
 
 For local assets the builder records:
@@ -66,7 +76,7 @@ For local assets the builder records:
 - MIME type when detectable
 - width/height/duration when `ffprobe` can inspect it
 
-For remote assets the builder records that the source is remote without downloading it. Production object storage can later add its own immutable checksum/version metadata.
+For remote assets the builder records that the source is remote without downloading it. Production object storage can later add immutable checksum/version metadata.
 
 ### Build command
 
@@ -76,7 +86,51 @@ python .archon/scripts/ugc/build_identity_pack.py \
   --out ./creator-pack.json
 ```
 
-The example uses placeholder remote URLs and a placeholder agreement reference. Real packs must point to the actual approved source assets and rights record.
+The example uses placeholder remote URLs and a placeholder agreement reference. Real packs must point to actual approved source assets and rights records.
+
+### Derive render rights and assets
+
+The normal render path should not require an operator to hand-author `rights_approved: true`.
+
+Use the pack to evaluate the exact request:
+
+```bash
+python .archon/scripts/ugc/prepare_creator_assets.py ./creator-pack.json \
+  --product-id bordereta \
+  --product-category apps \
+  --platform instagram \
+  --transform face_generation \
+  --transform script_change \
+  --require-remote \
+  --out ./creator-assets.json
+```
+
+For licensed motion transfer:
+
+```bash
+python .archon/scripts/ugc/prepare_creator_assets.py ./creator-pack.json \
+  --product-id bordereta \
+  --product-category apps \
+  --platform instagram \
+  --transform face_generation \
+  --transform motion_transfer \
+  --performance-id reaction-surprise \
+  --require-remote \
+  --out ./creator-motion-assets.json
+```
+
+The resolver checks:
+
+- consent state
+- validity dates
+- product/category scope
+- platform scope
+- every requested transformation
+- whether the selected performance clip is itself marked motion-transfer approved
+
+The resulting manifest contains a derived rights decision and agreement evidence that the direct render job preserves in provenance.
+
+Local assets can still be used, but direct hosted providers need an upload/staging step before `--require-remote` can pass.
 
 ### Future provider bindings
 
@@ -106,7 +160,7 @@ ffprobe + ffmpeg + optional transcript
 ReferenceObservation
       ↓
 SEMANTIC ENRICHMENT
-multimodal agent / human / analysis provider
+vision adapter / multimodal agent / human
       ↓
 ReferenceSemanticLabels
       ↓
@@ -173,9 +227,41 @@ python .archon/scripts/ugc/observe_reference.py ./reel.mp4 \
 
 Whisper is optional. The observer itself does not require a paid transcription API.
 
-### Stage 2: semantic enrichment
+### Stage 2A: automatic semantic enrichment
 
-Generate the exact enrichment instruction from the observation:
+An optional Gemini adapter consumes the strict observation and available keyframes:
+
+```bash
+uv run .archon/scripts/ugc/enrich_reference_semantics.py \
+  ./reference-001-observation.json \
+  --out ./reference-001-semantics.json \
+  --provenance-out ./reference-001-semantics-provenance.json
+```
+
+It reads `GEMINI_API_KEY` or `GOOGLE_API_KEY`. The model is configurable through `REFERENCE_GEMINI_MODEL` or `--model`.
+
+Dry-run the exact prompt/keyframe packet without making a model call:
+
+```bash
+uv run .archon/scripts/ugc/enrich_reference_semantics.py \
+  ./reference-001-observation.json \
+  --out /tmp/not-used.json \
+  --dry-run
+```
+
+The adapter:
+
+- sends semantic instructions plus observed keyframes/transcript
+- requires JSON output
+- validates the result through the same final ReferenceAnalysis compiler
+- fails when credentials are absent
+- does not fall back to a heuristic semantic guess
+
+A keyframe is treated as visual evidence from a segment, not proof of its full motion or proof of rights.
+
+### Stage 2B: provider-neutral/manual semantic enrichment
+
+Generate the exact enrichment instruction:
 
 ```bash
 python .archon/scripts/ugc/build_reference_analysis.py \
@@ -183,7 +269,7 @@ python .archon/scripts/ugc/build_reference_analysis.py \
   --print-prompt
 ```
 
-A multimodal agent or human reviewer uses the source video/keyframes plus that instruction to produce JSON matching:
+A different multimodal agent or human reviewer can use the source video/keyframes plus that instruction to produce JSON matching:
 
 `ugc-studio/schemas/reference-semantic-labels.schema.json`
 
@@ -243,21 +329,21 @@ Use when the source performance is licensed for that transformation. Final beats
 
 ### `owned_source`
 
-Use for footage the project owns and has rights to transform. It receives the same literal-motion eligibility at the reference level, subject to any creator-specific rights checks.
+Use for footage the project owns and has rights to transform. It receives the same literal-motion eligibility at the reference level, subject to creator-specific rights checks.
 
 The creator rights record and reference rights mode both matter. One cannot override the other.
 
-## What this pipeline does not do yet
+## What this pipeline still does not do
 
-Current autonomous implementation does not yet:
+Current implementation does not yet:
 
-- visually score identity-reference quality
-- automatically call a multimodal model to label reference segments
+- visually score identity-reference quality against the creator across the whole pack
 - perform OCR as a default reference-analysis step
-- detect app UI vs product footage solely from pixels
 - infer copyright/license status from a URL or visual content
+- automatically upload local creator assets to hosted inference storage
+- propagate a later rights revocation through every derived artifact/job
 
-Those omissions are intentional. The next semantic-analysis adapter should consume the observation + keyframes/source video and return the strict semantic-label schema.
+Those are separate explicit follow-up layers rather than hidden assumptions in ingestion.
 
 ## Resulting production flow
 
@@ -275,6 +361,8 @@ Hook / Setting / CTA variation
 CreativeSpec variants
         ↓
 rank cheaply
+        ↓
+prepare rights-approved creator assets
         ↓
 render selected creator shots
         ↓
