@@ -40,6 +40,7 @@
     "angle": {"type": ["string", "null"]},
     "language": {"type": "string", "default": "en"},
     "quality_tier": {"type": "string", "enum": ["draft", "standard", "premium"], "default": "standard"},
+    "render_resolution": {"type": "string", "enum": ["480p", "720p", "1080p"], "default": "720p"},
     "max_render_cost_usd": {"type": ["number", "null"], "minimum": 0},
     "use_literal_motion": {"type": "boolean", "default": false},
     "generate_native_audio": {"type": "boolean", "default": false},
