@@ -2,8 +2,9 @@
 """Compile a CreativeSpec shot into a provider-ready fal job.
 
 This compiler never submits work. It creates the JSON consumed by
-ugc-studio/providers/fal/render.mjs. A higher-level rights check must explicitly mark the
-assets manifest `rights_approved: true`; live rendering separately requires spend approval.
+ugc-studio/providers/fal/render.mjs. The normal path derives `rights_approved` from a
+CreatorIdentityPack via prepare_creator_assets.py; live rendering separately requires
+explicit spend approval.
 """
 from __future__ import annotations
 
@@ -164,6 +165,9 @@ def build_job(spec: dict[str, Any], shot_id: str, assets: dict[str, Any]) -> dic
             "creator_id": spec.get("creator_id"),
             "source_type": shot.get("source_type"),
             "rights_evidence": assets.get("rights_evidence"),
+            "rights_decision": assets.get("rights_decision"),
+            "creator_image_id": assets.get("creator_image_id"),
+            "motion_performance_id": assets.get("motion_performance_id"),
             "prompt_compiler_version": compiled_prompt.version,
             "prompt_strategy": compiled_prompt.strategy,
         },
@@ -174,7 +178,7 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("spec")
     parser.add_argument("--shot", required=True)
-    parser.add_argument("--assets", required=True, help="JSON file with creator/reference URLs and rights approval")
+    parser.add_argument("--assets", required=True, help="JSON file prepared from creator/reference assets with rights approval")
     parser.add_argument("--out")
     args = parser.parse_args()
 
