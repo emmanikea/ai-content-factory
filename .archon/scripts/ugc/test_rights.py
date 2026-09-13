@@ -51,6 +51,58 @@ class RightsTests(unittest.TestCase):
         self.assertFalse(decision.allowed)
         self.assertIn("transformation not permitted: motion_transfer", decision.reasons)
 
+    def test_populated_category_scope_is_not_erased_by_empty_product_list(self) -> None:
+        creator = {
+            "creator_type": "real_consenting",
+            "rights": {
+                "consent_state": "active",
+                "allowed_products": [],
+                "allowed_product_categories": ["apps"],
+                "allowed_platforms": [],
+                "allowed_transformations": ["face_generation"]
+            }
+        }
+        allowed = evaluate_creator_rights(
+            creator,
+            product_id="some-app",
+            product_category="apps",
+            platform="instagram",
+            transformations=["face_generation"],
+            on_date=date(2026, 9, 12),
+        )
+        blocked = evaluate_creator_rights(
+            creator,
+            product_id="some-drink",
+            product_category="beverage",
+            platform="instagram",
+            transformations=["face_generation"],
+            on_date=date(2026, 9, 12),
+        )
+        self.assertTrue(allowed.allowed)
+        self.assertFalse(blocked.allowed)
+        self.assertIn("product/category not permitted: some-drink/beverage", blocked.reasons)
+
+    def test_both_empty_product_scopes_mean_unrestricted(self) -> None:
+        creator = {
+            "creator_type": "real_consenting",
+            "rights": {
+                "consent_state": "active",
+                "allowed_products": [],
+                "allowed_product_categories": [],
+                "allowed_platforms": [],
+                "allowed_transformations": ["face_generation"]
+            }
+        }
+        decision = evaluate_creator_rights(
+            creator,
+            product_id="anything",
+            product_category="anything",
+            platform="instagram",
+            transformations=["face_generation"],
+            on_date=date(2026, 9, 12),
+        )
+        self.assertTrue(decision.allowed)
+
     def test_creative_dna_reference_blocks_literal_transfer(self) -> None:
         decision = enforce_reference_mode(
             {"rights_mode": "creative_dna_only"},
