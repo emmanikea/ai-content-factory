@@ -17,10 +17,11 @@ Exit condition: the workflow is understandable and clickable before provider int
 
 ## Phase 1: local domain + reference intelligence
 
-- [ ] Add filesystem repositories for campaigns, creators, references, specs, jobs, and artifacts.
-- [ ] Add full JSON Schema runtime validation.
+- [x] Add atomic filesystem repositories for campaigns, creators, references, specs, jobs, artifacts, QA, and performance records.
+- [ ] Add full JSON Schema runtime validation to all ingestion/write boundaries.
 - [x] Add rights-policy evaluator.
-- [ ] Add CreativeSpec generator interface.
+- [x] Add deterministic CreativeSpec batch generator from CampaignBrief + ReferenceAnalysis.
+- [x] Add CampaignBrief JSON Schema.
 - [x] Add final ReferenceAnalysis result format.
 - [x] Add factual ReferenceObservation schema.
 - [x] Add deterministic ffprobe/ffmpeg reference observer.
@@ -33,6 +34,7 @@ Exit condition: the workflow is understandable and clickable before provider int
 - [x] Validate automatic semantic labels through the same final ReferenceAnalysis compiler.
 - [x] Add dry-run cost estimator.
 - [x] Add provider capability contract.
+- [x] Add end-to-end no-spend integration coverage from campaign/reference to provider-ready job.
 
 Exit condition: campaign -> reference observation/analysis -> CreativeSpec -> approval -> render plan can run without spending on media.
 
@@ -55,7 +57,7 @@ The default production path calls underlying models directly. Higgsfield remains
 - [x] Add model-aware prompt compiler informed by public provider/Higgsfield prompting guidance.
 - [x] Store prompt compiler version/strategy in direct-job provenance.
 - [ ] Run first credentialed direct-model render.
-- [ ] Add actual-cost reconciliation after provider completion.
+- [ ] Add provider actual-cost reconciliation after completion where the provider exposes billable usage.
 - [ ] Add self-hostable Wan worker configuration for high-volume cost reduction.
 - [ ] Add direct/open identity-still generation worker.
 - [x] Keep the existing Higgsfield worker optional rather than a default router target.
@@ -93,13 +95,16 @@ Exit condition: mixed creator + app + B-roll shots compile into a final Reel wit
 - [x] Score providers using capability, tier, configured quality and estimated cost.
 - [x] Prefer low-cost/open paths for draft iteration.
 - [x] Promote premium jobs to premium models by explicit tier.
-- [ ] Replace static quality priors with measured QA pass rates.
+- [x] Add benchmark ledger for attempts, QA status, estimated/actual spend, usable seconds, and prompt strategy.
+- [x] Count failed generations as spend with zero usable seconds.
+- [x] Add measured pass-rate / cost-per-usable-second routing after a minimum sample threshold.
+- [x] Keep static quality priors until enough measured samples exist.
 - [x] Add cost-aware fallback/retry escalation policy.
 - [x] Do not retry around rights, source, or deterministic UI failures.
 - [x] Enforce per-concept render budget cap.
-- [ ] Compare direct-model cost and QA against Higgsfield on the same test set.
+- [ ] Compare direct-model cost and QA against Higgsfield on the same live test set.
 
-Exit condition: provider selection is driven by measured quality-per-usable-dollar, not platform preference.
+Exit condition: provider selection is driven by measured quality-per-usable-dollar once sufficient benchmark evidence exists.
 
 ## Phase 6: creator identity system
 
@@ -114,29 +119,33 @@ Exit condition: provider selection is driven by measured quality-per-usable-doll
 - [x] Require motion-transfer permission for performance samples marked transferable.
 - [x] Add onboarding coverage warnings without pretending to perform semantic identity QA.
 - [x] Add creator-pack -> render-assets resolver with date/product/platform/transformation rights checks.
-- [ ] Add semantic visual identity-reference QA.
-- [ ] Add revocation propagation behavior.
+- [x] Add optional visual identity consistency QA when local canonical references and a vision credential are available.
+- [ ] Add revocation propagation behavior through derived jobs/artifacts.
 
 Exit condition: an approved creator can safely become a reusable production asset.
 
 ## Phase 7: QA and ranking
 
-- [ ] Extend visual QA to identity consistency.
-- [ ] Add lip-sync QA.
-- [ ] Add product/UI correctness checks.
-- [ ] Add final timeline QA.
-- [ ] Persist QA results per artifact.
-- [ ] Rank concepts before render by expected quality, novelty, and cost.
+- [x] Add QAResult schema.
+- [x] Add deterministic video QA for duration, resolution, vertical aspect, audio presence, and black frames.
+- [x] Keep technically valid clips in `needs_review` until semantic quality checks actually run.
+- [x] Add optional sampled-frame visual QA for identity consistency, anatomy, captions/text, and obvious visual artifacts.
+- [ ] Add audio-aware lip-sync QA.
+- [ ] Add ground-truth product/UI correctness comparison.
+- [x] Add final-Reel deterministic/sampled-frame QA profile.
+- [ ] Automatically persist every QA result alongside its artifact record.
+- [ ] Rank concepts before render by expected quality, novelty, cost, and performance history.
 
-Exit condition: the system rejects obvious bad outputs before a human sees them.
+Exit condition: the system rejects obvious bad outputs before human approval and learns which routes produce usable output.
 
 ## Phase 8: feedback loop
 
-- [ ] Define performance event contract.
+- [x] Define a model-generation performance event/benchmark contract.
+- [ ] Define social/ad performance event contract for published creatives.
 - [ ] Ingest platform/ad analytics manually or through connectors.
-- [ ] Link performance to CreativeSpec dimensions.
+- [ ] Link published performance to CreativeSpec dimensions.
 - [ ] Calculate hook/creator/format/CTA performance summaries.
-- [ ] Feed learnings into the next generation/ranking pass.
+- [ ] Feed campaign performance learnings into the next concept generation/ranking pass.
 
 Exit condition: the system becomes a creative learning loop rather than a generation queue.
 
@@ -149,13 +158,14 @@ During active development, periodically re-check:
 - direct provider pricing
 - optional Higgsfield credit/job economics if benchmarking it
 
-Do not overwrite historical job provenance with new pricing or new recommendations. Every benchmark should preserve the source/rate assumptions that existed when it ran.
+Do not overwrite historical job provenance with new pricing or new recommendations. Every benchmark preserves the source/rate assumptions that existed when it ran.
 
 ## Autonomous vs external-input boundary
 
-Implemented without paid generation:
+Implemented without paid video generation:
 - domain contracts and schemas
 - Campaign Studio UI
+- atomic local domain store
 - factual reference observation and segmentation
 - optional local/JSON transcription ingestion
 - reference semantic-label contract + compiler
@@ -163,6 +173,7 @@ Implemented without paid generation:
 - rights enforcement
 - creator identity-pack contract + builder
 - creator-pack rights resolver for render assets
+- campaign -> CreativeSpec batch generation
 - direct-model registry and router
 - provider-ready job compilation
 - model-aware prompt compiler
@@ -172,14 +183,17 @@ Implemented without paid generation:
 - local-media staging
 - Remotion assembly
 - FFmpeg normalization
+- deterministic + optional semantic visual QA
+- benchmark ledger and measured routing
 - retry/escalation policy
-- unit/CI tests
+- unit/CI + no-spend integration tests
+- end-to-end operator/agent runbook
 
 Requires external credentials/assets or human decisions for live production:
 - `FAL_KEY` or equivalent direct-provider credentials
 - one approved creator identity/reference pack
 - licensed/owned performance clips for literal motion transfer
-- vision/model credential for automatic semantic labeling; manual labels remain supported without one
+- vision/model credential for automatic semantic labeling/visual QA; manual review remains supported without one
 - production app login flows where authentication is needed
 - GPU infrastructure if self-hosting Wan2.2 Animate
 - final legal review of creator NIL/AI-use/commission agreements
