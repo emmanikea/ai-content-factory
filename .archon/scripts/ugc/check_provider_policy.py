@@ -9,6 +9,7 @@ from __future__ import annotations
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
+SELF = Path(__file__).resolve()
 
 # These strings represent executable/runtime coupling rather than harmless historical discussion.
 FORBIDDEN = (
@@ -42,7 +43,12 @@ def main() -> int:
         if not base.exists():
             continue
         for path in base.rglob("*"):
-            if not path.is_file() or path.suffix.lower() not in TEXT_SUFFIXES or path in ALLOW:
+            if (
+                not path.is_file()
+                or path.suffix.lower() not in TEXT_SUFFIXES
+                or path in ALLOW
+                or path.resolve() == SELF
+            ):
                 continue
             try:
                 text = path.read_text(encoding="utf-8", errors="ignore").lower()
