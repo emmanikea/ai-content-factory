@@ -1,0 +1,16 @@
+name: Provider Policy
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  no-retired-runtime-calls:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Check active runtime paths
+        run: python .archon/scripts/ugc/check_provider_policy.py
