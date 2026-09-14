@@ -47,7 +47,8 @@
         {
           "type": "official_template_id",
           "repo": "Comfy-Org/workflow_templates",
-          "template_id": "video_ltx2_5_i2v"
+          "template_id": "video_ltx2_5_i2v",
+          "manifest_path": "packages/core/src/comfyui_workflow_templates_core/manifest.json"
         }
       ],
       "required_inputs": ["approved_start_image", "motion_prompt"],
@@ -62,7 +63,8 @@
         {
           "type": "official_template_id",
           "repo": "Comfy-Org/workflow_templates",
-          "template_id": "video_ltx2_5_i2v"
+          "template_id": "video_ltx2_5_i2v",
+          "manifest_path": "packages/core/src/comfyui_workflow_templates_core/manifest.json"
         }
       ],
       "required_inputs": ["approved_creator_keyframe", "performance_motion_prompt"],
@@ -71,13 +73,16 @@
     },
     {
       "id": "audio_driven_creator_video",
-      "status": "research",
+      "status": "candidate",
       "goal": "Drive a talking creator with the exact approved audio so spoken content and mouth movement are controlled rather than invented per clip.",
       "primary_sources": [
         {
-          "type": "official_template_family",
+          "type": "official_template_id",
           "repo": "Comfy-Org/workflow_templates",
-          "search": "LTX image audio to video / audio to video"
+          "template_id": "video_ltx2_3_ia2v",
+          "filename": "video_ltx2_3_ia2v.json",
+          "manifest_path": "packages/core/src/comfyui_workflow_templates_core/manifest.json",
+          "note": "Official image+audio-to-video reference. Re-check current LTX release/template before promotion; use this as the reproduced baseline, not a permanent model pin."
         }
       ],
       "secondary_sources": [
@@ -103,13 +108,31 @@
     },
     {
       "id": "motion_transfer",
-      "status": "research",
+      "status": "candidate",
       "goal": "Apply licensed/owned reference performance to an approved creator identity without borrowing third-party identity.",
       "primary_sources": [
         {
-          "type": "official_template_family",
+          "type": "official_template",
           "repo": "Comfy-Org/workflow_templates",
-          "search": "Wan video-to-video character replacement Animate"
+          "path": "templates/video_wan_animate2.json",
+          "note": "Current Wan Animate 2 template family; validate hardware/node requirements on target machine."
+        },
+        {
+          "type": "official_blueprint",
+          "repo": "Comfy-Org/workflow_templates",
+          "path": "blueprints/motion_transfer_wan_animate_2.json"
+        },
+        {
+          "type": "official_template",
+          "repo": "Comfy-Org/workflow_templates",
+          "path": "templates/video_wan2_2_14B_animate.json",
+          "note": "Wan 2.2 Animate 14B reference path; useful benchmark for motion/character transfer but expected to be hardware-intensive."
+        },
+        {
+          "type": "official_template",
+          "repo": "Comfy-Org/workflow_templates",
+          "path": "templates/video_wan21_scail2_character_replacement.json",
+          "note": "Official character-replacement reference; compare identity fidelity and compute against Wan Animate 2."
         }
       ],
       "secondary_sources": [
