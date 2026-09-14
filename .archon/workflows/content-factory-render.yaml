@@ -1,72 +1,34 @@
 name: content-factory-render
 description: |
-  Phase 2 of the content factory: a WORKER POOL of parallel Ralph loops, gated to human-approved
-  concepts. ONE approval -> TWO videos: each claimed approved concept gets a product PAN (Higgsfield
-  kling) AND a ~10s UGC talking-head ad (Higgsfield gemini_omni, ONE continuous take with native
-  voice - a person reviewing the product), each validated. A few workers run at once; each loops -
-  claim the next approved concept, make the pair,
-  repeat - until none are left. Nothing not approved is ever animated. Fewer workers than explore
-  because video is the slow, expensive step.
+  LEGACY / NO-SPEND compatibility workflow.
 
-  Self-checking: after each render, animate_concept.py runs validate_video.py (duration check + a
-  vision QA pass over frames sampled across the clip) and regenerates a bad take (garbled text,
-  warping product, truncated) up to RENDER_MAX_TRIES, keeping the best-scoring video. So the factory
-  never ships an obviously broken ad.
+  The original render workflow directly invoked vendor-specific paid video generation. That path is
+  retired. This workflow performs only a policy/status check and intentionally renders nothing.
 
-  finalize stitches the validated videos back into the review queue so the storefront plays them.
+  Current production work should use the UGC Studio planning/rights/QA pipeline and only call a
+  validated Comfy recipe or an explicitly approved direct hosted route. Comfy partner-node spending
+  is disabled by default.
+
+  Relevant files:
+    - docs/ugc-factory/COMFY_WORKFLOW_STACK.md
+    - .claude/skills/comfy-ugc-factory/SKILL.md
+    - ugc-studio/providers/comfy/workflow-registry.json
+    - ugc-studio/HANDOFF.md
 
 provider: claude
 model: sonnet
 
 nodes:
-  - id: prep
+  - id: policy-check
     timeout: 30000
     bash: |
-      set -uo pipefail
-      python .archon/scripts/factory/claim.py reset-render
-
-  - id: worker-1
-    depends_on: [prep]
-    idle_timeout: 1800000
-    loop: &render_worker
-      prompt: |
-        You are one worker on the render line. Each run you animate ONE approved ad, then stop -
-        the loop re-runs you for the next.
-
-        STEP 1 - claim your next approved concept (atomic). Run:
-          python .archon/scripts/factory/claim.py render
-        It prints ONE line: either `NONE`, or JSON:
-          {"product_id","concept_id","angle","frame","aspect_ratio"}
-
-        STEP 2:
-        - If it printed NONE, nothing approved is left to render. Output <promise>COMPLETE</promise> and stop.
-        - Otherwise produce the PAIR of ads for the claimed concept - ONE approval, TWO videos:
-          1. The product PAN (image-to-video via the Higgsfield CLI + duration/vision QA, best of retries):
-               python .archon/scripts/factory/animate_concept.py <product_id> <concept_id>
-          2. The UGC talking-head ad (a real person holding the product, Higgsfield gemini_omni, ONE
-             continuous ~10s take with native voice - no seams, one voice + a UGC-aware validation pass):
-               python .archon/scripts/factory/animate_ugc.py <product_id> <concept_id>
-          Both print their validation score and are idempotent (skip if their output already exists).
-          If either fails after its retries, note it and continue. Then STOP (do NOT emit COMPLETE -
-          the loop re-runs you for the next approved concept).
-      until: COMPLETE
-      max_iterations: 60
-      fresh_context: true
-
-  - id: worker-2
-    depends_on: [prep]
-    idle_timeout: 1800000
-    loop: *render_worker
-  - id: worker-3
-    depends_on: [prep]
-    idle_timeout: 1800000
-    loop: *render_worker
-
-  - id: finalize
-    depends_on: [worker-1, worker-2, worker-3]
-    trigger_rule: all_done
-    timeout: 120000
-    bash: |
-      set -uo pipefail
-      python .archon/scripts/factory/merge_queue.py
-      echo "=== RENDER COMPLETE: worker pool animated all approved ads ==="
+      set -euo pipefail
+      if [ "${ENABLE_HIGGSFIELD_RUNTIME:-0}" != "0" ]; then
+        echo "ERROR: repository policy expects ENABLE_HIGGSFIELD_RUNTIME=0" >&2
+        exit 2
+      fi
+      echo "Legacy content-factory-render is retired and performs no generation."
+      echo "Use the current UGC Studio route/QA path plus validated Comfy recipes."
+      echo "COMFY_WHERE=${COMFY_WHERE:-local}"
+      echo "COMFY_ALLOW_SPEND=${COMFY_ALLOW_SPEND:-0}"
+      echo "<promise>COMPLETE</promise>"
