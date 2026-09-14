@@ -1,0 +1,145 @@
+{
+  "version": "2026-09-14",
+  "default_execution": {
+    "where": "local",
+    "allow_paid_partner_nodes": false,
+    "policy": "Prefer local/self-hosted open workflows. Paid partner nodes require explicit spend approval and must not be enabled just to make a workflow run."
+  },
+  "status_definitions": {
+    "research": "Upstream pattern/source worth studying; not an execution target.",
+    "candidate": "Selected for reproduction and validation on our Comfy environment.",
+    "validated": "Reproduced on declared target with dependencies, parameters, QA and provenance captured.",
+    "deprecated": "Do not use for new work."
+  },
+  "capabilities": [
+    {
+      "id": "product_creator_composition",
+      "status": "candidate",
+      "goal": "Place or preserve a real product in a believable creator/UGC keyframe before video generation.",
+      "primary_sources": [
+        {
+          "type": "official_template",
+          "repo": "Comfy-Org/workflow_templates",
+          "path": "templates/image_qwen_image_edit_2511.json"
+        },
+        {
+          "type": "official_blueprint",
+          "repo": "Comfy-Org/workflow_templates",
+          "path": "blueprints/image_edit_qwen_2511.json"
+        }
+      ],
+      "secondary_sources": [
+        {
+          "type": "community_reference",
+          "repo": "digitalinnovator/comfyui-production-workflows",
+          "path": "08-product-placement-qwen/"
+        }
+      ],
+      "required_inputs": ["creator_or_scene_image", "product_reference", "edit_instruction"],
+      "required_outputs": ["image"],
+      "promotion_checks": ["product_fidelity", "identity_if_present", "hands_anatomy", "text_artifacts"]
+    },
+    {
+      "id": "product_i2v",
+      "status": "candidate",
+      "goal": "Animate an approved product frame into short B-roll/product motion using open/local video generation.",
+      "primary_sources": [
+        {
+          "type": "official_template_id",
+          "repo": "Comfy-Org/workflow_templates",
+          "template_id": "video_ltx2_5_i2v"
+        }
+      ],
+      "required_inputs": ["approved_start_image", "motion_prompt"],
+      "required_outputs": ["video"],
+      "promotion_checks": ["product_fidelity", "temporal_stability", "duration", "resolution", "no_text_artifacts"]
+    },
+    {
+      "id": "creator_i2v",
+      "status": "candidate",
+      "goal": "Generate short creator performance shots from an approved identity/keyframe with continuity preserved.",
+      "primary_sources": [
+        {
+          "type": "official_template_id",
+          "repo": "Comfy-Org/workflow_templates",
+          "template_id": "video_ltx2_5_i2v"
+        }
+      ],
+      "required_inputs": ["approved_creator_keyframe", "performance_motion_prompt"],
+      "required_outputs": ["video"],
+      "promotion_checks": ["identity_consistency", "hands_anatomy", "temporal_stability", "natural_ugc_motion"]
+    },
+    {
+      "id": "audio_driven_creator_video",
+      "status": "research",
+      "goal": "Drive a talking creator with the exact approved audio so spoken content and mouth movement are controlled rather than invented per clip.",
+      "primary_sources": [
+        {
+          "type": "official_template_family",
+          "repo": "Comfy-Org/workflow_templates",
+          "search": "LTX image audio to video / audio to video"
+        }
+      ],
+      "secondary_sources": [
+        {
+          "type": "community_reference",
+          "repo": "digitalinnovator/comfyui-production-workflows",
+          "path": "01-ai-ugc-video-voice-cloning/"
+        },
+        {
+          "type": "community_reference",
+          "repo": "digitalinnovator/comfyui-production-workflows",
+          "path": "02-ai-ugc-video-prebuilt-audio/"
+        },
+        {
+          "type": "community_reference",
+          "repo": "digitalinnovator/comfyui-production-workflows",
+          "path": "09-talking-avatar-infinitetalk/"
+        }
+      ],
+      "required_inputs": ["approved_creator_image", "approved_audio"],
+      "required_outputs": ["video_with_audio_or_syncable_video"],
+      "promotion_checks": ["identity_consistency", "lip_sync", "audio_exactness", "voice_consistency", "temporal_stability"]
+    },
+    {
+      "id": "motion_transfer",
+      "status": "research",
+      "goal": "Apply licensed/owned reference performance to an approved creator identity without borrowing third-party identity.",
+      "primary_sources": [
+        {
+          "type": "official_template_family",
+          "repo": "Comfy-Org/workflow_templates",
+          "search": "Wan video-to-video character replacement Animate"
+        }
+      ],
+      "secondary_sources": [
+        {
+          "type": "community_reference",
+          "repo": "digitalinnovator/comfyui-production-workflows",
+          "path": "03-trend-copy-video-wan-animate/"
+        }
+      ],
+      "required_inputs": ["approved_creator_identity", "licensed_motion_video"],
+      "required_outputs": ["video"],
+      "promotion_checks": ["rights_gate", "identity_consistency", "motion_fidelity", "temporal_stability"]
+    },
+    {
+      "id": "realism_cleanup",
+      "status": "research",
+      "goal": "Improve skin, lighting, detail or local artifacts only after the underlying composition is approved.",
+      "primary_sources": [],
+      "secondary_sources": [
+        {
+          "type": "community_reference",
+          "repo": "digitalinnovator/comfyui-production-workflows",
+          "path": "07-image-realism-enhancer/"
+        }
+      ],
+      "required_inputs": ["approved_image"],
+      "required_outputs": ["image"],
+      "promotion_checks": ["identity_preservation", "product_preservation", "artifact_reduction"]
+    }
+  ],
+  "project_recipe_dir": "ugc-studio/providers/comfy/recipes",
+  "rule": "Do not add a production route to this registry until a project-owned recipe has been reproduced and promoted to validated."
+}
