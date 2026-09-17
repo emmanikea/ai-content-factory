@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Record and summarize UGC model benchmark outcomes.
+"""Record and summarize UGC model benchmark outcomes across providers.
 
 The economic unit is a usable approved second, not a raw generation. Records preserve
-model, prompt strategy, attempt count, QA status, and the cost assumption used at the time.
+model, prompt strategy, cost evidence, attempt count, QA status, and failed spend.
 """
 from __future__ import annotations
 
@@ -25,18 +25,108 @@ def _duration_from_qa(qa: dict[str, Any]) -> float:
     return 0.0
 
 
-def build_benchmark_event(
+def _provider_model(job: dict[str, Any]) -> str | None:
+    provider = str(job.get("provider") or "")
+    if job.get("model_id"):
+        return str(job["model_id"])
+    if job.get("model"):
+        return str(job["model"])
+    if provider == "openrouter":
+        model = (job.get("input") or {}).get("model")
+        return str(model) if model else None
+    if provider == "higgsfield":
+        endpoint = job.get("endpoint")
+        return str(endpoint) if endpoint else None
+    return None
+
+
+def _estimated_cost(job: dict[str, Any], provider_provenance: dict[str, Any] | None = None) -> float:
+    for key in ("estimated_cost_usd", "expected_cost_usd"):
+        value = job.get(key)
+        if isinstance(value, (int, float)):
+            return max(0.0, float(value))
+
+    # Completed provider provenance commonly preserves its preflight estimate even when the
+    # provider job shape itself did not need a top-level estimate field.
+    if provider_provenance:
+        estimate = provider_provenance.get("estimate")
+        if isinstance(estimate, dict) and isinstance(estimate.get("usd"), (int, float)):
+            return max(0.0, float(estimate["usd"]))
+
+    provenance = job.get("provenance") or {}
+    estimate = provenance.get("estimate") if isinstance(provenance, dict) else None
+    if isinstance(estimate, dict) and isinstance(estimate.get("usd"), (int, float)):
+        return max(0.0, float(estimate["usd"]))
+
+    # Benchmark jobs preserve dated rates + a normalized target duration. Derive only when
+    # both are explicitly present; never infer from max_provider_cost_usd because a cap can
+    # intentionally be larger than the expected spend.
+    if isinstance(provenance, dict):
+        duration = provenance.get("target_duration_seconds")
+        if isinstance(duration, (int, float)):
+            for rate_key in ("rate_usd_per_second", "approx_output_rate_usd_per_second", "preview_rate_usd_per_second"):
+                rate = provenance.get(rate_key)
+                if isinstance(rate, (int, float)):
+                    return max(0.0, float(rate) * float(duration))
+    return 0.0
+
+
+def _cost_evidence_type(job: dict[str, Any]) -> str | None:
+    provenance = job.get("provenance") or {}
+    if isinstance(provenance, dict) and provenance.get("cost_evidence_type"):
+        return str(provenance["cost_evidence_type"])
+    provider = str(job.get("provider") or "")
+    return {
+        "fal": "configured_provider_formula",
+        "openrouter": "caller_preview_from_live_catalog",
+        "google-veo": "official_rate_formula",
+        "google-omni": "official_effective_output_rate_approximation",
+        "higgsfield": "provider_authenticated_request_quote",
+    }.get(provider)
+
+
+def actual_cost_from_provider_provenance(provider_provenance: dict[str, Any] | None) -> tuple[float | None, str | None]:
+    if not provider_provenance:
+        return None, None
+    value = provider_provenance.get("actual_cost_usd")
+    if isinstance(value, (int, float)):
+        return max(0.0, float(value)), "provider_reported_actual"
+    value = provider_provenance.get("derived_billable_cost_usd")
+    if isinstance(value, (int, float)):
+        return max(0.0, float(value)), "provider_billing_formula_after_success"
+    terminal = provider_provenance.get("terminal")
+    if isinstance(terminal, dict):
+        usage = terminal.get("usage")
+        if isinstance(usage, dict) and isinstance(usage.get("cost"), (int, float)):
+            return max(0.0, float(usage["cost"])), "provider_reported_actual"
+    return None, None
+
+
+def _request_id(provider_provenance: dict[str, Any] | None) -> str | None:
+    if not provider_provenance:
+        return None
+    for key in ("request_id", "job_id", "id", "operation_name", "interaction_id"):
+        value = provider_provenance.get(key)
+        if value:
+            return str(value)
+    terminal = provider_provenance.get("terminal")
+    if isinstance(terminal, dict):
+        for key in ("id", "name"):
+            if terminal.get(key):
+                return str(terminal[key])
+    return None
+
+
+def _base_event(
     job: dict[str, Any],
-    qa: dict[str, Any],
     *,
-    actual_cost_usd: float | None = None,
-    attempt_number: int = 1,
+    actual_cost_usd: float | None,
+    actual_cost_source: str | None,
+    attempt_number: int,
+    provider_provenance: dict[str, Any] | None,
 ) -> dict[str, Any]:
-    estimated = float(job.get("estimated_cost_usd") or 0.0)
+    estimated = _estimated_cost(job, provider_provenance)
     cost = estimated if actual_cost_usd is None else float(actual_cost_usd)
-    duration = _duration_from_qa(qa)
-    status = qa.get("status")
-    usable = status == "pass"
     provenance = job.get("provenance") or {}
     return {
         "event_id": str(uuid.uuid4()),
@@ -45,7 +135,8 @@ def build_benchmark_event(
         "concept_id": job.get("concept_id"),
         "shot_id": job.get("shot_id"),
         "provider": job.get("provider"),
-        "model_id": job.get("model_id"),
+        "model_id": _provider_model(job),
+        "provider_request_id": _request_id(provider_provenance),
         "quality_tier": provenance.get("quality_tier"),
         "prompt_strategy": provenance.get("prompt_strategy"),
         "prompt_compiler_version": provenance.get("prompt_compiler_version"),
@@ -53,15 +144,79 @@ def build_benchmark_event(
         "estimated_cost_usd": round(estimated, 6),
         "actual_cost_usd": round(float(actual_cost_usd), 6) if actual_cost_usd is not None else None,
         "cost_used_usd": round(cost, 6),
-        "cost_source": "actual" if actual_cost_usd is not None else "estimate",
+        "cost_source": actual_cost_source or ("actual" if actual_cost_usd is not None else "estimate"),
+        "cost_evidence_type": _cost_evidence_type(job),
+        "rights_evidence": provenance.get("rights_evidence"),
+    }
+
+
+def build_benchmark_event(
+    job: dict[str, Any],
+    qa: dict[str, Any],
+    *,
+    actual_cost_usd: float | None = None,
+    attempt_number: int = 1,
+    provider_provenance: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    explicit_actual = actual_cost_usd is not None
+    derived_actual, derived_source = actual_cost_from_provider_provenance(provider_provenance)
+    if actual_cost_usd is None:
+        actual_cost_usd = derived_actual
+    actual_source = "explicit_actual_override" if explicit_actual else derived_source
+
+    duration = _duration_from_qa(qa)
+    status = qa.get("status")
+    usable = status == "pass"
+    event = _base_event(
+        job,
+        actual_cost_usd=actual_cost_usd,
+        actual_cost_source=actual_source,
+        attempt_number=attempt_number,
+        provider_provenance=provider_provenance,
+    )
+    event.update({
         "qa_status": status,
         "qa_score": qa.get("score"),
         "usable": usable,
         "artifact_duration_seconds": round(duration, 3),
         "usable_seconds": round(duration, 3) if usable else 0.0,
         "failures": [x.get("code") for x in (qa.get("failures") or [])],
-        "rights_evidence": provenance.get("rights_evidence"),
-    }
+    })
+    return event
+
+
+def build_generation_failure_event(
+    job: dict[str, Any],
+    *,
+    failure_code: str,
+    actual_cost_usd: float | None = None,
+    attempt_number: int = 1,
+    provider_provenance: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    if not failure_code.strip():
+        raise ValueError("failure_code is required")
+    explicit_actual = actual_cost_usd is not None
+    derived_actual, derived_source = actual_cost_from_provider_provenance(provider_provenance)
+    if actual_cost_usd is None:
+        actual_cost_usd = derived_actual
+    source = "explicit_actual_override" if explicit_actual else derived_source
+    event = _base_event(
+        job,
+        actual_cost_usd=actual_cost_usd,
+        actual_cost_source=source,
+        attempt_number=attempt_number,
+        provider_provenance=provider_provenance,
+    )
+    event.update({
+        "qa_status": "fail",
+        "qa_score": None,
+        "usable": False,
+        "artifact_duration_seconds": 0.0,
+        "usable_seconds": 0.0,
+        "failures": [failure_code.strip()],
+        "generation_failed_before_qa": True,
+    })
+    return event
 
 
 def summarize_events(events: list[dict[str, Any]]) -> dict[str, Any]:
@@ -92,7 +247,8 @@ def summarize_events(events: list[dict[str, Any]]) -> dict[str, Any]:
             "usable_seconds": round(usable_seconds, 3),
             "cost_per_usable_second_usd": round(total_cost / usable_seconds, 4) if usable_seconds > 0 else None,
             "average_qa_score": round(sum(scored) / len(scored), 2) if scored else None,
-            "actual_cost_samples": sum(1 for x in items if x.get("cost_source") == "actual"),
+            "actual_cost_samples": sum(1 for x in items if x.get("actual_cost_usd") is not None),
+            "generation_failures_before_qa": sum(1 for x in items if x.get("generation_failed_before_qa") is True),
         })
     return {
         "generated_at": datetime.now(timezone.utc).isoformat(),
@@ -118,8 +274,10 @@ def main() -> int:
 
     record = sub.add_parser("record")
     record.add_argument("--job", required=True)
-    record.add_argument("--qa", required=True)
-    record.add_argument("--actual-cost", type=float)
+    record.add_argument("--qa")
+    record.add_argument("--generation-failure", help="Failure code when generation produced no artifact/QA result")
+    record.add_argument("--provider-provenance", help="Provider provenance.json; used to derive actual cost/request id")
+    record.add_argument("--actual-cost", type=float, help="Explicit override; normally derive from provider provenance")
     record.add_argument("--attempt", type=int, default=1)
     record.add_argument("--id")
 
@@ -129,9 +287,30 @@ def main() -> int:
     args = parser.parse_args()
     store = LocalStore(args.root)
     if args.command == "record":
+        if bool(args.qa) == bool(args.generation_failure):
+            raise SystemExit("record requires exactly one of --qa or --generation-failure")
         job = json.loads(Path(args.job).read_text(encoding="utf-8"))
-        qa = json.loads(Path(args.qa).read_text(encoding="utf-8"))
-        event = build_benchmark_event(job, qa, actual_cost_usd=args.actual_cost, attempt_number=args.attempt)
+        provider_provenance = (
+            json.loads(Path(args.provider_provenance).read_text(encoding="utf-8"))
+            if args.provider_provenance else None
+        )
+        if args.qa:
+            qa = json.loads(Path(args.qa).read_text(encoding="utf-8"))
+            event = build_benchmark_event(
+                job,
+                qa,
+                actual_cost_usd=args.actual_cost,
+                attempt_number=args.attempt,
+                provider_provenance=provider_provenance,
+            )
+        else:
+            event = build_generation_failure_event(
+                job,
+                failure_code=args.generation_failure,
+                actual_cost_usd=args.actual_cost,
+                attempt_number=args.attempt,
+                provider_provenance=provider_provenance,
+            )
         record_id = args.id or f"bench-{event['event_id']}"
         store.put("performance", record_id, event)
         print(json.dumps(event, indent=2))
