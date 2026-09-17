@@ -2,13 +2,15 @@
 """Prepare a direct-render asset manifest from a CreatorIdentityPack.
 
 This removes the normal need to hand-author `rights_approved: true`. Approval is derived
-from the pack's rights snapshot for the requested product/platform/transformations. The
-output is compatible with build_fal_job.py when the chosen assets are remote URLs.
+from the pack's rights snapshot for the requested product/platform/transformations. Current
+creator revocation state is checked separately from the immutable pack snapshot when a
+revocation store is supplied.
 """
 from __future__ import annotations
 
 import argparse
 import json
+import os
 from datetime import date
 from pathlib import Path
 from typing import Any
@@ -64,7 +66,17 @@ def prepare_assets(
     performance_id: str | None = None,
     on_date: date | None = None,
     require_remote: bool = False,
+    revocation_store: Any | None = None,
 ) -> dict[str, Any]:
+    creator_id = str(pack.get("creator_id") or "")
+    if revocation_store is not None:
+        from creator_revocation import assert_creator_active
+
+        # Revocation is current-state authorization. The historical `on_date` below may be
+        # useful for agreement-validity evaluation, but it must never let a new render bypass
+        # a revocation that is active now.
+        assert_creator_active(revocation_store, creator_id)
+
     decision = evaluate_creator_rights(
         _creator_for_rights(pack),
         product_id=product_id,
@@ -94,6 +106,7 @@ def prepare_assets(
             "product_category": product_category,
             "platform": platform,
             "transformations": transformations,
+            "revocation_registry_checked": revocation_store is not None,
         },
         "creator_image_uri": image_uri,
         "creator_image_id": image.get("id"),
@@ -132,11 +145,15 @@ def main() -> int:
     parser.add_argument("--performance-id")
     parser.add_argument("--on-date", help="YYYY-MM-DD; defaults to today")
     parser.add_argument("--require-remote", action="store_true")
+    parser.add_argument("--store-root", default=os.environ.get("UGC_STORE_DIR", "ugc-studio/data"), help="Local store used for current creator-revocation checks")
     parser.add_argument("--out", required=True)
     args = parser.parse_args()
 
+    from local_store import LocalStore
+
     pack = json.loads(Path(args.pack).read_text(encoding="utf-8"))
     checked_date = date.fromisoformat(args.on_date) if args.on_date else None
+    store = LocalStore(args.store_root)
     assets = prepare_assets(
         pack,
         product_id=args.product_id,
@@ -147,6 +164,7 @@ def main() -> int:
         performance_id=args.performance_id,
         on_date=checked_date,
         require_remote=args.require_remote,
+        revocation_store=store,
     )
     Path(args.out).write_text(json.dumps(assets, indent=2) + "\n", encoding="utf-8")
     print(json.dumps({
@@ -154,6 +172,7 @@ def main() -> int:
         "creator_image_id": assets["creator_image_id"],
         "needs_hosted_upload": assets["needs_hosted_upload"],
         "motion_performance_id": assets.get("motion_performance_id"),
+        "revocation_registry_checked": True,
     }, indent=2))
     return 0
 
