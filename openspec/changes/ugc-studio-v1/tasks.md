@@ -31,6 +31,9 @@ Providers remain independent and evidence-driven. No provider is automatically p
 - [x] Direct Google local price/capability preflight from dated official Veo pricing.
 - [x] Google long-running operation polling, output download, 2-day-retention handling, and provenance.
 - [x] Google successful-generation billable-cost derivation and explicit model/duration/resolution/reference constraints.
+- [x] Native Gemini Omni Flash video adapter through the Interactions API.
+- [x] Gemini Omni 720p benchmark preflight using Google's documented effective ~$0.10/output-second rate while keeping input-token cost separate.
+- [x] Gemini Omni inline/Gemini-Files media handling with arbitrary remote URL fetching blocked.
 - [ ] Run first credentialed video benchmark.
 - [ ] Add self-host Wan worker configuration.
 - [ ] Add direct/open identity-still worker.
@@ -54,7 +57,7 @@ Providers remain independent and evidence-driven. No provider is automatically p
 - [x] Static priors remain until sufficient measured samples exist.
 - [x] Add cross-provider no-spend preflight comparison while preserving unlike evidence types.
 - [x] Add machine-readable ProviderPreflightComparison schema.
-- [ ] Benchmark fal vs Higgsfield vs OpenRouter vs direct Google on equivalent approved shots.
+- [ ] Benchmark fal vs Higgsfield vs OpenRouter vs Google Veo/Omni on equivalent approved shots.
 - [ ] Allow automatic cross-provider routing only after comparable measurements exist.
 
 ## Phase 6: creator identity system
@@ -86,11 +89,12 @@ Providers remain independent and evidence-driven. No provider is automatically p
 ## Provider preflight semantics
 
 ```text
-fal        -> dated configured model pricing formulas
-Higgsfield -> authenticated request-specific quote (credits + usd)
-OpenRouter -> live pricing_skus preview + completed provider usage.cost
-Google Veo -> dated official $/second formula; successful jobs billed
-self-host  -> measured compute cost when benchmarked
+fal         -> dated configured model pricing formulas
+Higgsfield  -> authenticated request-specific quote (credits + usd)
+OpenRouter  -> live pricing_skus preview + completed provider usage.cost
+Google Veo  -> dated official $/second formula; successful jobs billed
+Google Omni -> approximate official effective 720p video-output rate; input tokens separate
+self-host   -> measured compute cost when benchmarked
 ```
 
 Do not flatten these into a single claim of equal precision. `compare_provider_preflight.py` preserves `cost_evidence_type`, evidence precision, provider detail, and the expected post-run actual-cost source. Its `cost_only_order` is a benchmark-priority aid, not a production-provider recommendation.
@@ -100,7 +104,7 @@ Periodically re-check:
 - `higgsfield-ai/skills`
 - Higgsfield API shared lifecycle and account/model-specific docs
 - OpenRouter video catalog/lifecycle/pricing semantics
-- fal and Google model schemas/pricing
+- fal and Google model schemas/pricing, including Google's recommended default video model
 - self-host compute economics
 
 Historical job provenance must keep the estimate/rate/catalog assumptions that existed when the job ran.

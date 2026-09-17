@@ -16,7 +16,7 @@ ReferenceAnalysis + CreatorIdentityPack + CampaignBrief
                concept ranking
                      ↓
               provider candidates
-        fal | OpenRouter | Google | Higgsfield | self-host
+ fal | OpenRouter | Google Veo | Google Omni | Higgsfield | self-host
                      ↓
           provider-appropriate preflight
                      ↓
@@ -54,7 +54,6 @@ Uses the async `/api/v1/videos` lifecycle and live `/api/v1/videos/models` catal
 Direct provider lane implemented with the Gemini Developer API.
 
 - `ugc-studio/providers/google-veo/client.py`
-- `ugc-studio/providers/google-veo/README.md`
 - `docs/ugc-factory/GOOGLE_VEO_INTEGRATION.md`
 
 Current official paid rates recorded 2026-09-17:
@@ -65,9 +64,24 @@ Veo 3.1 Fast:     $0.10/s 720p | $0.12/s 1080p | $0.30/s 4k
 Veo 3.1 Standard: $0.40/s 720p | $0.40/s 1080p | $0.60/s 4k
 ```
 
-Veo 3.1 audio is always on. Google documents charges only for successful generations. The adapter validates 4/6/8-second constraints, 1080p/4k eight-second requirements, vertical/horizontal aspect ratios, reference-image constraints, and one-video-per-request. It polls long-running operations, downloads completed outputs immediately because Google retention is 2 days, and stores the pricing snapshot/cost basis in provenance.
+Veo audio is always on. Google documents charges only for successful generations. The adapter validates 4/6/8-second constraints, resolution/reference constraints, polls long-running operations, downloads completed outputs, and stores the pricing snapshot/cost basis in provenance.
 
-V1 supports text-to-video, image-to-video, first/last-frame interpolation, and Standard/Fast asset-reference images. Video extension is intentionally deferred to a dedicated provenance contract.
+### Direct Google / Gemini Omni Flash
+Google's current documentation recommends `gemini-omni-1.1-flash` as the default video-generation model for new workflows because of coherence, multi-input reasoning, character consistency, factual accuracy, and conversational editing. UGC Studio therefore keeps it as a **separate Google lane**, not as a replacement for cheaper Veo Lite.
+
+- `ugc-studio/providers/google-omni/client.py`
+- `docs/ugc-factory/GOOGLE_OMNI_INTEGRATION.md`
+
+Current benchmark economics:
+
+```text
+Veo 3.1 Lite 720p -> ~$0.05/s
+Gemini Omni 720p  -> ~$0.10/s effective video output + separately billed input tokens
+```
+
+Omni supports text/image/video inputs, reference-driven generation, editing/extension, 9:16 video, and native audio. The V1 adapter intentionally benchmarks only 720p so its cost evidence remains grounded in Google's documented effective rate. It does not fetch arbitrary remote media URLs; reference media must be inline base64 or a Gemini Files API URI.
+
+The Omni estimate is not treated like a Higgsfield quote: it is a planning approximation based on expected output duration, and actual output duration/token use can differ.
 
 ## Cross-provider no-spend comparison
 
@@ -79,23 +93,11 @@ Offline:
 
 ```bash
 python .archon/scripts/ugc/compare_provider_preflight.py \
-  ./fal-job.json \
-  ./openrouter-job.json \
-  ./google-job.json \
-  ./higgsfield-job.json \
-  --out ./provider-comparison.json
-```
-
-Authenticated read/estimate mode:
-
-```bash
-python .archon/scripts/ugc/compare_provider_preflight.py \
   ./fal-job.json ./openrouter-job.json ./google-job.json ./higgsfield-job.json \
-  --network \
   --out ./provider-comparison.json
 ```
 
-`--network` only performs read/estimate calls; it never submits generation.
+Authenticated read/estimate mode adds stronger OpenRouter/Higgsfield evidence but never submits generation.
 
 Schema:
 `ugc-studio/schemas/provider-preflight-comparison.schema.json`
@@ -103,27 +105,17 @@ Schema:
 Documentation:
 `docs/ugc-factory/PROVIDER_PREFLIGHT_COMPARISON.md`
 
-The output keeps:
-- provider/model
-- preflight cost when known
-- `cost_evidence_type`
-- evidence precision
-- provider-specific details
-- post-run actual-cost source
-- whether authenticated network preflight can strengthen the evidence
-
 It may show a `cost_only_order`, but that is only a benchmark-priority aid, not a production-provider recommendation.
 
 ## Cost evidence must stay typed
 
-Do not treat every provider's number as equally authoritative:
-
 ```text
-Higgsfield -> provider-authenticated request quote
-OpenRouter -> current catalog preview + provider-reported completed usage.cost
-Google Veo -> dated official per-second pricing formula
-fal        -> dated configured provider pricing formula
-self-host  -> future measured compute economics
+Higgsfield  -> provider-authenticated request quote
+OpenRouter  -> current catalog preview + provider-reported completed usage.cost
+Google Veo  -> dated official per-second pricing formula
+Google Omni -> approximate effective 720p video-output rate; input tokens separate
+fal         -> dated configured provider pricing formula
+self-host   -> future measured compute economics
 ```
 
 The benchmark ledger should preserve provider, source/date, estimate type, actual-cost source, and QA outcome.
@@ -181,13 +173,14 @@ Every provider path remains dry-run/spend-gated by default.
 
 The user already has fal, OpenRouter and Gemini credentials. Higgsfield credentials have not been confirmed.
 
-Use one approved/synthetic creator asset and one 4–5 second hook. Candidate low-cost starting points should include:
+Use one approved/synthetic creator asset and one 4–5 second hook. Candidate starting points should include:
 
-1. direct Veo 3.1 Lite 720p
-2. OpenRouter current cheapest suitable creator-video route after catalog preflight
+1. direct Veo 3.1 Lite 720p as the cheapest Google baseline
+2. OpenRouter Seedance 2.0 Fast/current cheapest suitable creator-video route after catalog preflight
 3. fal Wan 3.0 720p
-4. fal Kling Standard if the cheaper outputs fail QA
-5. Higgsfield equivalent only when credentials are available
+4. Gemini Omni Flash 720p as Google's stronger/default video candidate
+5. fal Kling Standard if cheaper outputs fail creator/identity QA
+6. Higgsfield equivalent when credentials are available
 
 For every attempt:
 - preserve pricing source/date or catalog/quote snapshot
