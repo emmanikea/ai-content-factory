@@ -1,7 +1,7 @@
 {
-  "version": "2026-09-12",
+  "version": "2026-09-17",
   "currency": "USD",
-  "notes": "Reference pricing is configuration metadata, not a billing guarantee. Re-verify before production use.",
+  "notes": "Reference pricing is configuration metadata, not a billing guarantee. Re-verify before production use. Higgsfield uses authenticated per-request estimates rather than a hard-coded static price.",
   "providers": [
     {
       "id": "local-playwright",
@@ -122,11 +122,24 @@
     },
     {
       "id": "higgsfield",
-      "kind": "optional_suite",
+      "kind": "hosted_aggregator",
       "enabled_by_default": false,
+      "credential_env": "HF_CREDENTIALS",
+      "api_base": "https://api.higgsfield.ai",
+      "runtime_adapter": "ugc-studio/providers/higgsfield/client.py",
+      "pricing_mode": "authenticated_request_estimate",
+      "capabilities": [
+        "image_to_video",
+        "reference_to_video",
+        "text_to_video",
+        "proprietary_identity",
+        "proprietary_camera",
+        "provider_aggregator"
+      ],
       "models": [],
-      "capabilities": ["proprietary_identity", "proprietary_camera", "benchmark_fallback"],
-      "policy": "Never route here unless campaign.allow_higgsfield_fallback is true or a Higgsfield-specific capability is explicitly requested."
+      "catalog_policy": "Discover account-available models from Higgsfield Console/model-specific docs. Shared OpenAPI is supplementary, not the authoritative catalog.",
+      "routing_policy": "First-class provider available for explicit jobs and benchmark candidates. Do not auto-prefer until equivalent QA/cost benchmarks exist.",
+      "source": "https://docs.higgsfield.ai/docs"
     }
   ]
 }
