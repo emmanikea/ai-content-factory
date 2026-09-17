@@ -52,8 +52,9 @@ Providers remain independent and evidence-driven. No provider is automatically p
 - [x] Failed generations count as spend with zero usable seconds.
 - [x] Measured pass-rate and cost-per-usable-second routing after minimum sample threshold.
 - [x] Static priors remain until sufficient measured samples exist.
+- [x] Add cross-provider no-spend preflight comparison while preserving unlike evidence types.
+- [x] Add machine-readable ProviderPreflightComparison schema.
 - [ ] Benchmark fal vs Higgsfield vs OpenRouter vs direct Google on equivalent approved shots.
-- [ ] Add cross-provider preflight normalization without pretending unlike estimate mechanisms are equivalent.
 - [ ] Allow automatic cross-provider routing only after comparable measurements exist.
 
 ## Phase 6: creator identity system
@@ -92,7 +93,7 @@ Google Veo -> dated official $/second formula; successful jobs billed
 self-host  -> measured compute cost when benchmarked
 ```
 
-Do not flatten these into a single claim of equal precision. Preserve `cost_basis`, pricing date/source, and provider-reported actuals separately.
+Do not flatten these into a single claim of equal precision. `compare_provider_preflight.py` preserves `cost_evidence_type`, evidence precision, provider detail, and the expected post-run actual-cost source. Its `cost_only_order` is a benchmark-priority aid, not a production-provider recommendation.
 
 ## Knowledge-source refresh policy
 Periodically re-check:

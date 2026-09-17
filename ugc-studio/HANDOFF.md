@@ -69,6 +69,51 @@ Veo 3.1 audio is always on. Google documents charges only for successful generat
 
 V1 supports text-to-video, image-to-video, first/last-frame interpolation, and Standard/Fast asset-reference images. Video extension is intentionally deferred to a dedicated provenance contract.
 
+## Cross-provider no-spend comparison
+
+`.archon/scripts/ugc/compare_provider_preflight.py`
+
+This is the shared decision surface before any generation spend. It accepts provider job JSONs and preserves unlike cost evidence rather than forcing all providers into one fake estimate format.
+
+Offline:
+
+```bash
+python .archon/scripts/ugc/compare_provider_preflight.py \
+  ./fal-job.json \
+  ./openrouter-job.json \
+  ./google-job.json \
+  ./higgsfield-job.json \
+  --out ./provider-comparison.json
+```
+
+Authenticated read/estimate mode:
+
+```bash
+python .archon/scripts/ugc/compare_provider_preflight.py \
+  ./fal-job.json ./openrouter-job.json ./google-job.json ./higgsfield-job.json \
+  --network \
+  --out ./provider-comparison.json
+```
+
+`--network` only performs read/estimate calls; it never submits generation.
+
+Schema:
+`ugc-studio/schemas/provider-preflight-comparison.schema.json`
+
+Documentation:
+`docs/ugc-factory/PROVIDER_PREFLIGHT_COMPARISON.md`
+
+The output keeps:
+- provider/model
+- preflight cost when known
+- `cost_evidence_type`
+- evidence precision
+- provider-specific details
+- post-run actual-cost source
+- whether authenticated network preflight can strengthen the evidence
+
+It may show a `cost_only_order`, but that is only a benchmark-priority aid, not a production-provider recommendation.
+
 ## Cost evidence must stay typed
 
 Do not treat every provider's number as equally authoritative:
@@ -155,8 +200,8 @@ Do not change automatic provider preference until comparable evidence exists.
 
 ## Remaining high-value work
 
-1. Cross-provider preflight normalization while preserving evidence types.
-2. First small credentialed fal/OpenRouter/Google benchmark with approved asset.
+1. Provider-neutral asset preparation + provider job compilation from one CreativeSpec/creator pack.
+2. First small credentialed fal/OpenRouter/Google benchmark with an approved or synthetic creator asset and explicit spend envelope.
 3. Creator-rights revocation propagation.
 4. Audio-aware lip-sync QA.
 5. Ground-truth app/UI correctness QA.
