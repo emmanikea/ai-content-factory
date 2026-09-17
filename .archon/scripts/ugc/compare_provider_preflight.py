@@ -30,6 +30,7 @@ def _load_module(name: str, relative_path: str):
 def _modules() -> dict[str, Any]:
     return {
         "google-veo": _load_module("ugc_google_veo", "ugc-studio/providers/google-veo/client.py"),
+        "google-omni": _load_module("ugc_google_omni", "ugc-studio/providers/google-omni/client.py"),
         "openrouter": _load_module("ugc_openrouter_video", "ugc-studio/providers/openrouter/client.py"),
         "higgsfield": _load_module("ugc_higgsfield_video", "ugc-studio/providers/higgsfield/client.py"),
     }
@@ -41,7 +42,7 @@ def _base_item(job: dict[str, Any], *, source: str | None = None) -> dict[str, A
         model = job.get("model_id")
     elif provider == "openrouter":
         model = (job.get("input") or {}).get("model")
-    elif provider == "google-veo":
+    elif provider in {"google-veo", "google-omni"}:
         model = job.get("model")
     elif provider == "higgsfield":
         model = job.get("endpoint")
@@ -69,7 +70,7 @@ def preflight_job(
 ) -> dict[str, Any]:
     item = _base_item(job, source=source)
     provider = item["provider"]
-    modules = modules or (_modules() if provider in {"google-veo", "openrouter", "higgsfield"} else {})
+    modules = modules or (_modules() if provider in {"google-veo", "google-omni", "openrouter", "higgsfield"} else {})
 
     if provider == "fal":
         value = job.get("estimated_cost_usd")
@@ -89,6 +90,17 @@ def preflight_job(
             "cost_evidence_type": "official_rate_formula",
             "cost_precision": "dated_formula",
             "actual_cost_source_after_run": "derived successful-generation billable cost",
+            "details": quote,
+        })
+        return item
+
+    if provider == "google-omni":
+        quote = modules["google-omni"].estimate_cost(job)
+        item.update({
+            "preflight_cost_usd": float(quote["usd"]),
+            "cost_evidence_type": "official_effective_output_rate_approximation",
+            "cost_precision": "approximate_output_only",
+            "actual_cost_source_after_run": "usage/billing reconciliation when exposed; input-token spend separate",
             "details": quote,
         })
         return item

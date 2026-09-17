@@ -8,7 +8,7 @@ from compare_provider_preflight import compare_jobs, preflight_job
 
 
 class ProviderPreflightComparisonTests(unittest.TestCase):
-    def google_module(self):
+    def google_veo_module(self):
         return types.SimpleNamespace(
             estimate_cost=lambda job: {
                 "usd": 0.20,
@@ -16,6 +16,18 @@ class ProviderPreflightComparisonTests(unittest.TestCase):
                 "duration_seconds": 4,
                 "pricing_checked_at": "2026-09-17",
                 "pricing_source": "google-pricing",
+            }
+        )
+
+    def google_omni_module(self):
+        return types.SimpleNamespace(
+            estimate_cost=lambda job: {
+                "usd": 0.40,
+                "rate_usd_per_second": 0.10,
+                "expected_duration_seconds": 4,
+                "pricing_checked_at": "2026-09-17",
+                "pricing_source": "google-pricing",
+                "cost_evidence_type": "official_effective_output_rate_approximation",
             }
         )
 
@@ -34,7 +46,8 @@ class ProviderPreflightComparisonTests(unittest.TestCase):
 
     def modules(self):
         return {
-            "google-veo": self.google_module(),
+            "google-veo": self.google_veo_module(),
+            "google-omni": self.google_omni_module(),
             "openrouter": self.openrouter_module(),
             "higgsfield": self.higgsfield_module(),
         }
@@ -47,13 +60,23 @@ class ProviderPreflightComparisonTests(unittest.TestCase):
         self.assertEqual(item["preflight_cost_usd"], 0.40)
         self.assertEqual(item["cost_evidence_type"], "configured_provider_formula")
 
-    def test_google_preserves_official_formula_evidence(self):
+    def test_google_veo_preserves_official_formula_evidence(self):
         item = preflight_job(
             {"provider": "google-veo", "model": "veo-lite", "request": {}},
             modules=self.modules(),
         )
         self.assertEqual(item["preflight_cost_usd"], 0.20)
         self.assertEqual(item["cost_evidence_type"], "official_rate_formula")
+
+    def test_google_omni_preserves_approximate_output_only_evidence(self):
+        item = preflight_job(
+            {"provider": "google-omni", "model": "gemini-omni-1.1-flash", "request": {}},
+            modules=self.modules(),
+        )
+        self.assertEqual(item["preflight_cost_usd"], 0.40)
+        self.assertEqual(item["cost_evidence_type"], "official_effective_output_rate_approximation")
+        self.assertEqual(item["cost_precision"], "approximate_output_only")
+        self.assertIn("input-token", item["actual_cost_source_after_run"])
 
     def test_openrouter_offline_uses_caller_preview_without_claiming_quote(self):
         job = {
@@ -99,14 +122,15 @@ class ProviderPreflightComparisonTests(unittest.TestCase):
     def test_comparison_orders_known_cost_but_warns_not_recommendation(self):
         jobs = [
             ("fal.json", {"provider": "fal", "model_id": "wan", "estimated_cost_usd": 0.40}),
-            ("google.json", {"provider": "google-veo", "model": "veo-lite", "request": {}}),
+            ("veo.json", {"provider": "google-veo", "model": "veo-lite", "request": {}}),
+            ("omni.json", {"provider": "google-omni", "model": "gemini-omni-1.1-flash", "request": {}}),
             ("openrouter.json", {"provider": "openrouter", "input": {"model": "seedance"}, "expected_cost_usd": 0.25}),
             ("higgsfield.json", {"provider": "higgsfield", "endpoint": "x", "input": {}}),
         ]
         result = compare_jobs(jobs, network=False, modules=self.modules())
         self.assertEqual(
             [item["provider"] for item in result["cost_only_order"]],
-            ["google-veo", "openrouter", "fal"],
+            ["google-veo", "openrouter", "fal", "google-omni"],
         )
         self.assertEqual(result["unknown_cost"][0]["provider"], "higgsfield")
         self.assertIn("not a provider recommendation", result["warning"])

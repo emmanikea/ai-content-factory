@@ -34,6 +34,10 @@ Providers remain independent and evidence-driven. No provider is automatically p
 - [x] Native Gemini Omni Flash video adapter through the Interactions API.
 - [x] Gemini Omni 720p benchmark preflight using Google's documented effective ~$0.10/output-second rate while keeping input-token cost separate.
 - [x] Gemini Omni inline/Gemini-Files media handling with arbitrary remote URL fetching blocked.
+- [x] Add provider-neutral first-benchmark compiler for equivalent creator I2V jobs across fal Wan, OpenRouter Seedance Fast, Veo Lite, and Gemini Omni.
+- [x] Normalize first-benchmark creator shots to common 4/6/8-second, 720p, 9:16, native-audio targets.
+- [x] Keep every compiled benchmark job spend-disabled and preserve rights/prompt/pricing provenance.
+- [x] Refuse to label motion-transfer jobs comparable until provider semantics can be normalized honestly.
 - [ ] Run first credentialed video benchmark.
 - [ ] Add self-host Wan worker configuration.
 - [ ] Add direct/open identity-still worker.
@@ -57,6 +61,7 @@ Providers remain independent and evidence-driven. No provider is automatically p
 - [x] Static priors remain until sufficient measured samples exist.
 - [x] Add cross-provider no-spend preflight comparison while preserving unlike evidence types.
 - [x] Add machine-readable ProviderPreflightComparison schema.
+- [x] Emit an offline provider-cost comparison with each first-benchmark bundle.
 - [ ] Benchmark fal vs Higgsfield vs OpenRouter vs Google Veo/Omni on equivalent approved shots.
 - [ ] Allow automatic cross-provider routing only after comparable measurements exist.
 
@@ -98,6 +103,19 @@ self-host   -> measured compute cost when benchmarked
 ```
 
 Do not flatten these into a single claim of equal precision. `compare_provider_preflight.py` preserves `cost_evidence_type`, evidence precision, provider detail, and the expected post-run actual-cost source. Its `cost_only_order` is a benchmark-priority aid, not a production-provider recommendation.
+
+## First benchmark contract
+
+`.archon/scripts/ugc/build_provider_benchmark_jobs.py` takes one rights-approved `creator_generated` CreativeSpec shot plus a creator asset manifest and emits as many genuinely comparable provider jobs as the available media forms allow.
+
+- Hosted HTTPS image -> fal/OpenRouter jobs.
+- Local/base64 image -> direct Google Veo/Omni jobs.
+- Arbitrary remote media is never silently downloaded.
+- Local media is never silently uploaded.
+- Every generated job starts with `approved_for_spend=false`.
+- Jobs longer than 8 seconds and motion-transfer shots are rejected from this first comparison contract.
+
+Runbook: `docs/ugc-factory/FIRST_PROVIDER_BENCHMARK.md`.
 
 ## Knowledge-source refresh policy
 Periodically re-check:
