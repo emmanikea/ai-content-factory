@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-content-factory.local/schemas/reference-analysis.schema.json",
+  "title": "ReferenceAnalysis",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "rights_mode", "duration_seconds", "creative_dna", "beats"],
+  "properties": {
+    "id": {"type": "string", "minLength": 1},
+    "source_url": {"type": ["string", "null"]},
+    "rights_mode": {
+      "type": "string",
+      "enum": ["creative_dna_only", "licensed_performance_transfer", "owned_source"]
+    },
+    "duration_seconds": {"type": "number", "exclusiveMinimum": 0},
+    "transcript": {"type": ["string", "null"]},
+    "creative_dna": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["hook_mechanic", "structure", "pacing", "cta_mechanic"],
+      "properties": {
+        "hook_mechanic": {"type": "string"},
+        "structure": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+        "pacing": {"type": "string"},
+        "camera_language": {"type": "array", "items": {"type": "string"}},
+        "editing_language": {"type": "array", "items": {"type": "string"}},
+        "performance_style": {"type": "array", "items": {"type": "string"}},
+        "cta_mechanic": {"type": "string"},
+        "what_to_preserve": {"type": "array", "items": {"type": "string"}},
+        "what_to_change": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "beats": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "start", "end", "role", "shot_type"],
+        "properties": {
+          "id": {"type": "string"},
+          "start": {"type": "number", "minimum": 0},
+          "end": {"type": "number", "exclusiveMinimum": 0},
+          "role": {"type": "string"},
+          "shot_type": {
+            "type": "string",
+            "enum": ["creator", "product_demo", "app_demo", "broll", "graphic", "transition"]
+          },
+          "framing": {"type": ["string", "null"]},
+          "generic_motion": {"type": ["string", "null"]},
+          "dialogue_function": {"type": ["string", "null"]},
+          "transition_out": {"type": ["string", "null"]},
+          "literal_motion_reference_allowed": {"type": "boolean", "default": false}
+        }
+      }
+    }
+  }
+}

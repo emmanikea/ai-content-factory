@@ -1,0 +1,103 @@
+{
+  "version": "2026-09-12",
+  "purpose": "Track upstream knowledge, pricing, model-schema and implementation sources used by UGC Studio. This is provenance metadata, not a runtime dependency list.",
+  "sources": [
+    {
+      "id": "higgsfield-skills",
+      "category": "workflow_knowledge",
+      "url": "https://github.com/higgsfield-ai/skills",
+      "checked_at": "2026-09-12",
+      "version": "0.12.0",
+      "commit": "d071406147a37b835bed09543d85ab3e9bd85c7d",
+      "license": "MIT",
+      "relevant_paths": [
+        "higgsfield-generate/SKILL.md",
+        "higgsfield-generate/references/prompt-engineering.md",
+        "higgsfield-generate/references/model-catalog.md",
+        "higgsfield-generate/references/media-inputs.md",
+        "higgsfield-generate/references/marketing-modes.md",
+        "higgsfield-generate/references/marketing-setup-items.md",
+        "higgsfield-generate/references/marketing-ad-references.md",
+        "higgsfield-generate/references/marketing-avatars.md",
+        "higgsfield-soul-id/SKILL.md",
+        "higgsfield-soul-id/references/photo-guide.md",
+        "COOKBOOK.md"
+      ],
+      "adoption": "knowledge_reference_optional_benchmark"
+    },
+    {
+      "id": "fal-wan3-i2v",
+      "category": "direct_model_pricing_and_schema",
+      "url": "https://fal.ai/models/alibaba/wan-3.0/image-to-video",
+      "checked_at": "2026-09-12",
+      "pricing_summary": {
+        "480p_usd_per_second": 0.05,
+        "720p_usd_per_second": 0.10,
+        "1080p_usd_per_second": 0.20
+      }
+    },
+    {
+      "id": "fal-kling3-standard-i2v",
+      "category": "direct_model_pricing_and_schema",
+      "url": "https://fal.ai/models/fal-ai/kling-video/v3/standard/image-to-video",
+      "checked_at": "2026-09-12",
+      "pricing_summary": {
+        "audio_off_usd_per_second": 0.084,
+        "audio_on_usd_per_second": 0.126,
+        "voice_control_usd_per_second": 0.154
+      }
+    },
+    {
+      "id": "fal-kling3-pro-i2v",
+      "category": "direct_model_pricing_and_schema",
+      "url": "https://fal.ai/models/fal-ai/kling-video/v3/pro/image-to-video",
+      "checked_at": "2026-09-12",
+      "pricing_summary": {
+        "audio_off_usd_per_second": 0.112,
+        "audio_on_usd_per_second": 0.168,
+        "voice_control_usd_per_second": 0.196
+      }
+    },
+    {
+      "id": "fal-kling3-standard-motion",
+      "category": "direct_model_pricing_and_schema",
+      "url": "https://fal.ai/models/fal-ai/kling-video/v3/standard/motion-control",
+      "checked_at": "2026-09-12",
+      "pricing_summary": {
+        "usd_per_second": 0.126
+      }
+    },
+    {
+      "id": "fal-seedance25-reference",
+      "category": "direct_model_pricing_and_schema",
+      "url": "https://fal.ai/models/bytedance/seedance-2.5/reference-to-video",
+      "checked_at": "2026-09-12",
+      "pricing_summary": {
+        "usd_per_1000_tokens_480p_720p": 0.0214,
+        "fps_assumption": 24,
+        "reference_video_multiplier": 0.6,
+        "note": "Reference-video jobs bill input reference duration along with output duration; verify endpoint-specific 1080p pricing before use."
+      }
+    },
+    {
+      "id": "wan22-open-source",
+      "category": "self_host_candidate",
+      "url": "https://github.com/Wan-Video/Wan2.2",
+      "checked_at": "2026-09-12",
+      "pricing_summary": {
+        "status": "not_benchmarked",
+        "note": "Measure GPU cost, throughput and usable-pass rate before claiming self-host cost advantage."
+      }
+    },
+    {
+      "id": "higgsfield-pricing",
+      "category": "optional_platform_pricing",
+      "url": "https://higgsfield.ai/pricing",
+      "checked_at": "2026-09-12",
+      "pricing_summary": {
+        "currency": "credits",
+        "note": "Do not hardcode a universal USD-per-credit. Record current plan/effective credit cost at benchmark time. CLI/MCP/automation jobs consume credits."
+      }
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "version": "1.0",
+  "provider": "higgsfield",
+  "endpoint": "veo3.1/image-to-video",
+  "input": {
+    "prompt": "Subtle natural creator movement, slight handheld phone-camera energy, preserve identity and clothing.",
+    "image_url": "https://example.com/approved-creator-reference.jpg",
+    "duration": "4",
+    "resolution": "720",
+    "aspect_ratio": "9:16",
+    "generate_audio": false
+  },
+  "rights_approved": true,
+  "approved_for_spend": false,
+  "max_provider_cost_usd": 1.0,
+  "timeout_seconds": 900
+}

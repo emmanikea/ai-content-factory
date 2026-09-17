@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-content-factory.local/schemas/creative-performance-summary.schema.json",
+  "title": "CreativePerformanceSummary",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "generated_at": {"type": ["string", "null"], "format": "date-time"},
+    "hooks": {"$ref": "#/$defs/dimension"},
+    "creators": {"$ref": "#/$defs/dimension"},
+    "ctas": {"$ref": "#/$defs/dimension"},
+    "formats": {"$ref": "#/$defs/dimension"},
+    "locations": {"$ref": "#/$defs/dimension"},
+    "outfits": {"$ref": "#/$defs/dimension"}
+  },
+  "$defs": {
+    "dimension": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["score", "samples"],
+        "properties": {
+          "score": {"type": "number", "minimum": 0, "maximum": 1},
+          "samples": {"type": "integer", "minimum": 0},
+          "notes": {"type": ["string", "null"]}
+        }
+      }
+    }
+  }
+}

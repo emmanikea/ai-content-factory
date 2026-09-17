@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-content-factory.local/schemas/creator.schema.json",
+  "title": "Creator",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "display_name", "creator_type", "rights"],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "display_name": { "type": "string", "minLength": 1 },
+    "creator_type": {
+      "type": "string",
+      "enum": ["real_consenting", "synthetic", "founder_owned"]
+    },
+    "identity_reference_ids": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "voice_reference_ids": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "performance_reference_ids": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "outfit_presets": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "location_presets": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "rights": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["consent_state", "allowed_transformations"],
+      "properties": {
+        "consent_state": { "type": "string", "enum": ["active", "expired", "revoked", "not_required"] },
+        "valid_from": { "type": ["string", "null"], "format": "date" },
+        "valid_until": { "type": ["string", "null"], "format": "date" },
+        "allowed_product_categories": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "allowed_products": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "allowed_platforms": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "allowed_transformations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "face_generation",
+              "voice_clone",
+              "lip_sync",
+              "motion_transfer",
+              "character_replace",
+              "wardrobe_change",
+              "hair_change",
+              "background_change",
+              "script_change"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "requires_creator_approval_before_publish": { "type": "boolean", "default": false },
+        "compensation_type": { "type": ["string", "null"], "enum": ["flat", "commission", "hybrid", null] },
+        "commission_bps": { "type": ["integer", "null"], "minimum": 0, "maximum": 10000 },
+        "agreement_reference": { "type": ["string", "null"] },
+        "notes": { "type": ["string", "null"] }
+      }
+    }
+  }
+}

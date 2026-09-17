@@ -1,0 +1,26 @@
+{
+  "version": "1.0",
+  "provider": "openrouter",
+  "input": {
+    "model": "bytedance/seedance-2.5",
+    "prompt": "Natural creator reaction with subtle handheld phone-camera energy. Preserve identity and clothing from the approved reference image.",
+    "input_references": [
+      {
+        "type": "image_url",
+        "image_url": {
+          "url": "https://example.com/approved-creator-reference.jpg"
+        }
+      }
+    ],
+    "duration": 4,
+    "resolution": "720p",
+    "aspect_ratio": "9:16",
+    "generate_audio": false
+  },
+  "rights_approved": true,
+  "approved_for_spend": false,
+  "expected_cost_usd": 0.35,
+  "max_provider_cost_usd": 0.50,
+  "poll_interval_seconds": 30,
+  "timeout_seconds": 3600
+}

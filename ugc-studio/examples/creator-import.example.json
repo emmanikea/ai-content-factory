@@ -1,0 +1,51 @@
+{
+  "creator_id": "creator-example",
+  "creator_type": "real_consenting",
+  "version": "2026-09-12-v1",
+  "canonical_images": [
+    {"id": "front-neutral", "uri": "https://assets.example/creator/front-neutral.jpg", "view": "front", "lighting": "soft daylight", "notes": "neutral expression"},
+    {"id": "front-smile", "uri": "https://assets.example/creator/front-smile.jpg", "view": "expression", "lighting": "indoor daylight", "notes": "natural smile"},
+    {"id": "three-quarter-left", "uri": "https://assets.example/creator/three-quarter-left.jpg", "view": "three_quarter", "lighting": "soft daylight", "notes": null},
+    {"id": "three-quarter-right", "uri": "https://assets.example/creator/three-quarter-right.jpg", "view": "three_quarter", "lighting": "outdoor shade", "notes": null},
+    {"id": "profile", "uri": "https://assets.example/creator/profile.jpg", "view": "profile", "lighting": "window light", "notes": null},
+    {"id": "upper-body", "uri": "https://assets.example/creator/upper-body.jpg", "view": "upper_body", "lighting": "indoor daylight", "notes": "natural posture"},
+    {"id": "full-body", "uri": "https://assets.example/creator/full-body.jpg", "view": "full_body", "lighting": "outdoor daylight", "notes": "neutral stance"},
+    {"id": "talking-expression", "uri": "https://assets.example/creator/talking.jpg", "view": "expression", "lighting": "soft daylight", "notes": "mid-speech facial shape"}
+  ],
+  "voice_samples": [
+    {"id": "voice-natural-en", "uri": "https://assets.example/creator/voice-natural.wav", "language": "en", "style": "natural conversational", "duration_seconds": 32.0}
+  ],
+  "performance_samples": [
+    {"id": "reaction-surprise", "uri": "https://assets.example/creator/reaction-surprise.mp4", "performance_type": "reaction", "duration_seconds": 4.2, "approved_for_motion_transfer": true},
+    {"id": "talking-natural", "uri": "https://assets.example/creator/talking-natural.mp4", "performance_type": "talking", "duration_seconds": 12.0, "approved_for_motion_transfer": true}
+  ],
+  "appearance_presets": {
+    "outfits": ["casual neutral top", "athleisure", "smart casual"],
+    "hairstyles": ["canonical", "approved alternate style"],
+    "locations": ["home", "car", "office", "outdoor street"]
+  },
+  "provider_bindings": [],
+  "rights_snapshot": {
+    "consent_state": "active",
+    "valid_from": "2026-09-01",
+    "valid_until": "2027-09-01",
+    "agreement_reference": "agreement://replace-with-real-record",
+    "allowed_products": [],
+    "allowed_product_categories": ["apps", "software"],
+    "allowed_platforms": ["instagram", "tiktok", "youtube"],
+    "allowed_transformations": [
+      "face_generation",
+      "voice_clone",
+      "lip_sync",
+      "motion_transfer",
+      "character_replace",
+      "wardrobe_change",
+      "hair_change",
+      "background_change",
+      "script_change"
+    ],
+    "requires_creator_approval_before_publish": true,
+    "compensation_type": "commission",
+    "notes": "Example only. Replace with the actual signed agreement reference and permitted scope."
+  }
+}

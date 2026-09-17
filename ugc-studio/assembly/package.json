@@ -1,0 +1,16 @@
+{
+  "name": "ugc-studio-assembly",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "studio": "remotion studio src/index.jsx",
+    "render": "remotion render src/index.jsx UGCReel out/reel.mp4"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.523",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "remotion": "4.0.523"
+  }
+}

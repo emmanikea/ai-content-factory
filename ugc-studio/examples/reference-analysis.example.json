@@ -1,0 +1,68 @@
+{
+  "id": "reference-example-001",
+  "source_url": "./reference-example.mp4",
+  "rights_mode": "creative_dna_only",
+  "duration_seconds": 9.0,
+  "transcript": "Wait, look at this. Here's how it works. Okay, that's actually useful.",
+  "creative_dna": {
+    "hook_mechanic": "surprised reaction creates a curiosity gap before the product is shown",
+    "structure": ["creator reaction", "problem setup", "app/product demonstration", "creator payoff", "low-pressure CTA"],
+    "pacing": "brisk pacing; average observed segment 2.25s",
+    "camera_language": ["handheld phone framing", "close creator framing", "direct screen/product insert"],
+    "editing_language": ["hard cuts", "fast first transition", "demo receives the longest hold"],
+    "performance_style": ["conversational", "understated surprise", "small confirming reaction after proof"],
+    "cta_mechanic": "recommend checking the product in the relevant moment rather than a hard sell",
+    "what_to_preserve": ["curiosity-gap opening", "proof appears quickly", "creator returns after demo", "short CTA"],
+    "what_to_change": ["creator identity", "script wording", "product/app", "setting", "wardrobe", "specific visual assets"]
+  },
+  "beats": [
+    {
+      "id": "beat-001",
+      "start": 0.0,
+      "end": 1.0,
+      "role": "hook reaction",
+      "shot_type": "creator",
+      "framing": "close-up",
+      "generic_motion": "eyes widen slightly, quick look toward the product/demo",
+      "dialogue_function": "create curiosity",
+      "transition_out": "hard cut",
+      "literal_motion_reference_allowed": false
+    },
+    {
+      "id": "beat-002",
+      "start": 1.0,
+      "end": 3.0,
+      "role": "problem setup",
+      "shot_type": "creator",
+      "framing": "medium close-up",
+      "generic_motion": "natural conversational gesture",
+      "dialogue_function": "name the problem or surprising discovery",
+      "transition_out": "hard cut",
+      "literal_motion_reference_allowed": false
+    },
+    {
+      "id": "beat-003",
+      "start": 3.0,
+      "end": 7.0,
+      "role": "proof/demo",
+      "shot_type": "app_demo",
+      "framing": "screen-focused",
+      "generic_motion": "tap or scroll through the core value action",
+      "dialogue_function": "show proof instead of explaining it abstractly",
+      "transition_out": "hard cut",
+      "literal_motion_reference_allowed": false
+    },
+    {
+      "id": "beat-004",
+      "start": 7.0,
+      "end": 9.0,
+      "role": "payoff and CTA",
+      "shot_type": "creator",
+      "framing": "close-up",
+      "generic_motion": "small nod and relaxed confirmation",
+      "dialogue_function": "confirm usefulness and give a low-pressure CTA",
+      "transition_out": null,
+      "literal_motion_reference_allowed": false
+    }
+  ]
+}

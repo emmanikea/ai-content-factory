@@ -7,3 +7,8 @@ catalog-site/_*.log
 catalog-site/_*.png
 catalog-site/review/.claims-product/
 catalog-site/review/.claims-render/
+# UGC Studio local runtime data and generated analysis/render outputs
+ugc-studio/data/
+ugc-studio/fal-output/
+ugc-studio/.runtime/
+ugc-studio/*-keyframes/

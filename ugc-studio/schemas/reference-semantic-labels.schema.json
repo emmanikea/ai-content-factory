@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-content-factory.local/schemas/reference-semantic-labels.schema.json",
+  "title": "ReferenceSemanticLabels",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["reference_id", "creative_dna", "beats"],
+  "properties": {
+    "reference_id": {"type": "string", "minLength": 1},
+    "creative_dna": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["hook_mechanic", "structure", "cta_mechanic"],
+      "properties": {
+        "hook_mechanic": {"type": "string"},
+        "structure": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+        "camera_language": {"type": "array", "items": {"type": "string"}},
+        "editing_language": {"type": "array", "items": {"type": "string"}},
+        "performance_style": {"type": "array", "items": {"type": "string"}},
+        "cta_mechanic": {"type": "string"},
+        "what_to_preserve": {"type": "array", "items": {"type": "string"}},
+        "what_to_change": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "beats": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["segment_id", "role", "shot_type"],
+        "properties": {
+          "segment_id": {"type": "string"},
+          "role": {"type": "string"},
+          "shot_type": {"type": "string", "enum": ["creator", "product_demo", "app_demo", "broll", "graphic", "transition"]},
+          "framing": {"type": ["string", "null"]},
+          "generic_motion": {"type": ["string", "null"]},
+          "dialogue_function": {"type": ["string", "null"]},
+          "transition_out": {"type": ["string", "null"]}
+        }
+      }
+    }
+  }
+}

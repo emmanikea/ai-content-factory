@@ -1,0 +1,11 @@
+{
+  "name": "ugc-studio-fal-provider",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "render": "node render.mjs"
+  },
+  "dependencies": {
+    "@fal-ai/client": "1.10.1"
+  }
+}

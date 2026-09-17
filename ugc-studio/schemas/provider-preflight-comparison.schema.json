@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-content-factory.local/schemas/provider-preflight-comparison.schema.json",
+  "title": "ProviderPreflightComparison",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "generated_at", "network_preflight", "items", "cost_only_order", "unknown_cost", "warning"],
+  "properties": {
+    "version": {"const": "1.0"},
+    "generated_at": {"type": "string"},
+    "network_preflight": {"type": "boolean"},
+    "items": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/item"}
+    },
+    "cost_only_order": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["provider", "model", "preflight_cost_usd", "cost_evidence_type"],
+        "properties": {
+          "provider": {"type": "string"},
+          "model": {"type": ["string", "null"]},
+          "preflight_cost_usd": {"type": "number", "minimum": 0},
+          "cost_evidence_type": {"type": "string"}
+        }
+      }
+    },
+    "unknown_cost": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["provider", "model", "reason"],
+        "properties": {
+          "provider": {"type": "string"},
+          "model": {"type": ["string", "null"]},
+          "reason": {"type": "string"}
+        }
+      }
+    },
+    "warning": {"type": "string", "minLength": 1}
+  },
+  "$defs": {
+    "item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "provider", "model", "source_job", "preflight_cost_usd", "cost_evidence_type",
+        "cost_precision", "requires_network_for_stronger_evidence", "actual_cost_source_after_run", "details"
+      ],
+      "properties": {
+        "provider": {"type": "string"},
+        "model": {"type": ["string", "null"]},
+        "source_job": {"type": ["string", "null"]},
+        "preflight_cost_usd": {"type": ["number", "null"], "minimum": 0},
+        "cost_evidence_type": {"type": "string"},
+        "cost_precision": {"type": "string"},
+        "requires_network_for_stronger_evidence": {"type": "boolean"},
+        "actual_cost_source_after_run": {"type": ["string", "null"]},
+        "details": {"type": "object"}
+      }
+    }
+  }
+}
