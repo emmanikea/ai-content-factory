@@ -6,7 +6,7 @@
 - [x] Variation controls, ranked concept cards, and render-cost preview states.
 
 ## Phase 1: local domain + reference intelligence
-- [x] Atomic filesystem repositories for campaigns, creators, references, specs, jobs, artifacts, QA, and performance.
+- [x] Atomic filesystem repositories for campaigns, creators, references, specs, jobs, artifacts, QA, performance, and revocation state.
 - [ ] Finish JSON Schema validation at every ingestion/write boundary.
 - [x] Rights evaluator and request-specific creator rights resolution.
 - [x] CampaignBrief + ReferenceAnalysis -> CreativeSpec batch generator.
@@ -21,21 +21,14 @@ Providers remain independent and evidence-driven. No provider is automatically p
 - [x] Direct fal runner with explicit rights + spend gates.
 - [x] Provider-ready Wan/Kling/Seedance/Kling-Motion job compilation.
 - [x] Model-aware prompt compiler with prompt strategy/version provenance.
-- [x] Higgsfield skills research as a prompt/workflow knowledge source.
-- [x] Native Higgsfield shared-lifecycle adapter + authenticated request quote + polling/webhooks/download/provenance.
-- [x] Higgsfield provider model kept catalog-agnostic because account/model docs are authoritative.
-- [x] Native OpenRouter async video provider adapter.
-- [x] OpenRouter live catalog preflight/parameter validation through `/api/v1/videos/models`.
-- [x] OpenRouter completed `usage.cost` reconciliation, callbacks, polling, authenticated download, provenance, and spend/budget guards.
-- [x] Native direct Google Gemini API / Veo 3.1 provider adapter.
-- [x] Direct Google local price/capability preflight from dated official Veo pricing.
-- [x] Google long-running operation polling, output download, 2-day-retention handling, and provenance.
-- [x] Google successful-generation billable-cost derivation and explicit model/duration/resolution/reference constraints.
-- [x] Native Gemini Omni Flash video adapter through the Interactions API.
-- [x] Gemini Omni 720p benchmark preflight using Google's documented effective ~$0.10/output-second rate while keeping input-token cost separate.
-- [x] Gemini Omni inline/Gemini-Files media handling with arbitrary remote URL fetching blocked.
-- [x] Add provider-neutral first-benchmark compiler for equivalent creator I2V jobs across fal Wan, OpenRouter Seedance Fast, Veo Lite, and Gemini Omni.
-- [x] Normalize first-benchmark creator shots to common 4/6/8-second, 720p, 9:16, native-audio targets.
+- [x] Native Higgsfield API adapter with authenticated request quote, polling, cancellation, webhooks, download and provenance.
+- [x] Keep Higgsfield catalog account/model-doc driven instead of hard-coding the shared catalog.
+- [x] Native OpenRouter async video adapter with live catalog preflight and completed `usage.cost` reconciliation.
+- [x] Native direct Google Veo 3.1 adapter with official-rate preflight, long-running operation polling and provenance.
+- [x] Native Gemini Omni Flash adapter through the Interactions API.
+- [x] Keep Veo Lite as the cheap Google baseline and Gemini Omni as the stronger/default Google video candidate.
+- [x] Provider-neutral first-benchmark compiler for equivalent creator I2V jobs across fal Wan, OpenRouter Seedance Fast, Veo Lite, and Gemini Omni.
+- [x] Normalize the first benchmark to common 4/6/8-second, 720p, 9:16, native-audio targets.
 - [x] Keep every compiled benchmark job spend-disabled and preserve rights/prompt/pricing provenance.
 - [x] Refuse to label motion-transfer jobs comparable until provider semantics can be normalized honestly.
 - [ ] Run first credentialed video benchmark.
@@ -43,25 +36,28 @@ Providers remain independent and evidence-driven. No provider is automatically p
 - [ ] Add direct/open identity-still worker.
 
 ## Phase 3: deterministic app capture
-- [x] Playwright capture runner, declarative actions, vertical presets, provenance.
+- [x] Playwright capture runner, declarative actions, vertical presets and provenance.
 - [ ] Pointer/touch visualization.
 - [ ] Maestro mobile capture lane.
 
 ## Phase 4: deterministic assembly
-- [x] Remotion timeline, creator/app/B-roll sequencing, captions, CTA, audio controls.
+- [x] Remotion timeline, creator/app/B-roll sequencing, captions, CTA and audio controls.
 - [x] Local asset staging and FFmpeg H.264/AAC/loudness/faststart normalization.
 - [ ] Background-music ducking.
 
 ## Phase 5: cost/quality routing
 - [x] Capability/tier/cost routing and dry-run budgets.
 - [x] Retry/escalation policy with rights/source/UI hard stops.
-- [x] Benchmark ledger for attempts, QA, estimates/actual spend, usable seconds, and prompt strategy.
+- [x] Benchmark ledger for attempts, QA, estimates/actual spend, usable seconds and prompt strategy.
 - [x] Failed generations count as spend with zero usable seconds.
 - [x] Measured pass-rate and cost-per-usable-second routing after minimum sample threshold.
 - [x] Static priors remain until sufficient measured samples exist.
-- [x] Add cross-provider no-spend preflight comparison while preserving unlike evidence types.
-- [x] Add machine-readable ProviderPreflightComparison schema.
+- [x] Cross-provider no-spend preflight comparison preserving unlike evidence types.
+- [x] Machine-readable ProviderPreflightComparison schema.
 - [x] Emit an offline provider-cost comparison with each first-benchmark bundle.
+- [x] Normalize provider/model/cost provenance across fal, OpenRouter, Google Veo and Gemini Omni when recording benchmark events.
+- [x] Ingest OpenRouter provider-reported actual cost and Google Veo post-success derived billable cost when provider provenance exposes them.
+- [x] Record paid generation failures even when no artifact exists for QA.
 - [ ] Benchmark fal vs Higgsfield vs OpenRouter vs Google Veo/Omni on equivalent approved shots.
 - [ ] Allow automatic cross-provider routing only after comparable measurements exist.
 
@@ -71,7 +67,11 @@ Providers remain independent and evidence-driven. No provider is automatically p
 - [x] Explicit motion-transfer permissions.
 - [x] Creator-pack -> render-assets resolver.
 - [x] Optional visual identity-consistency QA.
-- [ ] Revocation propagation through derived jobs/artifacts.
+- [x] Separate current creator revocation state from immutable historical CreatorIdentityPack rights snapshots.
+- [x] Block new render-asset preparation when a creator is currently revoked.
+- [x] Propagate effective revocation to stored jobs by clearing rights/spend approval.
+- [x] Mark derived artifacts as blocked from reuse and requiring distribution review.
+- [x] Support future-effective revocation records plus later explicit propagation.
 - [ ] Optional Higgsfield Soul binding importer; keep it non-portable and secondary to the canonical pack.
 
 ## Phase 7: QA and concept ranking
@@ -79,10 +79,10 @@ Providers remain independent and evidence-driven. No provider is automatically p
 - [x] Deterministic duration/resolution/aspect/audio/black-frame checks.
 - [x] Optional sampled-frame identity/anatomy/text/artifact checks.
 - [x] Final-Reel deterministic/sampled-frame QA profile.
-- [x] Pre-render CreativeSpec ranking using structure, cost, optional measured history, and shortlist diversity.
+- [x] Pre-render CreativeSpec ranking using structure, cost, optional measured history and shortlist diversity.
 - [ ] Audio-aware lip-sync QA.
 - [ ] Ground-truth app/UI correctness comparison.
-- [ ] Automatically persist every QA result with its artifact.
+- [ ] Automatically persist every QA result with its artifact record.
 
 ## Phase 8: feedback loop
 - [x] Model-generation benchmark/performance contract.
@@ -91,7 +91,7 @@ Providers remain independent and evidence-driven. No provider is automatically p
 - [ ] Hook/creator/format/CTA summaries.
 - [ ] Feed campaign performance into future concept generation/ranking.
 
-## Provider preflight semantics
+## Provider cost evidence
 
 ```text
 fal         -> dated configured model pricing formulas
@@ -102,34 +102,36 @@ Google Omni -> approximate official effective 720p video-output rate; input toke
 self-host   -> measured compute cost when benchmarked
 ```
 
-Do not flatten these into a single claim of equal precision. `compare_provider_preflight.py` preserves `cost_evidence_type`, evidence precision, provider detail, and the expected post-run actual-cost source. Its `cost_only_order` is a benchmark-priority aid, not a production-provider recommendation.
+Do not flatten these into one claim of equal precision. `compare_provider_preflight.py` preserves the evidence type; `benchmark_metrics.py` preserves the estimate/actual-cost source after generation.
 
 ## First benchmark contract
 
-`.archon/scripts/ugc/build_provider_benchmark_jobs.py` takes one rights-approved `creator_generated` CreativeSpec shot plus a creator asset manifest and emits as many genuinely comparable provider jobs as the available media forms allow.
+`.archon/scripts/ugc/build_provider_benchmark_jobs.py` accepts one rights-approved `creator_generated` shot and emits the comparable jobs that the available media representations permit.
 
-- Hosted HTTPS image -> fal/OpenRouter jobs.
-- Local/base64 image -> direct Google Veo/Omni jobs.
-- Arbitrary remote media is never silently downloaded.
-- Local media is never silently uploaded.
+- Hosted HTTPS image -> fal/OpenRouter.
+- Local/base64 image -> Google Veo/Omni.
+- Arbitrary creator media is never silently downloaded or uploaded.
 - Every generated job starts with `approved_for_spend=false`.
-- Jobs longer than 8 seconds and motion-transfer shots are rejected from this first comparison contract.
+- Motion-transfer and >8-second shots are excluded from the first apples-to-apples test.
 
 Runbook: `docs/ugc-factory/FIRST_PROVIDER_BENCHMARK.md`.
+Benchmark recording: `docs/ugc-factory/BENCHMARK_LEDGER_RECORDING.md`.
+Revocation: `docs/ugc-factory/CREATOR_REVOCATION.md`.
 
 ## Knowledge-source refresh policy
 Periodically re-check:
 - `higgsfield-ai/skills`
-- Higgsfield API shared lifecycle and account/model-specific docs
-- OpenRouter video catalog/lifecycle/pricing semantics
+- Higgsfield API/model-specific docs
+- OpenRouter video catalog/lifecycle/pricing
 - fal and Google model schemas/pricing, including Google's recommended default video model
 - self-host compute economics
 
-Historical job provenance must keep the estimate/rate/catalog assumptions that existed when the job ran.
+Historical provenance must keep the rate/catalog/quote assumptions that existed when each attempt ran.
 
 ## External production inputs
 - provider credentials (`FAL_KEY`, `OPENROUTER_API_KEY`, `GEMINI_API_KEY`; `HF_CREDENTIALS` when Higgsfield is benchmarked)
-- approved creator/reference assets and agreement evidence
+- an approved or synthetic creator asset for the first live benchmark
+- explicit small spend approval before any live provider call
 - licensed/owned performance clips for literal transfer
 - production app auth/capture instructions where needed
 - GPU target for self-host benchmarking
