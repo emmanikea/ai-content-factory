@@ -1,6 +1,6 @@
 # UGC Studio Handoff
 
-Last updated: 2026-09-14
+Last updated: 2026-09-17
 Branch: `feat/comfy-first-ugc`
 Stacked on: `feat/ugc-studio-v1` / PR #5
 
@@ -8,7 +8,7 @@ Stacked on: `feat/ugc-studio-v1` / PR #5
 
 Build a UGC/Reels production system that owns the creative workflow, uses deterministic footage where possible, and treats generative models/workflows as swappable execution layers.
 
-**Higgsfield runtime is disabled.** It is not a default route, fallback, benchmark execution path or agent generation tool. Historical Higgsfield research can remain as product/prompt reference material only.
+**Higgsfield runtime is disabled.** It is not a default route, fallback, benchmark execution path or agent generation tool. Higgsfield docs/skills may remain as research material only.
 
 Default policy:
 
@@ -33,7 +33,9 @@ Creator assets + agreement
 
 CampaignBrief + ReferenceAnalysis
   -> CreativeSpec batch
-  -> concept ranking / dry cost plan
+  -> concept ranking
+  -> normalized preflight execution quote
+  -> explicit spend gate when paid
   -> execution route
        -> deterministic Playwright/Remotion/FFmpeg where exact media is better
        -> validated Comfy local/self-hosted workflow where available
@@ -57,15 +59,17 @@ Primary metric:
 - `docs/ugc-factory/DIRECT_MODEL_EXECUTION_PLAN.md`
 - `docs/ugc-factory/END_TO_END_RUNBOOK.md`
 - `docs/ugc-factory/COMFY_WORKFLOW_STACK.md`
+- `docs/ugc-factory/HIGGSFIELD_API_RESEARCH.md`
 - `.claude/skills/comfy-ugc-factory/SKILL.md`
 - `ugc-studio/providers/comfy/BOOTSTRAP.md`
 - `ugc-studio/providers/comfy/workflow-registry.json`
+- `ugc-studio/schemas/execution-quote.schema.json`
 
 ## What changed in the Comfy-first pass
 
 ### Runtime policy
 
-- root `.env.example` now makes Comfy local-first and disables paid Comfy partner-node spending by default,
+- root `.env.example` makes Comfy local-first and disables paid Comfy partner-node spending by default,
 - Higgsfield runtime is explicitly disabled,
 - model registry contains a first-class Comfy workflow-engine entry,
 - Higgsfield remains only as disabled historical/future policy metadata,
@@ -73,7 +77,7 @@ Primary metric:
 
 ### Agent knowledge
 
-New repository skill:
+Repository skill:
 
 `.claude/skills/comfy-ugc-factory/SKILL.md`
 
@@ -87,7 +91,7 @@ It teaches agents to:
 6. record compute/cost/retries/provenance,
 7. promote workflows only after validation.
 
-The old `.claude/skills/higgsfield/SKILL.md` is now research-only and explicitly forbids runtime calls.
+The old `.claude/skills/higgsfield/SKILL.md` is research-only and explicitly forbids runtime calls.
 
 ### Comfy workflow registry
 
@@ -118,9 +122,30 @@ Community production reference:
 
 Official sources/live node schemas remain authoritative. Community graphs are patterns to reproduce/adapt, not blindly copied production dependencies.
 
+### Higgsfield API docs — research only
+
+Current developer docs were reviewed on 2026-09-17. They do **not** justify re-enabling Higgsfield runtime, because successful API generations are still billed through Higgsfield credits.
+
+Useful patterns were extracted into `docs/ugc-factory/HIGGSFIELD_API_RESEARCH.md`:
+
+- quote/estimate before spend,
+- async execution IDs and terminal states,
+- cancellation where supported,
+- bounded worker-pool concurrency,
+- backoff + jitter instead of tight polling/retry loops,
+- project-owned storage rather than treating provider output URLs as permanent assets,
+- model-specific schemas as higher-authority evidence than generic catalogs.
+
+The first adopted contract is:
+
+- `.archon/scripts/ugc/preflight_quote.py`
+- `ugc-studio/schemas/execution-quote.schema.json`
+
+The preflight quote has no Higgsfield enable switch, never marks spend approved, and rejects an injected Higgsfield route.
+
 ### Legacy spend paths retired
 
-The old catalog prototype entry points are now inert:
+The old catalog prototype entry points are inert:
 
 - `.archon/workflows/content-factory-explore.yaml`
 - `.archon/workflows/content-factory-render.yaml`
@@ -158,9 +183,17 @@ These preserve creator identity/reference provenance and derive request-specific
 
 Expands campaign inputs across creator/hook/CTA/location/outfit combinations and maps shot roles to deterministic capture or generative execution types.
 
-### Direct hosted fallback/benchmark lane
+### Planning + preflight quote
 
 `.archon/scripts/ugc/model_router.py`
+
+`.archon/scripts/ugc/preflight_quote.py`
+
+The router creates the dry execution plan. The preflight layer normalizes that plan into a stable quote contract containing line-item raw estimates, expected usable cost, budget-block state, quote source, and spend-gate state.
+
+Current registry estimates are deliberately marked non-authoritative. Future direct-provider estimators or measured local GPU estimators can feed the same contract without changing product-facing approval logic.
+
+### Direct hosted fallback/benchmark lane
 
 `.archon/scripts/ugc/build_fal_job.py`
 
@@ -198,7 +231,7 @@ The benchmark ledger records provider/model or workflow identity, prompt strateg
 
 ## Next Comfy milestone
 
-This is the highest-value next terminal/GPU work:
+Highest-value next terminal/GPU work:
 
 1. install/verify current `comfy` CLI on the target machine,
 2. run `comfy skills install --scope project` so agents get the official current skill set,
@@ -209,9 +242,10 @@ This is the highest-value next terminal/GPU work:
 7. capture + validate that recipe,
 8. evaluate exact-audio creator video using current official LTX audio-video paths versus InfiniTalk reference patterns,
 9. evaluate Wan motion-transfer/character-replacement paths for licensed motion,
-10. benchmark each accepted recipe using the existing cost/pass-rate/usable-seconds ledger,
-11. promote only proven recipes in `workflow-registry.json` from `candidate` to `validated`,
-12. then add the validated Comfy adapter to automatic model/workflow routing.
+10. record measured GPU/runtime economics into the normalized execution-quote/benchmark layers,
+11. benchmark each accepted recipe using the existing cost/pass-rate/usable-seconds ledger,
+12. promote only proven recipes in `workflow-registry.json` from `candidate` to `validated`,
+13. then add validated Comfy workflows to automatic routing.
 
 ## What can be done autonomously vs what needs the target machine
 
@@ -221,6 +255,7 @@ Already autonomous/repo-side:
 - workflow-source research,
 - agent instructions,
 - capability registry,
+- normalized preflight quote contract,
 - rights/CreativeSpec/QA/benchmark contracts,
 - direct hosted adapter contracts,
 - retirement of legacy spend paths.

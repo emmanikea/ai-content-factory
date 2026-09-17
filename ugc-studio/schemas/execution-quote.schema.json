@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/ugc-studio/execution-quote.schema.json",
+  "title": "ExecutionQuote",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "generated_at",
+    "concept_id",
+    "currency",
+    "quote_source",
+    "authoritative",
+    "line_items",
+    "estimated_total_usd",
+    "expected_usable_total_usd",
+    "spend_required",
+    "spend_approved",
+    "blocked"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "concept_id": {"type": ["string", "null"]},
+    "currency": {"const": "USD"},
+    "quote_source": {
+      "type": "string",
+      "enum": ["registry_estimate", "provider_estimate", "gpu_estimate", "mixed"]
+    },
+    "authoritative": {"type": "boolean"},
+    "estimated_total_usd": {"type": "number", "minimum": 0},
+    "expected_usable_total_usd": {"type": "number", "minimum": 0},
+    "budget_cap_usd": {"type": ["number", "null"], "minimum": 0},
+    "spend_required": {"type": "boolean"},
+    "spend_approved": {"const": false},
+    "blocked": {"type": "boolean"},
+    "block_reason": {"type": ["string", "null"]},
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["higgsfield_runtime_allowed", "paid_execution_requires_explicit_approval"],
+      "properties": {
+        "higgsfield_runtime_allowed": {"const": false},
+        "paid_execution_requires_explicit_approval": {"const": true}
+      }
+    },
+    "line_items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "shot_id",
+          "source_type",
+          "duration_seconds",
+          "provider",
+          "model",
+          "estimated_cost_usd",
+          "expected_usable_cost_usd",
+          "quote_source"
+        ],
+        "properties": {
+          "shot_id": {"type": "string"},
+          "source_type": {"type": "string"},
+          "duration_seconds": {"type": "number", "minimum": 0},
+          "provider": {"type": "string"},
+          "model": {"type": "string"},
+          "estimated_cost_usd": {"type": "number", "minimum": 0},
+          "expected_usable_cost_usd": {"type": "number", "minimum": 0},
+          "quote_source": {
+            "type": "string",
+            "enum": ["registry_estimate", "provider_estimate", "gpu_estimate"]
+          }
+        }
+      }
+    }
+  }
+}

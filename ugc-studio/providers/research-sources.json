@@ -1,5 +1,5 @@
 {
-  "version": "2026-09-14",
+  "version": "2026-09-17",
   "purpose": "Track upstream knowledge, pricing, model-schema and implementation sources used by UGC Studio. This is provenance metadata, not a runtime dependency list.",
   "sources": [
     {
@@ -27,12 +27,15 @@
       "relevant_paths": [
         "templates/image_qwen_image_edit_2511.json",
         "blueprints/image_edit_qwen_2511.json",
+        "templates/video_wan_animate2.json",
+        "blueprints/motion_transfer_wan_animate_2.json",
         "packages/core/src/comfyui_workflow_templates_core/manifest.json",
         "AGENTS.md",
         "CLAUDE.md"
       ],
       "relevant_template_ids": [
-        "video_ltx2_5_i2v"
+        "video_ltx2_5_i2v",
+        "video_ltx2_3_ia2v"
       ],
       "adoption": "primary_workflow_reference",
       "note": "Agents should fetch current working templates and inspect live slots/nodes before capturing project recipes."
@@ -61,6 +64,29 @@
       ],
       "adoption": "research_and_benchmark_only",
       "note": "Production-oriented examples; validate against current official templates/live node schemas before adapting."
+    },
+    {
+      "id": "higgsfield-api-docs",
+      "category": "research_only_provider_architecture",
+      "url": "https://docs.higgsfield.ai/docs",
+      "checked_at": "2026-09-17",
+      "runtime_status": "disabled",
+      "relevant_urls": [
+        "https://docs.higgsfield.ai/docs",
+        "https://docs.higgsfield.ai/docs/llms.txt",
+        "https://docs.higgsfield.ai/docs/concepts/billing-and-retention",
+        "https://docs.higgsfield.ai/docs/concepts/rate-limits"
+      ],
+      "adoption": "research_patterns_only_runtime_disabled",
+      "lessons_adopted": [
+        "preflight_cost_quote_before_spend",
+        "provider_neutral_async_job_ids_and_terminal_states",
+        "bounded_executor_concurrency",
+        "backoff_and_jitter_for_transport_or_limit_errors",
+        "copy_completed_outputs_to_project_owned_storage",
+        "model_specific_schema_is_more_authoritative_than_generic_catalog"
+      ],
+      "note": "Do not create Higgsfield credentials or runtime calls. See docs/ugc-factory/HIGGSFIELD_API_RESEARCH.md."
     },
     {
       "id": "higgsfield-skills",
