@@ -1,0 +1,24 @@
+{
+  "version": "1.0",
+  "provider": "google-veo",
+  "model": "veo-3.1-lite-generate-preview",
+  "request": {
+    "instances": [
+      {
+        "prompt": "Natural vertical UGC creator delivery, subtle handheld camera energy, realistic facial and body movement."
+      }
+    ],
+    "parameters": {
+      "aspectRatio": "9:16",
+      "durationSeconds": "4",
+      "resolution": "720p",
+      "numberOfVideos": 1,
+      "personGeneration": "allow_all"
+    }
+  },
+  "rights_approved": true,
+  "approved_for_spend": false,
+  "max_provider_cost_usd": 0.30,
+  "poll_interval_seconds": 10,
+  "timeout_seconds": 3600
+}

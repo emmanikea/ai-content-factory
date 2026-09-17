@@ -15,23 +15,23 @@
 - [x] End-to-end no-spend integration coverage.
 
 ## Phase 2: hosted/direct render paths
-Providers remain independent and evidence-driven. No hosted provider is automatically preferred before comparable benchmark data exists.
+Providers remain independent and evidence-driven. No provider is automatically preferred before comparable benchmark data exists.
 
 - [x] Dated fal registry for Wan/Kling/Seedance and cost formulas.
 - [x] Direct fal runner with explicit rights + spend gates.
 - [x] Provider-ready Wan/Kling/Seedance/Kling-Motion job compilation.
 - [x] Model-aware prompt compiler with prompt strategy/version provenance.
 - [x] Higgsfield skills research as a prompt/workflow knowledge source.
-- [x] Native Higgsfield shared-lifecycle adapter.
-- [x] Higgsfield authenticated preflight estimate (`credits` + `usd`) before live generation.
-- [x] Higgsfield request submission, polling/backoff, cancellation primitive, webhook support, output download, and provenance.
+- [x] Native Higgsfield shared-lifecycle adapter + authenticated request quote + polling/webhooks/download/provenance.
 - [x] Higgsfield provider model kept catalog-agnostic because account/model docs are authoritative.
 - [x] Native OpenRouter async video provider adapter.
 - [x] OpenRouter live catalog preflight/parameter validation through `/api/v1/videos/models`.
-- [x] OpenRouter actual-cost reconciliation from completed `usage.cost`.
-- [x] OpenRouter callback, polling, authenticated download, provenance, and spend/budget guards.
+- [x] OpenRouter completed `usage.cost` reconciliation, callbacks, polling, authenticated download, provenance, and spend/budget guards.
+- [x] Native direct Google Gemini API / Veo 3.1 provider adapter.
+- [x] Direct Google local price/capability preflight from dated official Veo pricing.
+- [x] Google long-running operation polling, output download, 2-day-retention handling, and provenance.
+- [x] Google successful-generation billable-cost derivation and explicit model/duration/resolution/reference constraints.
 - [ ] Run first credentialed video benchmark.
-- [ ] Add direct Google/Veo video provider adapter.
 - [ ] Add self-host Wan worker configuration.
 - [ ] Add direct/open identity-still worker.
 
@@ -82,39 +82,24 @@ Providers remain independent and evidence-driven. No hosted provider is automati
 - [ ] Hook/creator/format/CTA summaries.
 - [ ] Feed campaign performance into future concept generation/ranking.
 
-## Provider policy
+## Provider preflight semantics
 
 ```text
-CreativeSpec
-    ↓
-rights / assets
-    ↓
-provider candidates
-    ├── fal
-    ├── OpenRouter
-    ├── Google
-    ├── Higgsfield
-    └── self-host
-    ↓
-provider-appropriate preflight / budget gate
-    ↓
-render
-    ↓
-actual cost + QA
-    ↓
-benchmark ledger
-    ↓
-cost per usable approved second
+fal        -> dated configured model pricing formulas
+Higgsfield -> authenticated request-specific quote (credits + usd)
+OpenRouter -> live pricing_skus preview + completed provider usage.cost
+Google Veo -> dated official $/second formula; successful jobs billed
+self-host  -> measured compute cost when benchmarked
 ```
 
-Higgsfield has an authenticated request-specific estimate. OpenRouter video exposes live catalog `pricing_skus` and completed `usage.cost`, but no documented equivalent authoritative per-request estimate endpoint. Keep those mechanisms distinct in provenance and UI.
+Do not flatten these into a single claim of equal precision. Preserve `cost_basis`, pricing date/source, and provider-reported actuals separately.
 
 ## Knowledge-source refresh policy
 Periodically re-check:
 - `higgsfield-ai/skills`
 - Higgsfield API shared lifecycle and account/model-specific docs
 - OpenRouter video catalog/lifecycle/pricing semantics
-- fal/Google model schemas and pricing
+- fal and Google model schemas/pricing
 - self-host compute economics
 
 Historical job provenance must keep the estimate/rate/catalog assumptions that existed when the job ran.
