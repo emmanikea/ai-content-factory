@@ -15,7 +15,7 @@
 - [x] End-to-end no-spend integration coverage.
 
 ## Phase 2: hosted/direct render paths
-Direct providers remain independent. Higgsfield is now a first-class hosted provider, but automatic routing should not prefer it until comparable benchmark evidence exists.
+Providers remain independent and evidence-driven. No hosted provider is automatically preferred before comparable benchmark data exists.
 
 - [x] Dated fal registry for Wan/Kling/Seedance and cost formulas.
 - [x] Direct fal runner with explicit rights + spend gates.
@@ -26,9 +26,11 @@ Direct providers remain independent. Higgsfield is now a first-class hosted prov
 - [x] Higgsfield authenticated preflight estimate (`credits` + `usd`) before live generation.
 - [x] Higgsfield request submission, polling/backoff, cancellation primitive, webhook support, output download, and provenance.
 - [x] Higgsfield provider model kept catalog-agnostic because account/model docs are authoritative.
+- [x] Native OpenRouter async video provider adapter.
+- [x] OpenRouter live catalog preflight/parameter validation through `/api/v1/videos/models`.
+- [x] OpenRouter actual-cost reconciliation from completed `usage.cost`.
+- [x] OpenRouter callback, polling, authenticated download, provenance, and spend/budget guards.
 - [ ] Run first credentialed video benchmark.
-- [ ] Add automated actual-cost reconciliation where a provider exposes post-run billable usage.
-- [ ] Add OpenRouter video provider adapter.
 - [ ] Add direct Google/Veo video provider adapter.
 - [ ] Add self-host Wan worker configuration.
 - [ ] Add direct/open identity-still worker.
@@ -50,7 +52,8 @@ Direct providers remain independent. Higgsfield is now a first-class hosted prov
 - [x] Failed generations count as spend with zero usable seconds.
 - [x] Measured pass-rate and cost-per-usable-second routing after minimum sample threshold.
 - [x] Static priors remain until sufficient measured samples exist.
-- [ ] Benchmark fal vs Higgsfield vs OpenRouter/Google on equivalent approved shots.
+- [ ] Benchmark fal vs Higgsfield vs OpenRouter vs direct Google on equivalent approved shots.
+- [ ] Add cross-provider preflight normalization without pretending unlike estimate mechanisms are equivalent.
 - [ ] Allow automatic cross-provider routing only after comparable measurements exist.
 
 ## Phase 6: creator identity system
@@ -93,27 +96,28 @@ provider candidates
     ├── Higgsfield
     └── self-host
     ↓
-price estimate / budget gate
+provider-appropriate preflight / budget gate
     ↓
 render
     ↓
-QA
+actual cost + QA
     ↓
 benchmark ledger
     ↓
 cost per usable approved second
 ```
 
-Higgsfield is first-class but not automatically preferred. Its authenticated estimate is authoritative for that account/request. Model availability and model-specific schemas must be taken from the account Console/model docs rather than assuming the shared OpenAPI catalog is complete.
+Higgsfield has an authenticated request-specific estimate. OpenRouter video exposes live catalog `pricing_skus` and completed `usage.cost`, but no documented equivalent authoritative per-request estimate endpoint. Keep those mechanisms distinct in provenance and UI.
 
 ## Knowledge-source refresh policy
 Periodically re-check:
 - `higgsfield-ai/skills`
 - Higgsfield API shared lifecycle and account/model-specific docs
-- fal/OpenRouter/Google model schemas and pricing
+- OpenRouter video catalog/lifecycle/pricing semantics
+- fal/Google model schemas and pricing
 - self-host compute economics
 
-Historical job provenance must keep the estimate/rate assumptions that existed when the job ran.
+Historical job provenance must keep the estimate/rate/catalog assumptions that existed when the job ran.
 
 ## External production inputs
 - provider credentials (`FAL_KEY`, `OPENROUTER_API_KEY`, `GEMINI_API_KEY`; `HF_CREDENTIALS` when Higgsfield is benchmarked)

@@ -1,7 +1,7 @@
 {
   "version": "2026-09-17",
   "currency": "USD",
-  "notes": "Reference pricing is configuration metadata, not a billing guarantee. Re-verify before production use. Higgsfield uses authenticated per-request estimates rather than a hard-coded static price.",
+  "notes": "Static prices are reference metadata, not billing guarantees. Higgsfield uses authenticated per-request estimates. OpenRouter video uses live catalog pricing plus final usage.cost.",
   "providers": [
     {
       "id": "local-playwright",
@@ -105,6 +105,27 @@
           "source": "https://fal.ai/models/bytedance/seedance-2.5/reference-to-video"
         }
       ]
+    },
+    {
+      "id": "openrouter",
+      "kind": "hosted_aggregator",
+      "enabled_by_default": false,
+      "credential_env": "OPENROUTER_API_KEY",
+      "api_base": "https://openrouter.ai/api/v1",
+      "runtime_adapter": "ugc-studio/providers/openrouter/client.py",
+      "catalog_endpoint": "/videos/models",
+      "pricing_mode": "live_catalog_plus_actual_usage",
+      "capabilities": [
+        "text_to_video",
+        "image_to_video",
+        "reference_to_video",
+        "provider_aggregator"
+      ],
+      "models": [],
+      "catalog_policy": "Discover current video models, supported parameters, pricing_skus, provider passthroughs and media capabilities from GET /api/v1/videos/models.",
+      "routing_policy": "First-class provider available for explicit jobs and benchmarks. Do not auto-prefer until equivalent QA/cost benchmarks exist.",
+      "cost_policy": "Use current catalog pricing_skus for preview. Record completed job usage.cost as actual provider spend; there is no documented authoritative per-request video estimate endpoint.",
+      "source": "https://openrouter.ai/blog/tutorials/video-generation-api/"
     },
     {
       "id": "selfhost-wan",
