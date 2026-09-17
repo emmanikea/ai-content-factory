@@ -1,10 +1,96 @@
 {
-  "version": "2026-09-12",
+  "version": "2026-09-17",
   "purpose": "Track upstream knowledge, pricing, model-schema and implementation sources used by UGC Studio. This is provenance metadata, not a runtime dependency list.",
   "sources": [
     {
+      "id": "comfy-cli-skills",
+      "category": "agent_workflow_authoring",
+      "url": "https://github.com/Comfy-Org/comfy-cli/tree/main/comfy_cli/skills",
+      "checked_at": "2026-09-14",
+      "relevant_paths": [
+        "comfy/SKILL.md",
+        "comfy-director/SKILL.md",
+        "comfy-debug/SKILL.md",
+        "comfy-relay/SKILL.md",
+        "comfy-build/SKILL.md",
+        "comfy-build-authoring/SKILL.md",
+        "comfy-deploy/SKILL.md"
+      ],
+      "adoption": "primary_agent_operating_reference",
+      "note": "Use the installed/live CLI schema as authority when commands differ from a snapshot."
+    },
+    {
+      "id": "comfy-official-workflow-templates",
+      "category": "workflow_source_of_truth",
+      "url": "https://github.com/Comfy-Org/workflow_templates",
+      "checked_at": "2026-09-14",
+      "relevant_paths": [
+        "templates/image_qwen_image_edit_2511.json",
+        "blueprints/image_edit_qwen_2511.json",
+        "templates/video_wan_animate2.json",
+        "blueprints/motion_transfer_wan_animate_2.json",
+        "packages/core/src/comfyui_workflow_templates_core/manifest.json",
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "relevant_template_ids": [
+        "video_ltx2_5_i2v",
+        "video_ltx2_3_ia2v"
+      ],
+      "adoption": "primary_workflow_reference",
+      "note": "Agents should fetch current working templates and inspect live slots/nodes before capturing project recipes."
+    },
+    {
+      "id": "comfy-official-mcp",
+      "category": "agent_tooling",
+      "url": "https://github.com/Comfy-Org/comfy-mcp",
+      "checked_at": "2026-09-14",
+      "adoption": "optional_agent_control_surface",
+      "note": "Useful for template discovery, workflow execution, node/model inspection and job control. Keep runtime execution local/self-hosted by default."
+    },
+    {
+      "id": "comfy-production-workflows-community",
+      "category": "community_workflow_reference",
+      "url": "https://github.com/digitalinnovator/comfyui-production-workflows",
+      "checked_at": "2026-09-14",
+      "license": "MIT",
+      "relevant_paths": [
+        "01-ai-ugc-video-voice-cloning/",
+        "02-ai-ugc-video-prebuilt-audio/",
+        "03-trend-copy-video-wan-animate/",
+        "07-image-realism-enhancer/",
+        "08-product-placement-qwen/",
+        "09-talking-avatar-infinitetalk/"
+      ],
+      "adoption": "research_and_benchmark_only",
+      "note": "Production-oriented examples; validate against current official templates/live node schemas before adapting."
+    },
+    {
+      "id": "higgsfield-api-docs",
+      "category": "research_only_provider_architecture",
+      "url": "https://docs.higgsfield.ai/docs",
+      "checked_at": "2026-09-17",
+      "runtime_status": "disabled",
+      "relevant_urls": [
+        "https://docs.higgsfield.ai/docs",
+        "https://docs.higgsfield.ai/docs/llms.txt",
+        "https://docs.higgsfield.ai/docs/concepts/billing-and-retention",
+        "https://docs.higgsfield.ai/docs/concepts/rate-limits"
+      ],
+      "adoption": "research_patterns_only_runtime_disabled",
+      "lessons_adopted": [
+        "preflight_cost_quote_before_spend",
+        "provider_neutral_async_job_ids_and_terminal_states",
+        "bounded_executor_concurrency",
+        "backoff_and_jitter_for_transport_or_limit_errors",
+        "copy_completed_outputs_to_project_owned_storage",
+        "model_specific_schema_is_more_authoritative_than_generic_catalog"
+      ],
+      "note": "Do not create Higgsfield credentials or runtime calls. See docs/ugc-factory/HIGGSFIELD_API_RESEARCH.md."
+    },
+    {
       "id": "higgsfield-skills",
-      "category": "workflow_knowledge",
+      "category": "historical_workflow_knowledge",
       "url": "https://github.com/higgsfield-ai/skills",
       "checked_at": "2026-09-12",
       "version": "0.12.0",
@@ -23,7 +109,7 @@
         "higgsfield-soul-id/references/photo-guide.md",
         "COOKBOOK.md"
       ],
-      "adoption": "knowledge_reference_optional_benchmark"
+      "adoption": "historical_research_only_runtime_disabled"
     },
     {
       "id": "fal-wan3-i2v",
@@ -91,12 +177,13 @@
     },
     {
       "id": "higgsfield-pricing",
-      "category": "optional_platform_pricing",
+      "category": "historical_optional_platform_pricing",
       "url": "https://higgsfield.ai/pricing",
       "checked_at": "2026-09-12",
+      "runtime_status": "disabled",
       "pricing_summary": {
         "currency": "credits",
-        "note": "Do not hardcode a universal USD-per-credit. Record current plan/effective credit cost at benchmark time. CLI/MCP/automation jobs consume credits."
+        "note": "Historical comparison only while Higgsfield runtime is disabled."
       }
     }
   ]

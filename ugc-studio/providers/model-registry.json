@@ -1,7 +1,7 @@
 {
-  "version": "2026-09-12",
+  "version": "2026-09-14",
   "currency": "USD",
-  "notes": "Reference pricing is configuration metadata, not a billing guarantee. Re-verify before production use.",
+  "notes": "Reference pricing is configuration metadata, not a billing guarantee. Re-verify before production use. Comfy workflow candidates live in providers/comfy/workflow-registry.json and are promoted only after local validation.",
   "providers": [
     {
       "id": "local-playwright",
@@ -28,6 +28,25 @@
           "cost_model": {"type": "fixed", "usd": 0.0}
         }
       ]
+    },
+    {
+      "id": "comfy",
+      "kind": "workflow_engine",
+      "enabled_by_default": true,
+      "default_where": "local",
+      "workflow_registry": "ugc-studio/providers/comfy/workflow-registry.json",
+      "capabilities": [
+        "product_creator_composition",
+        "image_to_video",
+        "creator_video",
+        "audio_driven_creator_video",
+        "motion_transfer",
+        "realism_cleanup",
+        "upscale",
+        "interpolation"
+      ],
+      "models": [],
+      "policy": "Comfy is the preferred reusable workflow layer. Only workflows promoted to validated may become automatic production routes. Paid partner nodes require explicit spend approval; default COMFY_WHERE is local."
     },
     {
       "id": "fal",
@@ -122,11 +141,13 @@
     },
     {
       "id": "higgsfield",
-      "kind": "optional_suite",
+      "kind": "disabled_optional_suite",
       "enabled_by_default": false,
+      "runtime_enabled_env": "ENABLE_HIGGSFIELD_RUNTIME",
+      "required_runtime_value": "1",
       "models": [],
-      "capabilities": ["proprietary_identity", "proprietary_camera", "benchmark_fallback"],
-      "policy": "Never route here unless campaign.allow_higgsfield_fallback is true or a Higgsfield-specific capability is explicitly requested."
+      "capabilities": ["historical_research", "future_explicit_benchmark"],
+      "policy": "Runtime is repository-disabled while ENABLE_HIGGSFIELD_RUNTIME=0. No automatic fallback or active workflow may call Higgsfield. Future re-enablement requires an explicit policy change plus deliberate runtime opt-in."
     }
   ]
 }

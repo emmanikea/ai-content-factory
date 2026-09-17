@@ -1,61 +1,28 @@
 # UGC Studio Handoff
 
-Last updated: 2026-09-12
-Branch: `feat/ugc-studio-v1`
-PR: #5
+Last updated: 2026-09-17
+Branch: `feat/comfy-first-ugc`
+Stacked on: `feat/ugc-studio-v1` / PR #5
 
 ## Product direction
 
-Build a UGC/Reels production system that owns the creative workflow and calls underlying models directly. Higgsfield is optional and disabled by default as a rendering dependency.
+Build a UGC/Reels production system that owns the creative workflow, uses deterministic footage where possible, and treats generative models/workflows as swappable execution layers.
 
-Higgsfield's public skills repo is treated separately as a useful knowledge/benchmark upstream.
+**Higgsfield runtime is disabled.** It is not a default route, fallback, benchmark execution path or agent generation tool. Higgsfield docs/skills may remain as research material only.
 
-```text
-exact UI / owned media -> deterministic local capture/composition
-cheap draft video      -> Wan direct
-standard creator shot  -> Kling Standard direct
-licensed motion        -> Kling Motion direct
-premium/reference      -> Seedance / Kling premium
-high-volume future     -> self-host Wan2.2 Animate
-Higgsfield runtime     -> proprietary-only / benchmark / explicit fallback
-Higgsfield skills      -> prompt/model/workflow research source
-```
-
-## Read first
-
-- `docs/ugc-factory/PRD.md`
-- `docs/ugc-factory/DIRECT_MODEL_EXECUTION_PLAN.md`
-- `docs/ugc-factory/HIGGSFIELD_SKILLS_RESEARCH.md`
-- `docs/ugc-factory/MODEL_PRICING_AND_SOURCES.md`
-- `docs/ugc-factory/CREATOR_AND_REFERENCE_PIPELINE.md`
-- `docs/ugc-factory/END_TO_END_RUNBOOK.md`
-- `openspec/changes/ugc-studio-v1/tasks.md`
-
-## Higgsfield knowledge snapshot
-
-Upstream: `https://github.com/higgsfield-ai/skills`
-
-Reviewed:
-- version `0.12.0`
-- commit `d071406147a37b835bed09543d85ab3e9bd85c7d`
-- commit date 2026-09-11
-- MIT license
-
-Optional agent install:
+Default policy:
 
 ```bash
-npx skills add higgsfield-ai/skills
-# or
-gh skill install higgsfield-ai/skills
+ENABLE_HIGGSFIELD_RUNTIME=0
+COMFY_WHERE=local
+COMFY_ALLOW_SPEND=0
 ```
 
-Installing the skills must not change the direct-model routing policy.
-
-## Current implemented pipeline
+## Current architecture
 
 ```text
 Reference video
-  -> ReferenceObservation
+  -> factual observation
   -> semantic enrichment
   -> ReferenceAnalysis
 
@@ -64,299 +31,269 @@ Creator assets + agreement
   -> request-specific rights decision
   -> render asset manifest
 
-CampaignBrief
-  + ReferenceAnalysis
+CampaignBrief + ReferenceAnalysis
   -> CreativeSpec batch
-  -> dry model/cost plan
-  -> selected shot job
-  -> explicit spend gate
-  -> direct model render
+  -> concept ranking
+  -> normalized preflight execution quote
+  -> explicit spend gate when paid
+  -> execution route
+       -> deterministic Playwright/Remotion/FFmpeg where exact media is better
+       -> validated Comfy local/self-hosted workflow where available
+       -> explicitly approved direct hosted model when benchmarked/needed
   -> deterministic + semantic QA
-  -> deterministic Reel assembly
+  -> final Reel assembly
   -> final QA
   -> benchmark ledger
   -> measured routing history
 ```
 
-The complete command sequence is in `docs/ugc-factory/END_TO_END_RUNBOOK.md`.
-
-## Reference intelligence
-
-### Factual observation
-
-`.archon/scripts/ugc/observe_reference.py`
-
-Records:
-- ffprobe duration, dimensions, FPS, audio
-- source SHA-256
-- ffmpeg scene-change candidates
-- segment boundaries
-- optional keyframes
-- optional transcript JSON
-- optional local Whisper CLI transcript
-
-It does not invent semantic roles from scene cuts.
-
-### Semantic enrichment
-
-`.archon/scripts/ugc/build_reference_analysis.py`
-- validates semantic labels against observed segments
-- requires every segment labeled exactly once
-- calculates pacing from observed timing
-- preserves `creative_dna_only` vs licensed/owned rights boundary
-
-`.archon/scripts/ugc/enrich_reference_semantics.py`
-- optional Gemini/keyframe adapter
-- fails closed without a vision credential
-- validates output through the same ReferenceAnalysis compiler
-- dry-run mode available
-
-Schemas:
-- `ugc-studio/schemas/reference-observation.schema.json`
-- `ugc-studio/schemas/reference-semantic-labels.schema.json`
-- `ugc-studio/schemas/reference-analysis.schema.json`
-
-## Creator identity and rights
-
-`.archon/scripts/ugc/build_identity_pack.py`
-- provider-neutral identity pack
-- active consent + agreement reference required for real/founder creators
-- local source hashing/provenance
-- remote sources are not silently fetched
-- motion-transfer samples require explicit creator transformation permission
-- warns on weak identity-view coverage without claiming semantic quality
-
-`.archon/scripts/ugc/prepare_creator_assets.py`
-- derives render approval from the pack for exact product/category/platform/date/transformations
-- product/category scope only becomes unrestricted when both lists are empty
-- selected motion sample must itself be approved
-- preserves agreement evidence and decision inputs for render provenance
-
-Schema:
-`ugc-studio/schemas/creator-identity-pack.schema.json`
-
-Example:
-`ugc-studio/examples/creator-import.example.json`
-
-## CreativeSpec batch generation
-
-`.archon/scripts/ugc/generate_creative_specs.py`
-
-Input:
-- CampaignBrief
-- ReferenceAnalysis
-
-It expands:
-
-```text
-creator × hook × CTA × location × outfit
-```
-
-up to `max_specs`.
-
-It reuses abstract reference timing/roles, not third-party identity or protected content. App-demo beats become `app_capture`; creator beats become direct creator generation. Literal motion is blocked for `creative_dna_only` references and only enabled for licensed/owned references.
-
-Schemas/examples:
-- `ugc-studio/schemas/campaign-brief.schema.json`
-- `ugc-studio/schemas/creative-spec.schema.json`
-- `ugc-studio/examples/bordereta-campaign.example.json`
-- `ugc-studio/examples/reference-analysis.example.json`
-
-## Local persistence
-
-`.archon/scripts/ugc/local_store.py`
-
-Collections:
-- campaigns
-- creators
-- references
-- specs
-- jobs
-- artifacts
-- qa
-- performance
-
-Writes are atomic and support expected-version conflict checks. This is the V1 migration seam to a future Postgres + R2 implementation.
-
-`ugc-studio/data/` is runtime data and is gitignored.
-
-## Model routing and prompt intelligence
-
-`.archon/scripts/ugc/model_router.py`
-
-Default routes:
-- draft -> Wan direct
-- standard creator -> Kling Standard direct
-- motion transfer -> Kling Motion
-- premium/reference-heavy -> premium Kling / Seedance
-- deterministic UI/graphics -> local tools
-- Higgsfield excluded unless explicitly enabled
-
-`.archon/scripts/ugc/prompt_compiler.py`
-- image-to-video prompts focus on motion/performance/camera
-- motion-transfer prompts treat the licensed reference as timing/performance source
-- Seedance jobs use compact multimodal direction
-- compiler strategy/version saved in job provenance
-
-Dated pricing/capabilities:
-`ugc-studio/providers/model-registry.json`
-
-## Direct fal path
-
-`.archon/scripts/ugc/build_fal_job.py`
-`ugc-studio/providers/fal/`
-
-Supported provider-ready jobs:
-- Wan I2V
-- Kling I2V
-- Kling Motion
-- Seedance reference-to-video
-
-A live job requires all of:
-
-```text
-rights_approved = true
-approved_for_spend = true
-FAL_KEY at runtime
---live
-```
-
-No paid generation has been triggered from this branch.
-
-## Deterministic app capture and assembly
-
-App capture:
-`ugc-studio/capture/`
-- Playwright 1.63.0
-- vertical capture presets
-- declarative click/tap/fill/press/wait/scroll/screenshot actions
-- provenance
-
-Assembly:
-`ugc-studio/assembly/`
-- Remotion/CLI 4.0.523
-- React/ReactDOM 19.3.0
-- 1080x1920 timeline
-- creator/app/B-roll sequencing
-- captions + CTA
-- local asset staging
-- FFmpeg H.264/AAC normalization
-- loudness normalization
-- faststart
-
-## QA
-
-Schema:
-`ugc-studio/schemas/qa-result.schema.json`
-
-`.archon/scripts/ugc/qa_video.py`
-- deterministic duration/resolution/aspect/audio/black-frame checks
-- technically valid output remains `needs_review`, not automatically pass
-- structural failures stop
-
-`.archon/scripts/ugc/enrich_video_qa.py`
-- optional sampled-frame vision QA
-- can compare against local canonical creator references
-- evaluates visible identity drift, anatomy, text/caption problems and visual artifacts
-- cannot override deterministic hard failures
-- deliberately leaves lip sync unresolved because sampled stills do not prove it
-
-## Benchmark learning loop
-
-`.archon/scripts/ugc/benchmark_metrics.py`
-
-Records:
-- provider/model
-- prompt strategy/version
-- attempt number
-- estimate vs actual cost
-- QA status/score
-- usable seconds
-- failure codes
-
-Failed generations count as spend and zero usable seconds.
-
-`model_router.py` can consume the benchmark summary. Measured routing only activates after at least 5 attempts for a model; before that static quality priors remain.
-
 Primary metric:
 
 `cost per usable approved second`
 
-## Retry policy
+## Read first
+
+- `README.md`
+- `docs/ugc-factory/PRD.md`
+- `docs/ugc-factory/CREATOR_AND_REFERENCE_PIPELINE.md`
+- `docs/ugc-factory/DIRECT_MODEL_EXECUTION_PLAN.md`
+- `docs/ugc-factory/END_TO_END_RUNBOOK.md`
+- `docs/ugc-factory/COMFY_WORKFLOW_STACK.md`
+- `docs/ugc-factory/HIGGSFIELD_API_RESEARCH.md`
+- `.claude/skills/comfy-ugc-factory/SKILL.md`
+- `ugc-studio/providers/comfy/BOOTSTRAP.md`
+- `ugc-studio/providers/comfy/workflow-registry.json`
+- `ugc-studio/schemas/execution-quote.schema.json`
+
+## What changed in the Comfy-first pass
+
+### Runtime policy
+
+- root `.env.example` makes Comfy local-first and disables paid Comfy partner-node spending by default,
+- Higgsfield runtime is explicitly disabled,
+- model registry contains a first-class Comfy workflow-engine entry,
+- Higgsfield remains only as disabled historical/future policy metadata,
+- root README no longer tells operators to install/call Higgsfield.
+
+### Agent knowledge
+
+Repository skill:
+
+`.claude/skills/comfy-ugc-factory/SKILL.md`
+
+It teaches agents to:
+
+1. use current official Comfy skills/live schemas,
+2. search official templates before choosing a model/graph,
+3. reproduce a working graph before editing it,
+4. capture project-owned reusable recipes,
+5. validate output through UGC Studio QA,
+6. record compute/cost/retries/provenance,
+7. promote workflows only after validation.
+
+The old `.claude/skills/higgsfield/SKILL.md` is research-only and explicitly forbids runtime calls.
+
+### Comfy workflow registry
+
+`ugc-studio/providers/comfy/workflow-registry.json`
+
+Initial capability families:
+
+- product + creator composition / product placement,
+- product I2V,
+- creator I2V,
+- exact-audio talking creator,
+- motion transfer,
+- realism/cleanup.
+
+Statuses are `research`, `candidate`, `validated`, or `deprecated`. No experimental graph becomes an automatic production route merely because it exists.
+
+### Upstream sources reviewed
+
+Primary official sources:
+
+- `Comfy-Org/comfy-cli` bundled agent skills,
+- `Comfy-Org/workflow_templates`,
+- `Comfy-Org/comfy-mcp` as optional agent control surface.
+
+Community production reference:
+
+- `digitalinnovator/comfyui-production-workflows` for UGC + voice, prebuilt-audio UGC, Wan Animate motion/trend transfer, Qwen product placement, realism enhancement and InfiniTalk talking avatars.
+
+Official sources/live node schemas remain authoritative. Community graphs are patterns to reproduce/adapt, not blindly copied production dependencies.
+
+### Higgsfield API docs — research only
+
+Current developer docs were reviewed on 2026-09-17. They do **not** justify re-enabling Higgsfield runtime, because successful API generations are still billed through Higgsfield credits.
+
+Useful patterns were extracted into `docs/ugc-factory/HIGGSFIELD_API_RESEARCH.md`:
+
+- quote/estimate before spend,
+- async execution IDs and terminal states,
+- cancellation where supported,
+- bounded worker-pool concurrency,
+- backoff + jitter instead of tight polling/retry loops,
+- project-owned storage rather than treating provider output URLs as permanent assets,
+- model-specific schemas as higher-authority evidence than generic catalogs.
+
+The first adopted contract is:
+
+- `.archon/scripts/ugc/preflight_quote.py`
+- `ugc-studio/schemas/execution-quote.schema.json`
+
+The preflight quote has no Higgsfield enable switch, never marks spend approved, and rejects an injected Higgsfield route.
+
+### Legacy spend paths retired
+
+The old catalog prototype entry points are inert:
+
+- `.archon/workflows/content-factory-explore.yaml`
+- `.archon/workflows/content-factory-render.yaml`
+- `.archon/scripts/media_worker.py`
+- `.archon/scripts/factory/factory_seed.py`
+- `.archon/scripts/factory/factory_render.py`
+- `.archon/scripts/factory/animate_concept.py`
+- `.archon/scripts/factory/animate_ugc.py`
+
+They no longer generate media. Git history preserves the original prototype for archaeology.
+
+A provider-policy CI check blocks known retired runtime command patterns from being reintroduced into active execution paths.
+
+## Existing UGC Studio implementation retained from PR #5
+
+### Reference intelligence
+
+`.archon/scripts/ugc/observe_reference.py`
+
+Records factual properties such as duration, dimensions, FPS, audio, source hash, scene-change candidates, segments, optional keyframes and transcript data.
+
+`.archon/scripts/ugc/build_reference_analysis.py` and `enrich_reference_semantics.py` turn observed evidence into validated semantic structure while preserving the boundary between creative-DNA inspiration and literal licensed motion/performance transfer.
+
+### Creator identity + rights
+
+`.archon/scripts/ugc/build_identity_pack.py`
+
+`.archon/scripts/ugc/prepare_creator_assets.py`
+
+These preserve creator identity/reference provenance and derive request-specific permission for product/category/platform/date/transformation scope before literal likeness/performance use.
+
+### CreativeSpec generation
+
+`.archon/scripts/ugc/generate_creative_specs.py`
+
+Expands campaign inputs across creator/hook/CTA/location/outfit combinations and maps shot roles to deterministic capture or generative execution types.
+
+### Planning + preflight quote
+
+`.archon/scripts/ugc/model_router.py`
+
+`.archon/scripts/ugc/preflight_quote.py`
+
+The router creates the dry execution plan. The preflight layer normalizes that plan into a stable quote contract containing line-item raw estimates, expected usable cost, budget-block state, quote source, and spend-gate state.
+
+Current registry estimates are deliberately marked non-authoritative. Future direct-provider estimators or measured local GPU estimators can feed the same contract without changing product-facing approval logic.
+
+### Direct hosted fallback/benchmark lane
+
+`.archon/scripts/ugc/build_fal_job.py`
+
+`ugc-studio/providers/fal/`
+
+Current hosted routes include Wan, Kling and Seedance. They remain useful for benchmarks and cases where a validated local Comfy recipe is not yet competitive. They still require rights/spend/live gates before execution.
+
+### Deterministic app capture + assembly
+
+`ugc-studio/capture/`
+
+- Playwright vertical capture,
+- declarative click/tap/fill/wait/scroll actions,
+- capture provenance.
+
+`ugc-studio/assembly/`
+
+- Remotion timeline,
+- FFmpeg normalization,
+- creator/app/B-roll sequencing,
+- captions + CTA,
+- loudness/faststart handling.
+
+### QA + learning loop
+
+`.archon/scripts/ugc/qa_video.py`
+
+`.archon/scripts/ugc/enrich_video_qa.py`
+
+`.archon/scripts/ugc/benchmark_metrics.py`
 
 `.archon/scripts/ugc/retry_policy.py`
-- one same-tier retry for stochastic defects
-- structural quality issues may escalate one tier
-- checks budget before retry
-- rights/source/deterministic UI failures cannot be routed around
 
-## Tests
+The benchmark ledger records provider/model or workflow identity, prompt strategy/version, attempt count, estimated/actual cost, QA status, usable seconds and failure codes. Failed paid attempts count as spend with zero usable seconds.
 
-`.github/workflows/ugc-studio-tests.yml`
+## Next Comfy milestone
 
-Coverage includes:
-- creator/reference rights
-- product/category scope
-- direct routing and pricing formulas
-- measured routing threshold
-- prompt compiler
-- live/spend guards
-- creator identity pack
-- creator rights-to-assets resolution
-- reference observation/analysis
-- automatic semantic-label adapter guards
-- local atomic store
-- deterministic + semantic visual QA merge behavior
-- benchmark usable-cost accounting
-- CreativeSpec variation generation
-- end-to-end no-spend campaign/reference -> plan -> rights -> provider job integration
+Highest-value next terminal/GPU work:
 
-## First live benchmark
+1. install/verify current `comfy` CLI on the target machine,
+2. run `comfy skills install --scope project` so agents get the official current skill set,
+3. launch/connect local Comfy,
+4. reproduce the official Qwen Image Edit 2511 product/reference composition path,
+5. capture a project-owned parameterized recipe and validate product/creator fidelity,
+6. reproduce an open/local LTX 2.5 product I2V path,
+7. capture + validate that recipe,
+8. evaluate exact-audio creator video using current official LTX audio-video paths versus InfiniTalk reference patterns,
+9. evaluate Wan motion-transfer/character-replacement paths for licensed motion,
+10. record measured GPU/runtime economics into the normalized execution-quote/benchmark layers,
+11. benchmark each accepted recipe using the existing cost/pass-rate/usable-seconds ledger,
+12. promote only proven recipes in `workflow-registry.json` from `candidate` to `validated`,
+13. then add validated Comfy workflows to automatic routing.
 
-Still intentionally external-gated.
+## What can be done autonomously vs what needs the target machine
 
-Use one real approved or synthetic creator and one 5-second hook:
+Already autonomous/repo-side:
 
-1. create/inspect CreatorIdentityPack
-2. derive rights-approved render assets
-3. generate/select CreativeSpec
-4. inspect route and cost
-5. compile direct provider job
-6. dry-run it
-7. deliberately approve spend
-8. render Wan/Kling equivalent versions
-9. deterministic QA + visual QA
-10. record every attempt/cost/result in benchmark ledger
-11. compare cost per usable second
-12. only escalate to premium/Seedance/Higgsfield when the evidence supports it
+- architecture and policy,
+- workflow-source research,
+- agent instructions,
+- capability registry,
+- normalized preflight quote contract,
+- rights/CreativeSpec/QA/benchmark contracts,
+- direct hosted adapter contracts,
+- retirement of legacy spend paths.
 
-## Remaining autonomous work
+Needs a machine/environment with current Comfy + models/GPU to claim real validation:
 
-Highest-value remaining code slices:
-1. JSON Schema validation at ingestion/write boundaries
-2. concept ranking using cost + novelty + reference fit + available performance history
-3. creator-rights revocation propagation through stored jobs/artifacts
-4. audio-aware lip-sync QA
-5. ground-truth app/UI correctness QA
-6. background-music ducking
-7. Maestro mobile capture lane
-8. self-host Wan2.2 Animate worker/benchmark contract
-9. social/ad performance event ingestion and learning loop
-10. automated provider actual-cost reconciliation where supported
+- install/launch Comfy,
+- download/resolve model weights/custom nodes,
+- run official templates,
+- inspect actual live slots/node schemas,
+- capture project recipes from graphs that really ran,
+- benchmark latency/VRAM/compute cost/output quality.
 
-## External production inputs
+Do not fabricate `validated` Comfy recipes from documentation alone.
 
-Still needed for real production:
-- direct provider credential such as `FAL_KEY`
-- actual approved creator images/voice/performance samples
-- actual agreement/rights record references
-- licensed/owned motion clips for literal performance transfer
-- real reference Reel(s)
-- production app auth/capture instructions if login is required
-- optional vision credential for automatic semantic enrichment/visual QA
-- GPU target when self-host benchmarking begins
-- legal review of the final creator NIL/AI-use/commission contract language
+## Provider policy CI
+
+`.archon/scripts/ugc/check_provider_policy.py`
+
+`.github/workflows/provider-policy.yml`
+
+This protects against accidentally restoring known direct runtime command patterns in active scripts/workflows while still allowing historical research documents to mention Higgsfield.
+
+## External production inputs still needed
+
+- an actual target Comfy machine/GPU or explicitly chosen hosted Comfy target,
+- approved creator/reference assets for realistic identity tests,
+- real product references,
+- licensed/owned motion references for literal motion transfer,
+- production app auth/capture instructions when login is required,
+- optional vision credential for semantic/visual QA,
+- direct provider credentials only for routes intentionally benchmarked/approved.
 
 ## Merge policy
 
-Keep PR #5 draft until the fixture capture + assembly path is verified end-to-end and the first provider-ready job has been inspected. Live spending is not required to merge the architecture. Rights/spend gates must remain intact.
+Keep this Comfy-first work stacked on PR #5 until:
+
+- provider-policy CI passes,
+- the UGC Studio tests remain green,
+- no active workflow invokes the retired vendor runtime,
+- the first Comfy candidate can be reproduced on the target environment before being labeled `validated`.
