@@ -11,6 +11,12 @@ Higgsfield runtime is disabled. Its docs and public skills may be used as resear
 - `feat/ugc-studio-v1` — current UGC Studio architecture, rights, routing, QA, direct-model benchmark lane.
 - `feat/comfy-first-ugc` — stacked Comfy-first pass: disables legacy Higgsfield runtime paths and adds Comfy workflow authoring, registry, provider-policy CI, and normalized execution preflight quotes.
 
+## Current checkpoint
+
+The current work is split across stacked draft PRs. PR #5 (`feat/ugc-studio-v1`) has advanced since PR #6 (`feat/comfy-first-ugc`) was created, so the branches now diverge. Before additional provider/runtime work, reconcile the latest PR #5 into the Comfy-first branch and preserve the explicit Higgsfield-off policy.
+
+See `docs/ugc-factory/STATUS_AND_NEXT_STEPS.md` for the full implementation inventory, blockers, and P0-P6 next-step sequence.
+
 ## Core architecture
 
 ```text
@@ -68,6 +74,7 @@ No paid provider call should happen simply because an agent found an old command
 
 Read:
 
+- `docs/ugc-factory/STATUS_AND_NEXT_STEPS.md` — current checkpoint and ordered next steps
 - `ugc-studio/HANDOFF.md`
 - `docs/ugc-factory/PRD.md`
 - `docs/ugc-factory/COMFY_WORKFLOW_STACK.md`

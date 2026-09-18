@@ -18,6 +18,14 @@ COMFY_WHERE=local
 COMFY_ALLOW_SPEND=0
 ```
 
+## Current repository state
+
+The authoritative checkpoint is `docs/ugc-factory/STATUS_AND_NEXT_STEPS.md`.
+
+Important as of 2026-09-17: PR #5 continued moving after PR #6 was branched. `feat/comfy-first-ugc` is currently 25 commits ahead and 10 commits behind the latest `feat/ugc-studio-v1` relative to their shared merge base. PR #5 also contains newer Higgsfield API execution work that conflicts with the Comfy-first/Higgsfield-off policy in this branch.
+
+**Immediate engineering priority:** reconcile the latest PR #5 into this branch, preserve useful provider-neutral work, keep Higgsfield runtime disabled, then rerun all UGC/provider-policy tests before additional runtime work.
+
 ## Current architecture
 
 ```text
@@ -54,6 +62,7 @@ Primary metric:
 ## Read first
 
 - `README.md`
+- `docs/ugc-factory/STATUS_AND_NEXT_STEPS.md`
 - `docs/ugc-factory/PRD.md`
 - `docs/ugc-factory/CREATOR_AND_REFERENCE_PIPELINE.md`
 - `docs/ugc-factory/DIRECT_MODEL_EXECUTION_PLAN.md`
